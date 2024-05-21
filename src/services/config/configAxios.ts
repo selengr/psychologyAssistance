@@ -1,7 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { BASE_URL_API } from 'config-global';
 import { getToken, handelErrorsApi, removeToken } from 'rootApp/helpers';
-import { BASE_URL_API } from 'rootApp/core/enum/enumGlobal';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
+
 
 interface IApiError {
   status: number;

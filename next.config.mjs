@@ -16,7 +16,7 @@ const nextConfig = {
   output: 'standalone',
 
     env: {
-        HOST_API_KEY: 'http://localhost:8080',
+      BASE_URL_API: 'http://localhost:8080',
       },
 };
 

@@ -4,7 +4,7 @@ import { PATH_DASHBOARD } from '@/routes/paths';
 // API
 // ----------------------------------------------------------------------
 
-export const HOST_API_KEY = process.env.HOST_API_KEY || '';
+export const BASE_URL_API = process.env.BASE_URL_API || '';
 
 export const FIREBASE_API = {
   apiKey: process.env.FIREBASE_API_KEY,
