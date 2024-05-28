@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { BASE_URL_API } from 'config-global';
-import { getToken, handelErrorsApi, removeToken } from 'rootApp/helpers';
+import { getToken, handelErrorsApi, removeToken } from '@/helpers';
 import { toast } from 'sonner';
 
 

@@ -1,5 +1,7 @@
 // import { NextRequest, NextResponse } from 'next/server';
 
+import { NextRequest, NextResponse } from "next/server";
+
 // function isLocalhost(url: string) {
 //   return url.includes('localhost') || url.includes('127.0.0.1');
 // }
@@ -24,14 +26,21 @@
 
 
 
-import { authMiddleware } from "@clerk/nextjs";
+// import { authMiddleware } from "@clerk/nextjs";
 
-// This example protects all routes including api/trpc routes
-// Please edit this to allow other routes to be public as needed.
-// See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
-export default authMiddleware({});
+// // This example protects all routes including api/trpc routes
+// // Please edit this to allow other routes to be public as needed.
+// // See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
+// export default authMiddleware({});
+
+// export const config = {
+//   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+// };
+
+export async function middleware(req: NextRequest, res: NextResponse) {
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/"],
 };
-
