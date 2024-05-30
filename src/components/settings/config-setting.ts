@@ -6,7 +6,7 @@ import { SettingsValueProps } from './types';
 
 export const defaultSettings: SettingsValueProps = {
   themeMode: 'light',
-  themeDirection: 'ltr',
+  themeDirection: 'rtl',
   themeContrast: 'default',
   themeLayout: 'vertical',
   themeColorPresets: 'default',

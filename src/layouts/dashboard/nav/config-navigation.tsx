@@ -41,7 +41,7 @@ const navConfig = [
   {
     subheader: 'general',
     items: [
-      { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
+      { title: 'app', path: PATH_DASHBOARD.root, icon: ICONS.dashboard },
       // { title: 'ecommerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
       // { title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
       // { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
@@ -63,7 +63,7 @@ const navConfig = [
         children: [
           // { title: 'profile', path: PATH_DASHBOARD.user.profile },
           // { title: 'cards', path: PATH_DASHBOARD.user.cards },
-          { title: 'list', path: PATH_DASHBOARD.user.list },
+          { title: 'list', path: PATH_DASHBOARD.user },
           // { title: 'create', path: PATH_DASHBOARD.user.new },
           // { title: 'edit', path: PATH_DASHBOARD.user.demoEdit },
           // { title: 'account', path: PATH_DASHBOARD.user.account },
@@ -73,13 +73,13 @@ const navConfig = [
       // E-COMMERCE
       {
         title: 'ecommerce',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.root,
         icon: ICONS.cart,
         children: [
           // { title: 'shop', path: PATH_DASHBOARD.eCommerce.shop },
           // { title: 'product', path: PATH_DASHBOARD.eCommerce.demoView },
-          { title: 'list', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.new },
+          { title: 'list', path: PATH_DASHBOARD.root },
+          { title: 'create', path: PATH_DASHBOARD.root },
           // { title: 'edit', path: PATH_DASHBOARD.eCommerce.demoEdit },
           // { title: 'checkout', path: PATH_DASHBOARD.eCommerce.checkout },
         ],
@@ -88,10 +88,10 @@ const navConfig = [
       // INVOICE
       {
         title: 'invoice',
-        path: PATH_DASHBOARD.invoice.root,
+        path: PATH_DASHBOARD.root,
         icon: ICONS.invoice,
         children: [
-          { title: 'list', path: PATH_DASHBOARD.invoice.list },
+          { title: 'list', path: PATH_DASHBOARD.root },
           // { title: 'details', path: PATH_DASHBOARD.invoice.demoView },
           // { title: 'create', path: PATH_DASHBOARD.invoice.new },
           // { title: 'edit', path: PATH_DASHBOARD.invoice.demoEdit },

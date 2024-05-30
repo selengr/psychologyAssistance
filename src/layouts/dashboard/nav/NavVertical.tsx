@@ -10,7 +10,7 @@ import { NAV } from '../../../config-global';
 // components
 import Logo from '../../../components/logo';
 import Scrollbar from '../../../components/scrollbar';
-// import { NavSectionVertical } from '../../../components/nav-section';
+import { NavSectionVertical } from '../../../components/nav-section';
 //
 import navConfig from './config-navigation';
 import NavDocs from './NavDocs';
@@ -25,7 +25,7 @@ type Props = {
 };
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
-  const { pathname } = useRouter();
+  // const { pathname } = useRouter();
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -34,7 +34,9 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       onCloseNav();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, []);
+  // }, [pathname]);
+
 
   const renderContent = (
     <Scrollbar
@@ -61,7 +63,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
         <NavAccount />
       </Stack>
 
-      {/* <NavSectionVertical data={navConfig} /> */}
+      <NavSectionVertical data={navConfig} />
 
       {/* <Box sx={{ flexGrow: 1 }} /> */}
 

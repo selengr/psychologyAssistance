@@ -1,3 +1,5 @@
+"use client"
+
 import createCache from '@emotion/cache';
 
 // ----------------------------------------------------------------------
