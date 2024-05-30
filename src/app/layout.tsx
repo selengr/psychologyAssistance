@@ -32,6 +32,7 @@ import { MotionLazyContainer } from '../components/animate';
 import { Toaster } from "@/formBuilder/components/ui/toaster";
 import { ThemeSettings, SettingsProvider } from '../components/settings';
 import { ReduxProvider } from "@/redux/provider";
+import DashboardLayout from "@/layouts/dashboard/DashboardLayout";
 
 
 
@@ -60,8 +61,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ThemeProvider>
                   <ThemeSettings>
                     <ThemeLocalization>
-                     
-                        {children}
+                     <DashboardLayout>
+                         {children}
+                     </DashboardLayout>
                     </ThemeLocalization>
                   </ThemeSettings>
                 </ThemeProvider>

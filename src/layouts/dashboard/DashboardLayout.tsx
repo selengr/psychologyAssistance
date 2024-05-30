@@ -1,10 +1,12 @@
+"use client"
+
 import { useState } from 'react';
 // @mui
 import { Box } from '@mui/material';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
 // auth
-import AuthGuard from '../../auth/AuthGuard';
+// import AuthGuard from '../../auth/AuthGuard';
 // components
 import { useSettingsContext } from '../../components/settings';
 //
@@ -91,5 +93,5 @@ export default function DashboardLayout({ children }: Props) {
     );
   };
 
-  return <AuthGuard> {renderContent()} </AuthGuard>;
+  return <> {renderContent()} </>;
 }
