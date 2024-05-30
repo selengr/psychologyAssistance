@@ -8,7 +8,7 @@ class UserNotFoundErr extends Error {}
 
 export async function GetFormStats() {
   const user = await currentUser();
-  // console.log('user :>> ', user);
+  console.log('user-------- :>> ', user);
   if (!user) {
     throw new UserNotFoundErr();
   }

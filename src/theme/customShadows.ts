@@ -1,3 +1,4 @@
+"use client"
 // @mui
 import { alpha } from '@mui/material/styles';
 //

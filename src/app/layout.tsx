@@ -1,14 +1,39 @@
-
-import DesignerContextProvider from "@/formBuilder/components/context/DesignerContext";
-import { ThemeProvider } from "@/formBuilder/components/providers/ThemeProvider";
-import { Toaster } from "@/formBuilder/components/ui/toaster";
-import { ClerkProvider } from "@clerk/nextjs";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-// import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
+// i18n
+import '../locales/i18n';
 
-const inter = Inter({ subsets: ["latin"] });
+// scroll bar
+// import 'simplebar-react/dist/simplebar.min.css';
+
+// ----------------------------------------------------------------------
+
+// import { CacheProvider, EmotionCache } from '@emotion/react';
+
+// next
+import type { Metadata } from "next";
+import NextTopLoader from "nextjs-toploader";
+
+
+// redux
+// import { store } from '../redux/store';
+// import { Provider as ReduxProvider } from 'react-redux';
+// @mui
+
+// utils
+// import createEmotionCache from '../utils/createEmotionCache';
+// theme
+import ThemeProvider from '../theme';
+
+// locales
+import ThemeLocalization from '../locales';
+
+// components
+import { MotionLazyContainer } from '../components/animate';
+import { Toaster } from "@/formBuilder/components/ui/toaster";
+import { ThemeSettings, SettingsProvider } from '../components/settings';
+import { ReduxProvider } from "@/redux/provider";
+
+
 
 export const metadata: Metadata = {
   title: "سایا",
@@ -16,20 +41,40 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
+
   return (
-    <ClerkProvider>
+
       <html lang="en">
-        <body className={inter.className}>
-          {/* <NextTopLoader /> */}
-          <DesignerContextProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-              {children}
+        <body >
+          <NextTopLoader />
+
+          {/* <CacheProvider value={emotionCache}> */}
+     
+
+      {/* <AuthProvider> */}
+        <ReduxProvider>
+          {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
+            <SettingsProvider>
+              <MotionLazyContainer>
+                <ThemeProvider>
+                  <ThemeSettings>
+                    <ThemeLocalization>
+                     
+                        {children}
+                    </ThemeLocalization>
+                  </ThemeSettings>
+                </ThemeProvider>
+              </MotionLazyContainer>
+            </SettingsProvider>
+          {/* </LocalizationProvider> */}
+        </ReduxProvider>
+      {/* </AuthProvider> */}
+    {/* </CacheProvider> */}
               <Toaster />
-              {/* <Toaster richColors /> */}
-            </ThemeProvider>
-          </DesignerContextProvider>
+            
         </body>
       </html>
-    </ClerkProvider>
+  
   );
 }

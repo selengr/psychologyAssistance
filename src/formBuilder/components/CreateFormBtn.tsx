@@ -21,11 +21,12 @@ import { toast } from "./ui/use-toast";
 import { CreateForm } from "@/actions/form";
 import { BsFileEarmarkPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
-import zodResolver from '@hookform/resolvers/zod';
+// import zodResolver from '@hookform/resolvers/zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 
 function CreateFormBtn() {
   const router = useRouter();
-  const form = useForm<formSchemaType>({
+  const form = useForm<formSchemaType|any>({
     resolver: zodResolver(formSchema),
   });
 

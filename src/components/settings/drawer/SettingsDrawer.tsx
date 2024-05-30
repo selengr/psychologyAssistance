@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from 'react';
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';

@@ -1,20 +1,32 @@
-import Logo from "@/formBuilder/components/Logo";
-import ThemeSwitcher from "@/formBuilder/components/ThemeSwitcher";
-import { UserButton } from "@clerk/nextjs";
-import React, { ReactNode } from "react";
+import DesignerContextProvider from '@/formBuilder/components/context/DesignerContext';
+import { ThemeProvider } from '@/formBuilder/components/providers/ThemeProvider';
+import { Toaster } from '@/formBuilder/components/ui/toaster';
+import { ClerkProvider } from '@clerk/nextjs';
+import ThemeSwitcher from '@/formBuilder/components/ThemeSwitcher';
+import { UserButton } from '@clerk/nextjs';
+import React, { ReactNode } from 'react';
 
 function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col min-h-screen min-w-full bg-background max-h-screen">
-      <nav className="flex justify-between items-center border-b border-border h-[60px] px-4 py-2">
-        <Logo />
-        <div className="flex gap-4 items-center">
-          <ThemeSwitcher />
-           <UserButton afterSignOutUrl="/sign-in" /> 
-        </div>
-      </nav>
-      <main className="flex w-full flex-grow">{children}</main>
-    </div>
+    // <ClerkProvider>
+      <DesignerContextProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="flex gap-4 items-center">
+            <ThemeSwitcher />
+            {/* <UserButton afterSignOutUrl="/sign-in" /> */}
+          </div>
+          {children}
+
+          <Toaster />
+          {/* <Toaster richColors /> */}
+        </ThemeProvider>
+      </DesignerContextProvider>
+    // </ClerkProvider>
   );
 }
 

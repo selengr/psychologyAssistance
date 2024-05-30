@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect } from 'react';
 // rtl
 import { prefixer } from 'stylis';
