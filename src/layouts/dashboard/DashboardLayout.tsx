@@ -11,7 +11,6 @@ import useResponsive from '../../hooks/useResponsive';
 import { useSettingsContext } from '../../components/settings';
 //
 import Main from './Main';
-import Header from './header';
 import NavMini from './nav/NavMini';
 import NavVertical from './nav/NavVertical';
 import NavHorizontal from './nav/NavHorizontal';
@@ -47,8 +46,7 @@ export default function DashboardLayout({ children }: Props) {
     if (isNavHorizontal) {
       return (
         <>
-          <Header onOpenNav={handleOpen} />
-
+          
           {isDesktop ? <NavHorizontal /> : renderNavVertical}
 
           <Main>{children}</Main>
@@ -59,7 +57,6 @@ export default function DashboardLayout({ children }: Props) {
     if (isNavMini) {
       return (
         <>
-          <Header onOpenNav={handleOpen} />
 
           <Box
             sx={{
@@ -77,8 +74,7 @@ export default function DashboardLayout({ children }: Props) {
 
     return (
       <>
-        <Header onOpenNav={handleOpen} />
-
+       
         <Box
           sx={{
             display: { lg: 'flex' },

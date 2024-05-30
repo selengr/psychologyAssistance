@@ -7,7 +7,7 @@ import { HEADER } from '../../../config-global';
 // utils
 import { bgBlur } from '../../../utils/cssStyles';
 // components
-import { NavSectionHorizontal } from '../../../components/nav-section';
+// import { NavSectionHorizontal } from '../../../components/nav-section';
 //
 import navConfig from './config-navigation';
 
@@ -32,7 +32,7 @@ function NavHorizontal() {
           }),
         }}
       >
-        <NavSectionHorizontal data={navConfig} />
+        {/* <NavSectionHorizontal data={navConfig} /> */}
       </Toolbar>
 
       <Shadow />
