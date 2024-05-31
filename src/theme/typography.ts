@@ -45,6 +45,7 @@ export function responsiveFontSizes({ sm, md, lg }: { sm: number; md: number; lg
 
 const typography = {
   fontFamily: "primaryFont.style.fontFamily",
+  // fontFamily: "",
   fontWeightRegular: 400,
   fontWeightMedium: 600,
   fontWeightBold: 700,
