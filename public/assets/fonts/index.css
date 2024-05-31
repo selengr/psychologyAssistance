@@ -1,2 +1,103 @@
 @font-face {
+  font-family: 'CircularStd';
+  font-weight: 400;
+  font-style: normal;
+  src: local('CircularStd'), url('CircularStd-Book.otf') format('opentype');
 }
+
+@font-face {
+  font-family: 'CircularStd';
+  font-weight: 500;
+  font-style: normal;
+  src: local('CircularStd'), url('CircularStd-Medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'CircularStd';
+  font-weight: 700;
+  font-style: normal;
+  src: local('CircularStd'), url('CircularStd-Bold.otf') format('opentype');
+}
+
+ 
+/* ================================================iran yekan */
+
+@font-face {
+  font-family: 'IRANSans';
+  font-weight: 800;
+  font-style: normal;
+  src: local('IRANSans'), url('./IranSans/IRANSansMobile(FaNum)_Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'IRANSans';
+  font-weight: 600;
+  font-style: normal;
+  src: local('IRANSans'), url('./IranSans/IRANSansMobile(FaNum)_Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'IRANSans';
+  font-weight: 500;
+  font-style: normal;
+  src: local('IRANSans'), url('./IranSans/IRANSansMobile(FaNum)_Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'IRANSans';
+  font-weight: 400;
+  font-style: normal;
+  src: local('IRANSans'), url('./IranSans/IRANSansMobile(FaNum).ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'IRANSans';
+  font-weight: 300;
+  font-style: normal;
+  src: local('IRANSans'), url('./IranSans/IRANSansMobile(FaNum)_Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IRANSans';
+  font-weight: 200;
+  font-style: normal;
+  src: local('IRANSans'), url('./IranSans/IRANSansMobile(FaNum)_UltraLight.ttf') format('truetype');
+}
+
+/* ================================================dana */
+
+@font-face {
+  font-family: 'dana';
+  font-weight: 800;
+  font-style: normal;
+  src: local('dana'), url('./Dana/dana-black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'dana';
+  font-weight: 700;
+  font-style: normal;
+  src: local('dana'), url('./Dana/dana-ultrabold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'dana';
+  font-weight: 600;
+  font-style: normal;
+  src: local('dana'), url('./Dana/dana-bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'dana';
+  font-weight: 500;
+  font-style: normal;
+  src: local('dana'), url('./Dana/dana-medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'dana';
+  font-weight: 300;
+  font-style: normal;
+  src: local('dana'), url('./Dana/dana-light.ttf') format('truetype');
+}
+
+ 
