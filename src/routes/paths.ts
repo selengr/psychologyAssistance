@@ -15,6 +15,21 @@ export const PATH_AUTH = {
 };
 
 export const PATH_PAGE = {
+  assessments: {
+    root: '/assessments',
+    edit: `/assessments/edit`,
+    new: `/assessments/new`,
+    info: `/assessments/info`,
+  },
+  groups: {
+    root: '/groups',
+  },
+  report: {
+    root: '/report',
+  },
+  participants: {
+    root: '/participants',
+  },
   comingSoon: '/coming-soon',
   page403: '/403',
   page404: '/404',
