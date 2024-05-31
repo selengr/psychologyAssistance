@@ -38,7 +38,7 @@ const GREY = {
 const PRIMARY = {
   lighter: '#C8FACD',
   light: '#5BE584',
-  main: '#00AB55',
+  main: '#433792', // ps
   dark: '#007B55',
   darker: '#005249',
   contrastText: '#FFFFFF',
@@ -47,7 +47,7 @@ const PRIMARY = {
 const SECONDARY = {
   lighter: '#D6E4FF',
   light: '#84A9FF',
-  main: '#3366FF',
+  main: '#DE74A3', //ps
   dark: '#1939B7',
   darker: '#091A7A',
   contrastText: '#FFFFFF',
@@ -65,7 +65,7 @@ const INFO = {
 const SUCCESS = {
   lighter: '#D8FBDE',
   light: '#86E8AB',
-  main: '#36B37E',
+  main: '#30AC62',// ps
   dark: '#1B806A',
   darker: '#0A5554',
   contrastText: '#FFFFFF',
@@ -74,7 +74,7 @@ const SUCCESS = {
 const WARNING = {
   lighter: '#FFF5CC',
   light: '#FFD666',
-  main: '#FFAB00',
+  main: '#F8CD11',// ps
   dark: '#B76E00',
   darker: '#7A4100',
   contrastText: GREY[800],
@@ -83,11 +83,23 @@ const WARNING = {
 const ERROR = {
   lighter: '#FFE9D5',
   light: '#FFAC82',
-  main: '#FF5630',
+  main: '#D21425', // ps
   dark: '#B71D18',
   darker: '#7A0916',
   contrastText: '#FFFFFF',
 };
+
+
+// psya
+// hover: '#6359A3',
+// focused: '#39317A',
+// disabled: '#cdcdcd'
+
+// Typography: {
+//   main: '#353535',
+//   Secondary: '#6A6A6A',
+//   disable: '#BBBBBB',
+// },
 
 const COMMON = {
   common: { black: '#000000', white: '#FFFFFF' },
@@ -99,6 +111,7 @@ const COMMON = {
   error: ERROR,
   grey: GREY,
   divider: alpha(GREY[500], 0.24),
+  
   action: {
     hover: alpha(GREY[500], 0.08),
     selected: alpha(GREY[500], 0.16),
@@ -119,7 +132,7 @@ export default function palette(themeMode: 'light' | 'dark') {
       secondary: GREY[600],
       disabled: GREY[500],
     },
-    background: { paper: '#FFFFFF', default: '#FFFFFF', neutral: GREY[200] },
+    background: { paper: '#FFFFFF', default: '#FAFAFA', neutral: GREY[200] },
     action: {
       ...COMMON.action,
       active: GREY[600],

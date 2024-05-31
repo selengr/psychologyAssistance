@@ -1,4 +1,5 @@
 // import { Public_Sans, Barlow } from '@next/font/google';
+import "../../public/fonts/index.css"
 
 // ----------------------------------------------------------------------
 
@@ -44,8 +45,8 @@ export function responsiveFontSizes({ sm, md, lg }: { sm: number; md: number; lg
 // https://nextjs.org/docs/basic-features/font-optimization#google-fonts
 
 const typography = {
-  fontFamily: "primaryFont.style.fontFamily",
-  // fontFamily: "",
+  // fontFamily: "primaryFont.style.fontFamily",
+  fontFamily: "IRANSans !important",
   fontWeightRegular: 400,
   fontWeightMedium: 600,
   fontWeightBold: 700,
