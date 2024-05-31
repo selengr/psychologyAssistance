@@ -56,11 +56,13 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           pb: 2,
           px: 2.5,
           flexShrink: 0,
+          display : 'flex',
+          alignItems : "center"
         }}
       >
         <Logo />
 
-        <NavAccount />
+        {/* <NavAccount /> */}
       </Stack>
 
       <NavSectionVertical data={navConfig} />
