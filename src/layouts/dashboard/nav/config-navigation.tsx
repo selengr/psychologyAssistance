@@ -20,12 +20,13 @@ const navConfig = [
   // GENERAL
   // ----------------------------------------------------------------------
   {
-    subheader: 'general',
+    subheader: '',
     items: [
       { title: 'خانه', path: PATH_PAGE.root, icon: ICONS.home },
       { title: 'ارزیابی‌های من', path: PATH_PAGE.assessments.root, icon: ICONS.assessments },
       { title: 'شرکت‌کننده‌ها', path: PATH_PAGE.participants.root, icon: ICONS.participants },
       { title: 'گروه‌ها', path: PATH_PAGE.groups.root, icon: ICONS.groups },
+      { title: 'ساخت پرسشنامه', path: PATH_PAGE.builder.root, icon: ICONS.groups },
     ],
   },
 

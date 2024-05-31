@@ -31,6 +31,9 @@ export const PATH_PAGE = {
   participants: {
     root: '/participants',
   },
+  builder: {
+    root: '/builder',
+  },
   comingSoon: '/coming-soon',
   page403: '/403',
   page404: '/404',
