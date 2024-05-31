@@ -79,7 +79,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
         width: { lg: NAV.W_DASHBOARD },
       }}
     >
-      <NavToggleButton />
+      {/* <NavToggleButton /> */}
 
       {isDesktop ? (
         <Drawer
