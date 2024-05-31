@@ -1,5 +1,5 @@
 // routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
+import { PATH_PAGE } from '../../../routes/paths';
 // components
 import SvgColor from '../../../components/svg-color';
 
@@ -11,7 +11,7 @@ const icon = (name: string) => (
 
 const ICONS = {
   home: icon('ic_dsh_home'),
-  group: icon('ic_dsh_group'),
+  groups: icon('ic_dsh_group'),
   participants: icon('ic_dsh_participants'),
   assessments: icon('ic_dsh_my_assessments'),
 };
@@ -22,10 +22,10 @@ const navConfig = [
   {
     subheader: 'general',
     items: [
-      { title: 'خانه', path: PATH_DASHBOARD.root, icon: ICONS.home },
-      { title: 'ارزیابی‌های من', path: PATH_DASHBOARD.root, icon: ICONS.assessments },
-      { title: 'شرکت‌کننده‌ها', path: PATH_DASHBOARD.root, icon: ICONS.participants },
-      { title: 'گروه‌ها', path: PATH_DASHBOARD.root, icon: ICONS.group },
+      { title: 'خانه', path: PATH_PAGE.root, icon: ICONS.home },
+      { title: 'ارزیابی‌های من', path: PATH_PAGE.assessments.root, icon: ICONS.assessments },
+      { title: 'شرکت‌کننده‌ها', path: PATH_PAGE.participants.root, icon: ICONS.participants },
+      { title: 'گروه‌ها', path: PATH_PAGE.groups.root, icon: ICONS.groups },
     ],
   },
 

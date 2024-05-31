@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 // ----------------------------------------------------------------------
 
@@ -8,20 +8,22 @@ type ReturnType = {
 };
 
 export default function useActiveLink(path: string, deep = true): ReturnType {
-  // const { pathname, asPath } = useRouter();
+  const pathname = usePathname();
+  debugger
+  // const checkPath = path.includes('#');
 
-  // const checkPath = path?.startsWith('#');
+  const currentPath = path === '/' ? '/' : `${path}`;
 
-  // const currentPath = path === '/' ? '/' : `${path}/`;
+  // const normalActive =  (!checkPath && pathname === currentPath) || (!checkPath && pathname === currentPath);
+  const normalActive =  ( pathname === currentPath) || (pathname === currentPath);
 
-  const normalActive = true
-    // (!checkPath && pathname === currentPath) || (!checkPath && asPath === currentPath);
-
-  const deepActive = true
-    // (!checkPath && pathname.includes(currentPath)) || (!checkPath && asPath.includes(currentPath));
-
-  return {
+  const deepActive = 
+    // (!checkPath && pathname.includes(currentPath)) || (!checkPath && pathname.includes(currentPath));
+    (pathname.includes(currentPath)) || (pathname.includes(currentPath));
+    
+    return {
     active: deep ? deepActive : normalActive,
+    // isExternalLink: path.includes('http') ?? false,
     isExternalLink: false,
   };
 }

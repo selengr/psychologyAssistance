@@ -15,6 +15,7 @@ export const PATH_AUTH = {
 };
 
 export const PATH_PAGE = {
+  root : '/',
   assessments: {
     root: '/assessments',
     edit: `/assessments/edit`,
@@ -45,5 +46,4 @@ export const PATH_DASHBOARD = {
     edit: (name: string) => path(ROOTS_DASHBOARD, `/user/${name}/edit`),
   },
 
- 
 };
