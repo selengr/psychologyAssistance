@@ -1,6 +1,7 @@
 {
   "name": "psya",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "author": {"name": "reza karbakhsh & amirhossein hessami"},
   "private": true,
   "engines": {
     "node": ">=18.0.0",
