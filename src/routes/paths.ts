@@ -15,7 +15,7 @@ export const PATH_AUTH = {
 };
 
 export const PATH_PAGE = {
-  root : '/',
+  root : '/home',
   assessments: {
     root: '/assessments',
     edit: `/assessments/edit`,

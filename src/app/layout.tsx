@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <html lang="en">
         <body >
-          <NextTopLoader />
+          <NextTopLoader color="#DE74A3"/>
 
           {/* <CacheProvider value={emotionCache}> */}
      

@@ -19,7 +19,7 @@ type NavListRootProps = {
 export default function NavList({ data, depth, hasChild }: NavListRootProps) {
   const navRef = useRef(null);
 
-  const { pathname } = useRouter();
+  // const { pathname } = useRouter();
 
   const { active, isExternalLink } = useActiveLink(data.path);
 
@@ -30,7 +30,8 @@ export default function NavList({ data, depth, hasChild }: NavListRootProps) {
       handleClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  // }, [pathname]);
+  }, []);
 
   useEffect(() => {
     const appBarEl = Array.from(document.querySelectorAll('.MuiAppBar-root')) as Array<HTMLElement>;
