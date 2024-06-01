@@ -31,6 +31,7 @@ export default function NavToggleButton({ sx, ...other }: IconButtonProps) {
       sx={{
         p: 0.5,
         top: 32,
+        backgroundColor:"red", //
         position: 'fixed',
         left: NAV.W_DASHBOARD - 12,
         zIndex: theme.zIndex.appBar + 1,

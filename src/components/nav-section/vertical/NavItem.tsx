@@ -30,7 +30,7 @@ export default function NavItem({
 
   const renderContent = (
     <StyledItem depth={depth} active={active} disabled={disabled} caption={!!caption} {...other}>
-      {icon && <StyledIcon>{icon}</StyledIcon>}
+      {icon && <StyledIcon active={active} >{icon}</StyledIcon>}
 
       {subItem && (
         <StyledIcon>

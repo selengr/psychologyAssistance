@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { useState } from 'react';
 // @mui
@@ -14,6 +14,7 @@ import Main from './Main';
 import NavMini from './nav/NavMini';
 import NavVertical from './nav/NavVertical';
 import NavHorizontal from './nav/NavHorizontal';
+import Header from './header/Header';
 
 // ----------------------------------------------------------------------
 
@@ -46,7 +47,7 @@ export default function DashboardLayout({ children }: Props) {
     if (isNavHorizontal) {
       return (
         <>
-          
+          <Header onOpenNav={handleOpen} />
           {isDesktop ? <NavHorizontal /> : renderNavVertical}
 
           <Main>{children}</Main>
@@ -57,7 +58,6 @@ export default function DashboardLayout({ children }: Props) {
     if (isNavMini) {
       return (
         <>
-
           <Box
             sx={{
               display: { lg: 'flex' },
@@ -74,13 +74,13 @@ export default function DashboardLayout({ children }: Props) {
 
     return (
       <>
-       
         <Box
           sx={{
             display: { lg: 'flex' },
             minHeight: { lg: 1 },
           }}
         >
+          <Header onOpenNav={handleOpen} />
           {renderNavVertical}
 
           <Main>{children}</Main>

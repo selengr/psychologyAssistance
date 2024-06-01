@@ -22,7 +22,8 @@ export const StyledItem = styled(ListItemButton, {
 
   const activeStyle = {
     color: theme.palette.primary.main,
-    backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+    backgroundColor: alpha(theme.palette.secondary.main, theme.palette.action.selectedOpacity),
+    borderRight : `8px solid ${theme.palette.secondary.main}`,
     ...(!isLight && {
       color: theme.palette.primary.light,
     }),
@@ -36,8 +37,8 @@ export const StyledItem = styled(ListItemButton, {
   return {
     position: 'relative',
     textTransform: 'capitalize',
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1.5),
+    paddingLeft: theme.spacing(.5),
+    paddingRight: theme.spacing(.5),
     marginBottom: theme.spacing(0.5),
     color: theme.palette.text.secondary,
     borderRadius: theme.shape.borderRadius,
@@ -78,13 +79,24 @@ export const StyledItem = styled(ListItemButton, {
 
 // ----------------------------------------------------------------------
 
-export const StyledIcon = styled(ListItemIcon)({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: ICON.NAV_ITEM,
-  height: ICON.NAV_ITEM,
-});
+type StyledIconProps = {
+  active?: boolean;
+};
+
+export const StyledIcon = styled(ListItemIcon, {
+  shouldForwardProp: (prop) => prop !== 'active'
+})<StyledIconProps>(({ active, theme }) => ({
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: ICON.NAV_ITEM,
+      height: ICON.NAV_ITEM,
+  ...(active && {
+       color: theme.palette.primary.main,
+      fontWeight : 700
+  })
+}));
+
 
 // ----------------------------------------------------------------------
 

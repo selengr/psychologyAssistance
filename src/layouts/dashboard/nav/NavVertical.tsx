@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 // next
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 // @mui
 import { Box, Stack, Drawer } from '@mui/material';
 // hooks
@@ -13,9 +13,6 @@ import Scrollbar from '../../../components/scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
 //
 import navConfig from './config-navigation';
-import NavDocs from './NavDocs';
-import NavAccount from './NavAccount';
-import NavToggleButton from './NavToggleButton';
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +22,7 @@ type Props = {
 };
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
-  // const { pathname } = useRouter();
+  const path = usePathname();
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -34,8 +31,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       onCloseNav();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  // }, [pathname]);
+  }, [path]);
 
 
   const renderContent = (
@@ -69,7 +65,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 
       {/* <Box sx={{ flexGrow: 1 }} /> */}
 
-      <NavDocs />
     </Scrollbar>
   );
 

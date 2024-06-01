@@ -9,7 +9,6 @@ type ReturnType = {
 
 export default function useActiveLink(path: string, deep = true): ReturnType {
   const pathname = usePathname();
-  debugger
   // const checkPath = path.includes('#');
 
   const currentPath = path === '/' ? '/' : `${path}`;
