@@ -41,7 +41,7 @@ export default function DashboardLayout({ children }: Props) {
     setOpen(false);
   };
 
-  const renderNavVertical = <NavVertical openNav={open} onCloseNav={handleClose} />;
+  const renderNavVertical = <NavVertical openNav={open} onCloseNav={handleClose}/>;
 
   const renderContent = () => {
     if (isNavHorizontal) {

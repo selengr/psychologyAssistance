@@ -87,7 +87,8 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
               zIndex: 0,
               width: NAV.W_DASHBOARD,
               bgcolor: 'transparent',
-              borderRightStyle: 'dashed',
+              // borderRightStyle: 'dashed',
+              boxShadow: (theme)=>theme.customShadows.z20,
             },
           }}
         >
