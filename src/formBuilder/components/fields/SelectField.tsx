@@ -45,8 +45,7 @@ export const SelectFieldFormElement: FormElement = {
     extraAttributes,
   }),
   designerBtnElement: {
-    icon: RxDropdownMenu,
-    label: "Select Field",
+    label: "چند گزینه‌ای",
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,

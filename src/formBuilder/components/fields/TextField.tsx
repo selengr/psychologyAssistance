@@ -38,8 +38,7 @@ export const TextFieldFormElement: FormElement = {
     extraAttributes,
   }),
   designerBtnElement: {
-    icon: MdTextFields,
-    label: "Text Field",
+    label: "متنی",
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,

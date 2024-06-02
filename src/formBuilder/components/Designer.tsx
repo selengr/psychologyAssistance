@@ -101,9 +101,9 @@ function Designer() {
   });
 
   return (
-    <div className="flex w-full h-full">
+    <div className="flex w-full h-full py-4">
       <div
-        className="p-4 w-full"
+        className="px-4 w-full"
         onClick={() => {
           if (selectedElement) setSelectedElement(null);
         }}
