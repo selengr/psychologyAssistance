@@ -23,29 +23,40 @@ import { BsFileEarmarkPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 // import zodResolver from '@hookform/resolvers/zod';
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PATH_PAGE } from "@/routes/paths";
 
 function CreateFormBtn() {
   const router = useRouter();
-  const form = useForm<formSchemaType|any>({
-    resolver: zodResolver(formSchema),
-  });
+  // const form = useForm<formSchemaType|any>({
+  //   resolver: zodResolver(formSchema),
+  // });
 
-  async function onSubmit(values: formSchemaType) {
-    try {
-      const formId = await CreateForm(values);
-      toast({
+  // async function onSubmit(values: formSchemaType) {
+  //   try {
+  //     const formId = await CreateForm(values);
+  //     toast({
+  //       title: "Success",
+  //       description: "Form created successfully",
+  //     });
+  //     router.push(`/builder/${formId}`);
+  //   } catch (error) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Something went wrong, please try again later",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // }
+
+   function handleFormName() {
+
+      router.push(PATH_PAGE.builder.root+`/1`);
+       toast({
         title: "Success",
         description: "Form created successfully",
       });
-      router.push(`/builder/${formId}`);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong, please try again later",
-        variant: "destructive",
-      });
     }
-  }
+  
 
   return (
     <Dialog>
@@ -63,7 +74,7 @@ function CreateFormBtn() {
           <DialogTitle>Create form</DialogTitle>
           <DialogDescription>Create a new form to start collecting responses</DialogDescription>
         </DialogHeader>
-        <Form {...form}>
+        {/* <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField
               control={form.control}
@@ -92,11 +103,14 @@ function CreateFormBtn() {
               )}
             />
           </form>
-        </Form>
+        </Form> */}
         <DialogFooter>
-          <Button onClick={form.handleSubmit(onSubmit)} disabled={form.formState.isSubmitting} className="w-full mt-4">
+          {/* <Button onClick={form.handleSubmit(onSubmit)} disabled={form.formState.isSubmitting} className="w-full mt-4">
             {!form.formState.isSubmitting && <span>Save</span>}
             {form.formState.isSubmitting && <ImSpinner2 className="animate-spin" />}
+          </Button> */}
+          <Button onClick={()=>handleFormName()} className="w-full mt-4">
+             <span>Save</span>
           </Button>
         </DialogFooter>
       </DialogContent>

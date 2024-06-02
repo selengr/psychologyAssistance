@@ -7,7 +7,7 @@ import { FaWpforms } from "react-icons/fa";
 import { HiCursorClick } from "react-icons/hi";
 import { TbArrowBounce } from "react-icons/tb";
 // import { Separator } from "@/formBuilder/components/ui/separator";
-// import CreateFormBtn from "@/formBuilder/components/CreateFormBtn";
+import CreateFormBtn from "@/formBuilder/components/CreateFormBtn";
 // import { Form } from "@prisma/client";
 // import { Badge } from "@/formBuilder/components/ui/badge";
 // import { formatDistance } from "date-fns";
@@ -20,6 +20,7 @@ export default function Home() {
   return (
     <div className="container pt-4">
       test
+      <CreateFormBtn />
       {/* <Suspense fallback={<StatsCards loading={true} />}>
         <CardStatsWrapper />
       </Suspense>

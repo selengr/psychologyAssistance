@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: Props) {
     if (isNavHorizontal) {
       return (
         <>
-          <Header onOpenNav={handleOpen} />
+          {!isDesktop && <Header onOpenNav={handleOpen} /> }
           {isDesktop ? <NavHorizontal /> : renderNavVertical}
 
           <Main>{children}</Main>
@@ -62,6 +62,7 @@ export default function DashboardLayout({ children }: Props) {
             sx={{
               display: { lg: 'flex' },
               minHeight: { lg: 1 },
+              height: "100vh",
             }}
           >
             {isDesktop ? <NavMini /> : renderNavVertical}
@@ -78,9 +79,10 @@ export default function DashboardLayout({ children }: Props) {
           sx={{
             display: { lg: 'flex' },
             minHeight: { lg: 1 },
+            height: "100vh",
           }}
         >
-          <Header onOpenNav={handleOpen} />
+           {!isDesktop &&  <Header onOpenNav={handleOpen} /> }
           {renderNavVertical}
 
           <Main>{children}</Main>

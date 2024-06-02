@@ -108,7 +108,7 @@ function FormBuilder({ form }: { form: any }) {
   return (
     <DndContext sensors={sensors}>
       <main className="flex flex-col w-full">
-        <nav className="flex justify-between border-b-2 p-4 gap-3 items-center">
+        {/* <nav className="flex justify-between border-b-2 p-4 gap-3 items-center">
           <h2 className="truncate font-medium">
             <span className="text-muted-foreground mr-2">Form:</span>
             {form.name}
@@ -122,7 +122,7 @@ function FormBuilder({ form }: { form: any }) {
               </>
             )}
           </div>
-        </nav>
+        </nav> */}
         <div className="flex w-full flex-grow items-center justify-center relative overflow-y-auto h-[200px] bg-accent bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)]">
           <Designer />
         </div>
