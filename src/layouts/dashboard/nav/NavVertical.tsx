@@ -56,7 +56,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           alignItems : "center"
         }}
       >
-        <Logo />
+        {isDesktop && <Logo /> }
 
         {/* <NavAccount /> */}
       </Stack>

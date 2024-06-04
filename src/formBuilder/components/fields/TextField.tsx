@@ -1,26 +1,34 @@
-"use client";
+'use client';
 
-import { MdTextFields } from "react-icons/md";
-import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from "../FormElements";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import useDesigner from "../hooks/useDesigner";
+import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from '../FormElements';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import useDesigner from '../hooks/useDesigner';
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Switch } from "../ui/switch";
-import { cn } from "@/formBuilder/lib/utils";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Switch } from '../ui/switch';
+import { cn } from '@/formBuilder/lib/utils';
+import { Stack, TextField } from '@mui/material';
 
-const type: ElementsType = "TextField";
+const type: ElementsType = 'TextField';
 
 const extraAttributes = {
-  label: "Text field",
-  helperText: "Helper text",
+  label: 'Text field',
+  helperText: 'Helper text',
   required: false,
-  placeHolder: "Value here...",
+  placeHolder: 'Value here...',
 };
 
 const propertiesSchema = z.object({
@@ -38,7 +46,7 @@ export const TextFieldFormElement: FormElement = {
     extraAttributes,
   }),
   designerBtnElement: {
-    label: "متنی",
+    label: 'متنی',
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -61,15 +69,57 @@ type CustomInstance = FormElementInstance & {
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
   const { label, required, placeHolder, helperText } = element.extraAttributes;
+
+  const [openConfirm, setOpenConfirm] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
+
+  const handleOpenConfirm = () => {
+    setOpenConfirm(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+  };
+
+  const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
+    setOpenPopover(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setOpenPopover(null);
+  };
+
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <Stack
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+      }}
+      spacing={1}
+      className="flex flex-col gap-2 w-full"
+    >
       <Label>
         {label}
-        {required && "*"}
+        {required && '*'}
       </Label>
-      <Input readOnly disabled placeholder={placeHolder} />
+      <TextField
+        // helperText={'ssss'}
+        size="small"
+        sx={{ height: 16, fontSize: '13px',
+        '& input': {
+          height: 16,
+        },
+      }}
+        placeholder={placeHolder}
+ 
+      />
+
       {helperText && <p className="text-muted-foreground text-[0.8rem]">{helperText}</p>}
-    </div>
+    </Stack>
   );
 }
 
@@ -86,7 +136,7 @@ function FormComponent({
 }) {
   const element = elementInstance as CustomInstance;
 
-  const [value, setValue] = useState(defaultValue || "");
+  const [value, setValue] = useState(defaultValue || '');
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -96,12 +146,12 @@ function FormComponent({
   const { label, required, placeHolder, helperText } = element.extraAttributes;
   return (
     <div className="flex flex-col gap-2 w-full">
-      <Label className={cn(error && "text-red-500")}>
+      <Label className={cn(error && 'text-red-500')}>
         {label}
-        {required && "*"}
+        {required && '*'}
       </Label>
       <Input
-        className={cn(error && "border-red-500")}
+        className={cn(error && 'border-red-500')}
         placeholder={placeHolder}
         onChange={(e) => setValue(e.target.value)}
         onBlur={(e) => {
@@ -113,7 +163,11 @@ function FormComponent({
         }}
         value={value}
       />
-      {helperText && <p className={cn("text-muted-foreground text-[0.8rem]", error && "text-red-500")}>{helperText}</p>}
+      {helperText && (
+        <p className={cn('text-muted-foreground text-[0.8rem]', error && 'text-red-500')}>
+          {helperText}
+        </p>
+      )}
     </div>
   );
 }
@@ -124,7 +178,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   const { updateElement } = useDesigner();
   const form = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: {
       label: element.extraAttributes.label,
       helperText: element.extraAttributes.helperText,
@@ -169,7 +223,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
               </FormControl>
@@ -190,7 +244,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
               </FormControl>
@@ -209,7 +263,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
               </FormControl>
