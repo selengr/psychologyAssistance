@@ -1,4 +1,4 @@
-import "./globals.css";
+import './globals.css';
 // i18n
 import '../locales/i18n';
 
@@ -10,9 +10,8 @@ import '../locales/i18n';
 // import { CacheProvider, EmotionCache } from '@emotion/react';
 
 // next
-import type { Metadata } from "next";
-import NextTopLoader from "nextjs-toploader";
-
+import type { Metadata } from 'next';
+import NextTopLoader from 'nextjs-toploader';
 
 // redux
 // import { store } from '../redux/store';
@@ -29,54 +28,44 @@ import ThemeLocalization from '../locales';
 
 // components
 import { MotionLazyContainer } from '../components/animate';
-import { Toaster } from "@/formBuilder/components/ui/toaster";
+import { Toaster } from '@/formBuilder/components/ui/toaster';
 import { ThemeSettings, SettingsProvider } from '../components/settings';
-import { ReduxProvider } from "@/redux/provider";
-import DashboardLayout from "@/layouts/dashboard/DashboardLayout";
-
-
+import { ReduxProvider } from '@/redux/provider';
+import DashboardLayout from '@/layouts/dashboard/DashboardLayout';
 
 export const metadata: Metadata = {
-  title: "سایا",
-  description: "دستیار روان شناس شخصی",
+  title: 'سایا',
+  description: 'دستیار روان شناس شخصی',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
 
   return (
-
-      <html lang="en">
-        <body >
-          <NextTopLoader color="#DE74A3"/>
-
-          {/* <CacheProvider value={emotionCache}> */}
-     
-
-      {/* <AuthProvider> */}
+    <html lang="en">
+      <body>
+        <NextTopLoader color="#DE74A3" showSpinner={false} />
+        {/* <CacheProvider value={emotionCache}> */}
+        {/* <AuthProvider> */}
         <ReduxProvider>
           {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
-            <SettingsProvider>
-              <MotionLazyContainer>
-                <ThemeProvider>
-                  <ThemeSettings>
-                    <ThemeLocalization>
-                     <DashboardLayout>
-                         {children}
-                     </DashboardLayout>
-                    </ThemeLocalization>
-                  </ThemeSettings>
-                </ThemeProvider>
-              </MotionLazyContainer>
-            </SettingsProvider>
+          <SettingsProvider>
+            <MotionLazyContainer>
+              <ThemeProvider>
+                <ThemeSettings>
+                  <ThemeLocalization>
+                    <DashboardLayout>{children}</DashboardLayout>
+                  </ThemeLocalization>
+                </ThemeSettings>
+              </ThemeProvider>
+            </MotionLazyContainer>
+          </SettingsProvider>
           {/* </LocalizationProvider> */}
         </ReduxProvider>
-      {/* </AuthProvider> */}
-    {/* </CacheProvider> */}
-              <Toaster />
-            
-        </body>
-      </html>
-  
+        {/* </AuthProvider> */}
+        {/* </CacheProvider> */}
+        <Toaster />
+      </body>
+    </html>
   );
 }
