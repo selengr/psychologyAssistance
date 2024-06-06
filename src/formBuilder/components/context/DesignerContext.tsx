@@ -9,6 +9,9 @@ type DesignerContextType = {
   addElement: (index: number, element: FormElementInstance) => void;
   removeElement: (id: string) => void;
 
+  openDialog: boolean;
+  setOpenDialog: Dispatch<SetStateAction<boolean>>;
+
   selectedElement: FormElementInstance | null;
   setSelectedElement: Dispatch<SetStateAction<FormElementInstance | null>>;
 
@@ -20,6 +23,7 @@ export const DesignerContext = createContext<DesignerContextType | null>(null);
 export default function DesignerContextProvider({ children }: { children: ReactNode }) {
   const [elements, setElements] = useState<FormElementInstance[]>([]);
   const [selectedElement, setSelectedElement] = useState<FormElementInstance | null>(null);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const addElement = (index: number, element: FormElementInstance) => {
     setElements((prev) => {
@@ -52,6 +56,9 @@ export default function DesignerContextProvider({ children }: { children: ReactN
 
         selectedElement,
         setSelectedElement,
+
+        openDialog,
+        setOpenDialog,
 
         updateElement,
       }}

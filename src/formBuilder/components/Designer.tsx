@@ -10,9 +10,10 @@ import { idGenerator } from '@/formBuilder/lib/idGenerator';
 import { Button } from './ui/button';
 import { BiSolidTrash } from 'react-icons/bi';
 import { Box, Card, Paper } from '@mui/material';
+import ConfirmDialog from '@/components/confirm-dialog/ConfirmDialog';
 
 function Designer() {
-  const { elements, addElement, selectedElement, setSelectedElement, removeElement } =
+  const { elements, addElement, selectedElement, setSelectedElement, removeElement,openDialog,setOpenDialog } =
     useDesigner();
 
   const droppable = useDroppable({
@@ -39,6 +40,8 @@ function Designer() {
         const newElement = FormElements[type as ElementsType].construct(idGenerator());
 
         addElement(elements.length, newElement);
+        setSelectedElement(newElement);
+        setOpenDialog(true)
         return;
       }
 
@@ -71,6 +74,8 @@ function Designer() {
         }
 
         addElement(indexForNewElement, newElement);
+        setSelectedElement(newElement);
+        setOpenDialog(true)
         return;
       }
 
@@ -146,7 +151,8 @@ function Designer() {
 }
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
-  const { removeElement, selectedElement, setSelectedElement } = useDesigner();
+  const { removeElement, selectedElement, setSelectedElement, setOpenDialog, openDialog } =
+    useDesigner();
 
   const topHalf = useDroppable({
     id: element.id + '-top',
@@ -179,40 +185,44 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
 
   const DesignerElement = FormElements[element.type].designerComponent;
   return (
-    <Paper
-      ref={draggable.setNodeRef}
-      {...draggable.listeners}
-      {...draggable.attributes}
-      className="hover:cursor-pointer"
-      onClick={(e) => {
-        e.stopPropagation();
-        setSelectedElement(element);
-      }}
-      sx={{
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: 1,
-        height: 100,
-        direction: 'ltr',
-        my:.1,
-        border : "1px solid #E7E7E7",
-        boxShadow:"none"
-      }}
-    >
-      <div ref={topHalf.setNodeRef} className="absolute w-full h-1/2 rounded-t-md" />
-      <div ref={bottomHalf.setNodeRef} className="absolute  w-full bottom-0 h-1/2 rounded-b-md" />
+    <>
+      <Paper
+        ref={draggable.setNodeRef}
+        {...draggable.listeners}
+        {...draggable.attributes}
+        className="hover:cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpenDialog(true);
+          setSelectedElement(element);
+        }}
+        sx={{
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: 1,
+          height: 110,
+          direction: 'ltr',
+          my: 0.1,
+          border: '1px solid #E7E7E7',
+          boxShadow: 'none',
+        }}
+      >
+        <div ref={topHalf.setNodeRef} className="absolute w-full h-1/2 rounded-t-md" />
+        <div ref={bottomHalf.setNodeRef} className="absolute  w-full bottom-0 h-1/2 rounded-b-md" />
 
-      {topHalf.isOver && (
-        <div className="absolute top-0 w-full rounded-md h-[3px] bg-primary rounded-b-none" />
-      )}
-      <Box sx={{ px: 4, py: 2, display: 'flex', alignItems: 'center' }}>
-        <DesignerElement elementInstance={element} />
-      </Box>
-      {bottomHalf.isOver && (
-        <div className="absolute bottom-0 w-full rounded-md h-[3px] bg-primary rounded-t-none" />
-      )}
-    </Paper>
+        {topHalf.isOver && (
+          <div className="absolute top-0 w-full rounded-md h-[3px] bg-primary rounded-b-none" />
+        )}
+        <Box sx={{ px: 4, py: 2, display: 'flex', alignItems: 'center' }}>
+          <DesignerElement elementInstance={element} />
+        </Box>
+        {bottomHalf.isOver && (
+          <div className="absolute bottom-0 w-full rounded-md h-[3px] bg-primary rounded-t-none" />
+        )}
+      </Paper>
+
+    </>
   );
 }
 

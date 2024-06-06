@@ -20,7 +20,7 @@ import {
 } from '../ui/form';
 import { Switch } from '../ui/switch';
 import { cn } from '@/formBuilder/lib/utils';
-import { Stack, TextField } from '@mui/material';
+import { Stack, TextField, Typography } from '@mui/material';
 
 const type: ElementsType = 'TextField';
 
@@ -65,6 +65,7 @@ export const TextFieldFormElement: FormElement = {
 type CustomInstance = FormElementInstance & {
   extraAttributes: typeof extraAttributes;
 };
+
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
@@ -118,7 +119,7 @@ function DesignerComponent({ elementInstance }: { elementInstance: FormElementIn
  
       />
 
-      {helperText && <p className="text-muted-foreground text-[0.8rem]">{helperText}</p>}
+      {helperText && <Typography pt={1} sx={{color : '#6A6A6A',m:0}} component={'p'} variant='caption' >{helperText}</Typography>}
     </Stack>
   );
 }
