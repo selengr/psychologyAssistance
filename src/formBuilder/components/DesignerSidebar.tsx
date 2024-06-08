@@ -24,7 +24,7 @@ function DesignerSidebar() {
       gap={1}
     >
       <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
-        <Typography variant="subtitle1" component={'h3'} fontWeight={600} color="#353535">
+        <Typography variant="subtitle1" component={'h3'} fontWeight={600} color={(theme)=>theme.palette.grey[800]}>
           پرسشنامه جدید
         </Typography>
         <Box

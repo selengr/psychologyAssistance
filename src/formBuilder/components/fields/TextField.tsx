@@ -14,7 +14,11 @@ import { Separator } from '@radix-ui/react-select';
 import { Button } from '../ui/button';
 import { toast } from '../ui/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Box, Typography } from '@mui/material';
+import { Box, MenuItem, Stack, Typography } from '@mui/material';
+import FormProvider from '@/components/hook-form/FormProvider';
+import { RHFSelect, RHFSwitch, RHFTextField } from '@/components/hook-form';
+import { LoadingButton } from '@mui/lab';
+import { Label } from '@radix-ui/react-label';
 
 const type: ElementsType = 'TextField';
 
@@ -26,7 +30,7 @@ const extraAttributes = {
   pattern: 'numeric',
 };
 
-const fieldOptions = [
+const fieldOptions: { type: string; value: string }[] = [
   { type: 'shortText', value: 'متنی کوتاه' },
   { type: 'longText', value: 'متنی بلند' },
   { type: 'numeric', value: 'عددی' },
@@ -148,7 +152,6 @@ function FormComponent({
   );
 }
 
-type propertiesFormSchemaType = z.infer<typeof propertiesSchema>;
 function PropertiesComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
   const {
@@ -161,23 +164,202 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   } = useDesigner();
   const { pattern } = element.extraAttributes;
   const [fieldValue, setValue] = useState(pattern);
-  const form = useForm<propertiesFormSchemaType>({
+
+  // const form = useForm<propertiesFormSchemaType>({
+  //   resolver: zodResolver(propertiesSchema),
+  //   mode: 'onSubmit',
+  //   defaultValues: {
+  //     label: element.extraAttributes.label,
+  //     helperText: element.extraAttributes.helperText,
+  //     required: element.extraAttributes.required,
+  //     placeHolder: element.extraAttributes.placeHolder,
+  //     pattern: element.extraAttributes.pattern,
+  //   },
+  // });
+
+  // ----------------------------------------------------------------------
+
+  type propertiesFormSchemaType = z.infer<typeof propertiesSchema>;
+
+  const defaultValues = {
+    label: element.extraAttributes.label,
+    helperText: element.extraAttributes.helperText,
+    required: element.extraAttributes.required,
+    placeHolder: element.extraAttributes.placeHolder,
+    pattern: element.extraAttributes.pattern,
+  };
+
+  const methods = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
     mode: 'onSubmit',
-    defaultValues: {
-      label: element.extraAttributes.label,
-      helperText: element.extraAttributes.helperText,
-      required: element.extraAttributes.required,
-      placeHolder: element.extraAttributes.placeHolder,
-      pattern: element.extraAttributes.pattern,
-    },
+    defaultValues,
   });
 
-  useEffect(() => {
-    form.reset(element.extraAttributes);
-  }, [element, form]);
+  const {
+    reset,
+    watch,
+    // setValue,
+    handleSubmit,
+    formState: { isSubmitting, isValid },
+  } = methods;
 
-  function applyChanges(values: propertiesFormSchemaType) {
+  const values = watch();
+
+  // ----------------------------------------------------------------------
+
+  // useEffect(() => {
+  //   form.reset(element.extraAttributes);
+  // }, [element, form]);
+
+  //   function applyChanges(values: propertiesFormSchemaType) {
+  //     const { label, helperText, placeHolder, required, pattern } = values;
+  //     const { fieldElement, position } = selectedElement;
+
+  //     // finds whether a field is selected or not
+  //     const selectedYet = elements?.find((el) => el?.id === element?.id);
+
+  //     if (!selectedYet) {
+  //       fieldElement.temp = false;
+  //       addElement(position ?? elements.length, {
+  //         ...fieldElement,
+  //         extraAttributes: {
+  //           label,
+  //           helperText,
+  //           placeHolder,
+  //           required,
+  //           pattern,
+  //         },
+  //       } as FormElementInstance);
+  //     } else {
+  //       updateElement(element.id, {
+  //         ...element,
+  //         extraAttributes: {
+  //           label,
+  //           helperText,
+  //           placeHolder,
+  //           required,
+  //           pattern,
+  //         },
+  //       });
+  //     }
+
+  //     toast({
+  //       title: 'موفقیت آمیز بود',
+  //       description: 'خصوصیات بصورت موفقیت آمیز ذخیره شدند',
+  //     });
+
+  //     setOpenDialog(false);
+  //     setSelectedElement(null);
+  //   }
+
+  //   return (
+  //     <Form {...form}>
+  //       <form onSubmit={form.handleSubmit(applyChanges)} dir="rtl" className="space-y-3">
+  //         <FormField
+  //           control={form.control}
+  //           name="label"
+  //           render={({ field }) => (
+  //             <FormItem>
+  //               <FormLabel>متن سوال:</FormLabel>
+  //               <FormControl>
+  //                 <Input
+  //                   {...field}
+  //                   onKeyDown={(e) => {
+  //                     if (e.key === 'Enter') e.currentTarget.blur();
+  //                   }}
+  //                 />
+  //               </FormControl>
+  //               <FormMessage />
+  //             </FormItem>
+  //           )}
+  //         />
+  //         <FormField
+  //           control={form.control}
+  //           name="pattern"
+  //           render={({ field }) => (
+  //             <FormItem>
+  //               <FormLabel>الگوی فیلد پاسخ: </FormLabel>
+  //               <FormControl>
+  //                 <Select
+  //                   dir="rtl"
+  //                   value={fieldValue}
+  //                   onValueChange={(value) => {
+  //                     setValue(value);
+  //                     field.onChange(value);
+  //                   }}
+  //                 >
+  //                   <SelectTrigger>
+  //                     <SelectValue placeholder={pattern} />
+  //                   </SelectTrigger>
+  //                   <SelectContent>
+  //                     {fieldOptions.map(({ type, value }) => (
+  //                       <SelectItem key={type} value={type}>
+  //                         {value}
+  //                       </SelectItem>
+  //                     ))}
+  //                   </SelectContent>
+  //                 </Select>
+  //               </FormControl>
+  //               <FormMessage />
+  //             </FormItem>
+  //           )}
+  //         />
+  //         <FormField
+  //           control={form.control}
+  //           name="helperText"
+  //           render={({ field }) => (
+  //             <FormItem>
+  //               <FormLabel>توضیحات</FormLabel>
+  //               <FormControl>
+  //                 <Input
+  //                   {...field}
+  //                   placeholder="توضیحات"
+  //                   onKeyDown={(e) => {
+  //                     if (e.key === 'Enter') e.currentTarget.blur();
+  //                   }}
+  //                 />
+  //               </FormControl>
+  //               <FormMessage />
+  //             </FormItem>
+  //           )}
+  //         />
+  //         <FormField
+  //           control={form.control}
+  //           name="required"
+  //           render={({ field }) => (
+  //             <FormItem className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+  //               <div className="space-y-0.5">
+  //                 <FormLabel>پاسخ به سوال اجباری باشد</FormLabel>
+  //               </div>
+  //               <FormControl>
+  //                 <Switch dir="ltr" checked={field.value} onCheckedChange={field.onChange} />
+  //               </FormControl>
+  //               <FormMessage />
+  //             </FormItem>
+  //           )}
+  //         />
+  //         <Separator />
+  //         <div className="flex justify-between">
+  //           <Button className="flex-1 ml-2" type="submit">
+  //             ثبت
+  //           </Button>
+  //           <Button
+  //             className="flex-1 mr-2"
+  //             variant="outline"
+  //             onClick={() => {
+  //               setOpenDialog(false);
+  //               setSelectedElement(null);
+  //             }}
+  //           >
+  //             انصراف
+  //           </Button>
+  //         </div>
+  //       </form>
+  //     </Form>
+  //   );
+  // }
+
+  function onSubmit(values: propertiesFormSchemaType) {
     const { label, helperText, placeHolder, required, pattern } = values;
     const { fieldElement, position } = selectedElement;
 
@@ -209,118 +391,107 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       });
     }
 
-    toast({
-      title: 'موفقیت آمیز بود',
-      description: 'خصوصیات بصورت موفقیت آمیز ذخیره شدند',
-    });
-
     setOpenDialog(false);
     setSelectedElement(null);
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(applyChanges)} dir="rtl" className="space-y-3">
-        <FormField
-          control={form.control}
-          name="label"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>متن سوال:</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') e.currentTarget.blur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="pattern"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>الگوی فیلد پاسخ: </FormLabel>
-              <FormControl>
-                <Select
-                  dir="rtl"
-                  value={fieldValue}
-                  onValueChange={(value) => {
-                    setValue(value);
-                    field.onChange(value);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={pattern} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {fieldOptions.map(({ type, value }) => (
-                      <SelectItem key={type} value={type}>
-                        {value}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="helperText"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>توضیحات</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="توضیحات"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') e.currentTarget.blur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="required"
-          render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel>پاسخ به سوال اجباری باشد</FormLabel>
-              </div>
-              <FormControl>
-                <Switch dir="ltr" checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Separator />
-        <div className="flex justify-between">
-          <Button className="flex-1 ml-2" type="submit">
-            ثبت
-          </Button>
-          <Button
-            className="flex-1 mr-2"
-            variant="outline"
-            onClick={() => {
-              setOpenDialog(false);
-              setSelectedElement(null);
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          direction:"ltr"
+        }}
+      >
+        <Stack spacing={3}>
+          <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+            متن سوال:
+          </Typography>
+          <RHFTextField name="label" />
+
+          <Stack spacing={3}>
+            <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+              الگوی فیلد پاسخ:
+            </Typography>
+          </Stack>
+
+          <Stack spacing={3}>
+            <RHFSelect native name="category" label="Category">
+              {fieldOptions.map((category) => (
+                <option key={category.type} label={category.value}>
+                  {category.value}
+                </option>
+              ))}
+            </RHFSelect>
+          </Stack>
+
+          <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+            توضیحات
+          </Typography>
+          <RHFTextField rows={5}  name="helperText" />
+        </Stack>
+
+        <Stack spacing={3}>
+          <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+            پاسخ به سوال اجباری باشد
+          </Typography>
+          <RHFSwitch
+            name="required"
+            label=""
+            labelPlacement="start"
+            sx={{ mb: 1, mx: 0, width: 1, justifyContent: 'space-between' }}
+          />
+        </Stack>
+        {/* <RHFSelect
+            name="required"
+            size="small"
+            helperText={'Size Chart'}
+            sx={{
+              maxWidth: 96,
+              '& .MuiFormHelperText-root': {
+                mx: 0,
+                mt: 1,
+                textAlign: 'right',
+              },
             }}
           >
-            انصراف
+            {fieldOptions.map((size) => (
+              <MenuItem key={size.value} value={size.value}>
+                {size.value}
+              </MenuItem>
+            ))}
+          </RHFSelect> */}
+        {/* </Stack> */}
+
+        {/* 
+        name="pattern"
+  //           render={({ field }) => (
+  //             <FormItem>
+  //               <FormLabel> </FormLabel> */}
+        <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
+          <Button
+            // fullWidth
+            color="inherit"
+            // variant="outlined"
+            // size="large"
+            // onClick={handleOpenPreview}
+          >
+            canseddfskg
           </Button>
-        </div>
-      </form>
-    </Form>
+
+          <LoadingButton
+            fullWidth
+            type="submit"
+            variant="contained"
+            size="large"
+            loading={isSubmitting}
+          >
+            Post
+          </LoadingButton>
+        </Stack>
+      </Box>
+    </FormProvider>
   );
 }

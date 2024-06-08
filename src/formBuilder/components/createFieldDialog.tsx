@@ -44,7 +44,6 @@ export default function CreateFieldDialog() {
         sx={{
           maxHeight: '75vh',
           height: 'auto',
-          overflow: 'hidden',
           scrollbarWidth: 'none',
           maxWidth: '100%',
           width: '500px',
