@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
-import { FormElement, FormElements } from './FormElements';
 import { useDraggable } from '@dnd-kit/core';
+import { FormElement, FormElements } from './FormElements';
 import { Button, Typography } from '@mui/material';
-import ConfirmDialog from '@/components/confirm-dialog/ConfirmDialog';
 import useDesigner from './hooks/useDesigner';
-import PropertiesFormSidebar from './PropertiesFormSidebar';
 import { idGenerator } from '../lib/idGenerator';
 
 function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
+  const { setOpenDialog, setSelectedElement, questionGroups } = useDesigner();
   const { label } = formElement.designerBtnElement;
-  const { openDialog, setOpenDialog, setSelectedElement } = useDesigner();
+
   const draggable = useDraggable({
     id: `designer-btn-${formElement.type}`,
     data: {
@@ -19,41 +17,30 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
   });
 
   return (
-    <>
-      <Button
-        ref={draggable.setNodeRef}
-        onClick={() => {
+    <Button
+      onClick={() => {
+        if (questionGroups.length) {
           const newElement = FormElements[formElement.type].construct(
-            idGenerator()
+            idGenerator(),
+            questionGroups[questionGroups.length - 1].id
           );
-          setOpenDialog(true)
-          setSelectedElement(newElement);
-        }}
-        variant={'outlined'}
-        sx={{
-          borderColor: (theme) => theme.palette.primary.main,
-          width: '100%',
-        }}
-        {...draggable.listeners}
-        {...draggable.attributes}
-      >
-        <Typography variant="body2" component={'p'} py={0.5}>
-          {label}
-        </Typography>
-      </Button>
-
-      <ConfirmDialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        title="عملیات حذف"
-        content={<PropertiesFormSidebar />}
-        cancelText="نه، منصرف شدم"
-        cancelStatus={false}
-        action={<> 
-        <button>tytt</button>
-        </>}
-      />
-    </>
+          setOpenDialog(true);
+          setSelectedElement({ fieldElement: newElement, position: null });
+        }
+      }}
+      ref={draggable.setNodeRef}
+      variant={'outlined'}
+      sx={{
+        borderColor: (theme) => theme.palette.primary.main,
+        width: '100%',
+      }}
+      {...draggable.listeners}
+      {...draggable.attributes}
+    >
+      <Typography variant="body2" component={'p'} py={0.5}>
+        {label}
+      </Typography>
+    </Button>
   );
 }
 

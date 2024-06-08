@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from '../FormElements';
+import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -10,42 +11,32 @@ import useDesigner from '../hooks/useDesigner';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Switch } from '../ui/switch';
 import { cn } from '../../lib/utils';
+import { RiSpectrumLine } from 'react-icons/ri';
+import { Slider } from '../ui/slider';
 import { Separator } from '@radix-ui/react-select';
 import { Button } from '../ui/button';
 import { toast } from '../ui/use-toast';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Box, Typography } from '@mui/material';
+// import ButtonGroup from "../ui/button-group";
 
-const type: ElementsType = 'TextField';
+const type: ElementsType = 'SpectralField';
 
 const extraAttributes = {
-  label: 'متنی',
+  label: 'طیفی',
   helperText: '',
   required: false,
-  placeHolder: 'متنی',
-  pattern: 'numeric',
+  placeHolder: '',
+  rows: 3,
 };
-
-const fieldOptions = [
-  { type: 'shortText', value: 'متنی کوتاه' },
-  { type: 'longText', value: 'متنی بلند' },
-  { type: 'numeric', value: 'عددی' },
-  { type: 'nationalCode', value: 'کدملی' },
-  { type: 'date', value: 'تاریخ' },
-  { type: 'email', value: 'ایمیل' },
-  { type: 'password', value: 'رمز' },
-  { type: 'telephone', value: 'تلفن' },
-];
 
 const propertiesSchema = z.object({
   label: z.string().min(2).max(50),
   helperText: z.string().max(200),
   required: z.boolean().default(false),
   placeHolder: z.string().max(50),
-  pattern: z.string(),
+  rows: z.number().min(1).max(10),
 });
 
-export const TextFieldFormElement: FormElement = {
+export const SpectralFormElement: FormElement = {
   type,
   construct: (id: string, groupId, temp: boolean) => ({
     id,
@@ -55,7 +46,7 @@ export const TextFieldFormElement: FormElement = {
     extraAttributes,
   }),
   designerBtnElement: {
-    label: 'متنی',
+    label: 'طیفی',
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -77,30 +68,15 @@ type CustomInstance = FormElementInstance & {
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
-  const designerBtnLabel = TextFieldFormElement.designerBtnElement.label;
   const { label, required } = element.extraAttributes;
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        width: '100%',
-        flexDirection: 'column',
-      }}
-    >
-      <Typography
-        variant="body2"
-        component={'p'}
-        sx={{ fontSize: '1rem', '& .MuiTypography-root': { direction: 'rtl' } }}
-      >
+    <div className="flex flex-row items-center gap-2 w-full">
+      <Label>
         {label}
         {required && ' *'}
-      </Typography>
-      <Typography variant="body2" component={'p'} sx={{ fontSize: '0.7rem' }}>
-        {designerBtnLabel}#
-      </Typography>
-    </Box>
+      </Label>
+    </div>
   );
 }
 
@@ -117,38 +93,27 @@ function FormComponent({
 }) {
   const element = elementInstance as CustomInstance;
 
-  const [value, setValue] = useState(defaultValue || '');
+  const { label, required, rows } = element.extraAttributes;
+  const [value, setValue] = useState(defaultValue || Math.round(rows / 2));
   const [error, setError] = useState(false);
 
   useEffect(() => {
     setError(isInvalid === true);
   }, [isInvalid]);
 
-  const { label, required, placeHolder } = element.extraAttributes;
   return (
     <div className="flex flex-col gap-2 w-full">
       <Label className={cn(error && 'text-red-500')}>
         {label}
         {required && ' *'}
       </Label>
-      <Input
-        className={cn(error && 'border-red-500')}
-        placeholder={placeHolder}
-        onChange={(e) => setValue(e.target.value)}
-        onBlur={(e) => {
-          if (!submitValue) return;
-          const valid = TextFieldFormElement.validate(element, e.target.value);
-          setError(!valid);
-          if (!valid) return;
-          submitValue(element.id, e.target.value);
-        }}
-        value={value}
-      />
+      {/* <ButtonGroup rows={rows} onChange={(v: any) => setValue(v)} value={value} /> */}
     </div>
   );
 }
 
 type propertiesFormSchemaType = z.infer<typeof propertiesSchema>;
+
 function PropertiesComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
   const {
@@ -159,8 +124,6 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     addElement,
     selectedElement,
   } = useDesigner();
-  const { pattern } = element.extraAttributes;
-  const [fieldValue, setValue] = useState(pattern);
   const form = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
     mode: 'onSubmit',
@@ -169,7 +132,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       helperText: element.extraAttributes.helperText,
       required: element.extraAttributes.required,
       placeHolder: element.extraAttributes.placeHolder,
-      pattern: element.extraAttributes.pattern,
+      rows: element.extraAttributes.rows,
     },
   });
 
@@ -178,10 +141,9 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
-    const { label, helperText, placeHolder, required, pattern } = values;
+    const { label, helperText, placeHolder, required, rows } = values;
     const { fieldElement, position } = selectedElement;
 
-    // finds whether a field is selected or not
     const selectedYet = elements?.find((el) => el?.id === element?.id);
 
     if (!selectedYet) {
@@ -193,7 +155,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           helperText,
           placeHolder,
           required,
-          pattern,
+          rows,
         },
       } as FormElementInstance);
     } else {
@@ -204,7 +166,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           helperText,
           placeHolder,
           required,
-          pattern,
+          rows,
         },
       });
     }
@@ -220,13 +182,13 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(applyChanges)} dir="rtl" className="space-y-3">
+      <form onSubmit={form.handleSubmit(applyChanges)} className="space-y-3">
         <FormField
           control={form.control}
           name="label"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>متن سوال:</FormLabel>
+              <FormLabel>عنوان سوال</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -234,37 +196,6 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                     if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="pattern"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>الگوی فیلد پاسخ: </FormLabel>
-              <FormControl>
-                <Select
-                  dir="rtl"
-                  value={fieldValue}
-                  onValueChange={(value) => {
-                    setValue(value);
-                    field.onChange(value);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={pattern} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {fieldOptions.map(({ type, value }) => (
-                      <SelectItem key={type} value={type}>
-                        {value}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -291,11 +222,32 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
         />
         <FormField
           control={form.control}
+          name="rows"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>سطرها {form.watch('rows')}</FormLabel>
+              <FormControl>
+                <Slider
+                  defaultValue={[field.value]}
+                  min={1}
+                  max={10}
+                  step={1}
+                  onValueChange={(value) => {
+                    field.onChange(value[0]);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="required"
           render={({ field }) => (
             <FormItem className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel>پاسخ به سوال اجباری باشد</FormLabel>
+                <FormLabel>اجباری می باشد</FormLabel>
               </div>
               <FormControl>
                 <Switch dir="ltr" checked={field.value} onCheckedChange={field.onChange} />

@@ -1,33 +1,31 @@
-import React from "react";
-import useDesigner from "./hooks/useDesigner";
-import { FormElements } from "./FormElements";
-import { AiOutlineClose } from "react-icons/ai";
-import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
+import React from 'react';
+import useDesigner from './hooks/useDesigner';
+import { FormElementInstance, FormElements } from './FormElements';
+import { Box, Divider, Typography } from '@mui/material';
 
 function PropertiesFormSidebar() {
-  const { selectedElement, setSelectedElement } = useDesigner();
-  if (!selectedElement) return null;
+  const { selectedElement } = useDesigner();
+  const { fieldElement } = selectedElement;
 
-  const PropertiesForm = FormElements[selectedElement?.type].propertiesComponent;
+  const PropertiesForm = FormElements[fieldElement!.type].propertiesComponent;
 
   return (
-    <div className="flex flex-col p-2">
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-foreground/70">Element properties</p>
-        <Button
-          size={"icon"}
-          variant={"ghost"}
-          onClick={() => {
-            setSelectedElement(null);
-          }}
+    <Box
+      sx={{ direction: 'rtl', display: 'flex', flexDirection: 'column', marginTop: '1rem' }}
+      padding={2}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Typography
+          variant="body2"
+          component={'p'}
+          sx={{ fontWeight: 'bold', textAlign: 'center', fontSize: '1.2rem' }}
         >
-          <AiOutlineClose />
-        </Button>
-      </div>
-      <Separator className="mb-4" />
-      <PropertiesForm elementInstance={selectedElement} />
-    </div>
+          {fieldElement!.extraAttributes?.label}
+        </Typography>
+      </Box>
+      <Divider sx={{ marginBottom: '1rem', marginTop: '0.5rem' }} />
+      <PropertiesForm elementInstance={fieldElement as FormElementInstance} />
+    </Box>
   );
 }
 

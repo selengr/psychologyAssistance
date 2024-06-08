@@ -7,7 +7,21 @@ function DesignerSidebar() {
   return (
     <Box
       dir="rtl"
-      className="w-[400px] max-w-[400px] flex flex-col flex-grow gap-3 p-3 bg-background overflow-y-auto h-full rounded-xl"
+      sx={{
+        width: '400px',
+        maxWidth: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: '1',
+        backgroundColor: 'white',
+        overflowY: 'scroll',
+        borderRadius: '10px',
+        height: '100%',
+        marginRight: '1rem',
+        scrollbarWidth: 'none',
+      }}
+      padding={2}
+      gap={1}
     >
       <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
         <Typography variant="subtitle1" component={'h3'} fontWeight={600} color="#353535">
@@ -29,13 +43,14 @@ function DesignerSidebar() {
           border: '1px solid #D8D8D8',
           padding: 2,
           borderRadius: 1,
+          height: '100%',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
         }}
-        className="grid grid-cols-1 gap-2 place-items-center pt-4 grow-[3]"
+        gap={2}
       >
-        <Box className="flex flex-col gap-3 w-full">
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }} gap={1.5}>
           <SidebarBtnElement formElement={FormElements.TextField} />
           <SidebarBtnElement formElement={FormElements.NumberField} />
           <SidebarBtnElement formElement={FormElements.TextAreaField} />
@@ -65,7 +80,10 @@ function DesignerSidebar() {
           borderWidth: '1px',
           borderStyle: 'solid',
           width: '100%',
-          marginY: 1,
+          marginTop: 1.5,
+          '&.MuiButtonBase-root:hover': {
+            bgcolor: (theme) => theme.palette.primary.main,
+          },
         }}
       >
         <Typography variant="body2" component={'p'} py={0.5}>
