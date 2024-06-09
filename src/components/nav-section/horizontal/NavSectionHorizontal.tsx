@@ -10,7 +10,6 @@ import NavList from './NavList';
 // ----------------------------------------------------------------------
 
 function NavSectionHorizontal({ data, sx, ...other }: NavSectionProps) {
-  console.log("sadasdads")
   return (
     <Stack
       direction="row"

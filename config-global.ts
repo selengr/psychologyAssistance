@@ -1,10 +1,10 @@
 // routes
-import { PATH_DASHBOARD } from '@/routes/paths';
+import { PATH_DASHBOARD } from "@/routes/paths";
 
 // API
 // ----------------------------------------------------------------------
 
-export const BASE_URL_API = process.env.BASE_URL_API || '';
+export const BASE_URL_API = process.env.BASE_URL_API || "";
 
 export const FIREBASE_API = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -17,7 +17,7 @@ export const COGNITO_API = {
 
 export const AUTH0_API = {
   clientId: process.env.AUTH0_CLIENT_ID,
-  domain: process.env.AUTH0_DOMAIN,
+  domain: process.env.BASE_URL_API,
 };
 
 export const MAP_API = process.env.MAPBOX_API;
