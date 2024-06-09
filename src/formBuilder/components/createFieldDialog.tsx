@@ -5,10 +5,11 @@ import useDesigner from './hooks/useDesigner';
 import Iconify from '@/components/iconify/Iconify';
 
 export default function CreateFieldDialog() {
-  const { setOpenDialog, openDialog } = useDesigner();
+  const { setOpenDialog, openDialog, setSelectedElement } = useDesigner();
 
   const handleClose = () => {
     setOpenDialog(!openDialog);
+    setSelectedElement(null);
   };
 
   return (
@@ -37,7 +38,7 @@ export default function CreateFieldDialog() {
           top: 8,
         }}
       >
-        <Iconify icon="majesticons:close" />
+        <Iconify icon="majesticons:close" sx={{ width: 25, height: 25 }} />
       </IconButton>
       <DialogContent
         dir="rtl"
@@ -46,7 +47,8 @@ export default function CreateFieldDialog() {
           height: 'auto',
           scrollbarWidth: 'none',
           maxWidth: '100%',
-          width: '500px',
+          width: '450px',
+          padding: 1,
         }}
       >
         <PropertiesFormSidebar />

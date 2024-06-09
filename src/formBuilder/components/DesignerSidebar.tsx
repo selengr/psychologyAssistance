@@ -2,6 +2,7 @@ import React from 'react';
 import { FormElements } from './FormElements';
 import SidebarBtnElement from './SidebarBtnElement';
 import { Box, Button, Typography } from '@mui/material';
+import Line from './line';
 
 function DesignerSidebar() {
   return (
@@ -24,18 +25,15 @@ function DesignerSidebar() {
       gap={1}
     >
       <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
-        <Typography variant="subtitle1" component={'h3'} fontWeight={600} color={(theme)=>theme.palette.grey[800]}>
+        <Typography
+          variant="subtitle1"
+          component={'h3'}
+          fontWeight={600}
+          color={(theme) => theme.palette.grey[800]}
+        >
           پرسشنامه جدید
         </Typography>
-        <Box
-          sx={{
-            width: '30px',
-            height: '2px',
-            display: 'inline-block',
-            marginLeft: '4px',
-            backgroundColor: '#de43a3',
-          }}
-        ></Box>
+        <Line />
       </Box>
 
       <Box

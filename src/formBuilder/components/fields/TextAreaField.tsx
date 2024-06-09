@@ -1,28 +1,36 @@
-"use client";
+'use client';
 
-import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from "../FormElements";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import useDesigner from "../hooks/useDesigner";
+import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from '../FormElements';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import useDesigner from '../hooks/useDesigner';
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Switch } from "../ui/switch";
-import { cn } from "@/formBuilder/lib/utils";
-import { BsTextareaResize } from "react-icons/bs";
-import { Textarea } from "../ui/textarea";
-import { Slider } from "../ui/slider";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Switch } from '../ui/switch';
+import { cn } from '@/formBuilder/lib/utils';
+import { BsTextareaResize } from 'react-icons/bs';
+import { Textarea } from '../ui/textarea';
+import { Slider } from '../ui/slider';
 
-const type: ElementsType = "TextAreaField";
+const type: ElementsType = 'TextAreaField';
 
-const extraAttributes = {
-  label: "Text area",
-  helperText: "Helper text",
+const questionPropertyList = {
+  label: 'Text area',
+  helperText: 'Helper text',
   required: false,
-  placeHolder: "Value here...",
+  placeHolder: 'Value here...',
   rows: 3,
 };
 
@@ -39,11 +47,11 @@ export const TextAreaFormElement: FormElement = {
   construct: (id: string) => ({
     id,
     type,
-    extraAttributes,
+    questionPropertyList,
   }),
   designerBtnElement: {
     icon: BsTextareaResize,
-    label: "TextArea Field",
+    label: 'TextArea Field',
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -51,7 +59,7 @@ export const TextAreaFormElement: FormElement = {
 
   validate: (formElement: FormElementInstance, currentValue: string): boolean => {
     const element = formElement as CustomInstance;
-    if (element.extraAttributes.required) {
+    if (element.questionPropertyList.required) {
       return currentValue.length > 0;
     }
 
@@ -60,17 +68,17 @@ export const TextAreaFormElement: FormElement = {
 };
 
 type CustomInstance = FormElementInstance & {
-  extraAttributes: typeof extraAttributes;
+  questionPropertyList: typeof questionPropertyList;
 };
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
-  const { label, required, placeHolder, helperText, rows } = element.extraAttributes;
+  const { label, required, placeHolder, helperText, rows } = element.questionPropertyList;
   return (
     <div className="flex flex-col gap-2 w-full">
       <Label>
         {label}
-        {required && "*"}
+        {required && '*'}
       </Label>
       <Textarea readOnly disabled placeholder={placeHolder} />
       {helperText && <p className="text-muted-foreground text-[0.8rem]">{helperText}</p>}
@@ -91,22 +99,22 @@ function FormComponent({
 }) {
   const element = elementInstance as CustomInstance;
 
-  const [value, setValue] = useState(defaultValue || "");
+  const [value, setValue] = useState(defaultValue || '');
   const [error, setError] = useState(false);
 
   useEffect(() => {
     setError(isInvalid === true);
   }, [isInvalid]);
 
-  const { label, required, placeHolder, helperText, rows } = element.extraAttributes;
+  const { label, required, placeHolder, helperText, rows } = element.questionPropertyList;
   return (
     <div className="flex flex-col gap-2 w-full">
-      <Label className={cn(error && "text-red-500")}>
+      <Label className={cn(error && 'text-red-500')}>
         {label}
-        {required && "*"}
+        {required && '*'}
       </Label>
       <Textarea
-        className={cn(error && "border-red-500")}
+        className={cn(error && 'border-red-500')}
         rows={rows}
         placeholder={placeHolder}
         onChange={(e) => setValue(e.target.value)}
@@ -119,7 +127,11 @@ function FormComponent({
         }}
         value={value}
       />
-      {helperText && <p className={cn("text-muted-foreground text-[0.8rem]", error && "text-red-500")}>{helperText}</p>}
+      {helperText && (
+        <p className={cn('text-muted-foreground text-[0.8rem]', error && 'text-red-500')}>
+          {helperText}
+        </p>
+      )}
     </div>
   );
 }
@@ -131,25 +143,25 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   const { updateElement } = useDesigner();
   const form = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: {
-      label: element.extraAttributes.label,
-      helperText: element.extraAttributes.helperText,
-      required: element.extraAttributes.required,
-      placeHolder: element.extraAttributes.placeHolder,
-      rows: element.extraAttributes.rows,
+      label: element.questionPropertyList.label,
+      helperText: element.questionPropertyList.helperText,
+      required: element.questionPropertyList.required,
+      placeHolder: element.questionPropertyList.placeHolder,
+      rows: element.questionPropertyList.rows,
     },
   });
 
   useEffect(() => {
-    form.reset(element.extraAttributes);
+    form.reset(element.questionPropertyList);
   }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
     const { label, helperText, placeHolder, required, rows } = values;
     updateElement(element.id, {
       ...element,
-      extraAttributes: {
+      questionPropertyList: {
         label,
         helperText,
         placeHolder,
@@ -178,7 +190,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
               </FormControl>
@@ -199,7 +211,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
               </FormControl>
@@ -218,7 +230,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
               </FormControl>
@@ -235,7 +247,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           name="rows"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rows {form.watch("rows")}</FormLabel>
+              <FormLabel>Rows {form.watch('rows')}</FormLabel>
               <FormControl>
                 <Slider
                   defaultValue={[field.value]}

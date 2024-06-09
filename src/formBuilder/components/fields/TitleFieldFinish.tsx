@@ -2,22 +2,22 @@
 
 import { useEffect } from 'react';
 import { ElementsType, FormElement, FormElementInstance } from '../FormElements';
-import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useDesigner from '../hooks/useDesigner';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
-import { Separator } from '@radix-ui/react-select';
-import { Button } from '../ui/button';
 import { toast } from '../ui/use-toast';
-import { Box, Typography } from '@mui/material';
+import { Box, Stack, Typography, Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import FormProvider from '@/components/hook-form/FormProvider';
+import { RHFTextField } from '@/components/hook-form';
+import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
 
 const type: ElementsType = 'TitleFieldFinish';
 
-const extraAttributes = {
+const questionPropertyList = {
   title: '',
-  label: 'صفحه پایان',
+  label: 'صفحه پایان پرسشنامه',
 };
 
 const propertiesSchema = z.object({
@@ -36,7 +36,7 @@ export const TitleFieldFinishFormElement: FormElement = {
   construct: (id: string) => ({
     id,
     type,
-    extraAttributes,
+    questionPropertyList,
   }),
   designerBtnElement: {
     label: 'عنوان صفحه پایان',
@@ -49,13 +49,13 @@ export const TitleFieldFinishFormElement: FormElement = {
 };
 
 type CustomInstance = FormElementInstance & {
-  extraAttributes: typeof extraAttributes;
+  questionPropertyList: typeof questionPropertyList;
 };
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
   const { label } = TitleFieldFinishFormElement.designerBtnElement;
-  const { title } = element.extraAttributes;
+  const { title } = element.questionPropertyList;
 
   return (
     <Box
@@ -82,7 +82,7 @@ function DesignerComponent({ elementInstance }: { elementInstance: FormElementIn
 function FormComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
 
-  const { title } = element.extraAttributes;
+  const { title } = element.questionPropertyList;
   return <p className="text-xl">{title}</p>;
 }
 
@@ -98,17 +98,25 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     addFinishPage,
     selectedElement,
   } = useDesigner();
-  const form = useForm<propertiesFormSchemaType>({
+
+  const methods = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
     mode: 'onSubmit',
     defaultValues: {
-      title: element.extraAttributes.title,
+      title: element.questionPropertyList.title,
     },
   });
 
-  useEffect(() => {
-    form.reset(element.extraAttributes);
-  }, [element, form]);
+  const {
+    reset,
+    watch,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  // useEffect(() => {
+  //   form.reset(element.questionPropertyList);
+  // }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
     const { title } = values;
@@ -117,16 +125,16 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     if (!finishPage) {
       addFinishPage({
         ...fieldElement,
-        extraAttributes: {
-          label: element.extraAttributes.label,
+        questionPropertyList: {
+          label: element.questionPropertyList.label,
           title,
         },
       } as FormElementInstance);
     } else {
       updateFinishPage({
         ...element,
-        extraAttributes: {
-          label: element.extraAttributes.label,
+        questionPropertyList: {
+          label: element.questionPropertyList.label,
           title,
         },
       });
@@ -142,44 +150,23 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(applyChanges)} dir="rtl" className="space-y-3">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>عنوان صفحه:</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="عنوان..."
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') e.currentTarget.blur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Separator />
-        <div className="flex justify-between">
-          <Button className="flex-1 ml-2" type="submit">
-            ثبت
-          </Button>
-          <Button
-            className="flex-1 mr-2"
-            variant="outline"
-            onClick={() => {
-              setOpenDialog(false);
-              setSelectedElement(null);
-            }}
-          >
-            انصراف
-          </Button>
-        </div>
-      </form>
-    </Form>
+    <FormProvider methods={methods} onSubmit={handleSubmit(applyChanges)}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          direction: 'ltr',
+          width: '100%',
+        }}
+      >
+        <Stack spacing={1} marginBottom={4}>
+          <Typography variant="subtitle2">توضیحات پایان:</Typography>
+          <RHFTextField name="label" />
+        </Stack>
+
+        <FieldDialogActionBottomButtons status={isSubmitting} />
+      </Box>
+    </FormProvider>
   );
 }

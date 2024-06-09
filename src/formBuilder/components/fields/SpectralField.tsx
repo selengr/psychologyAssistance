@@ -20,7 +20,7 @@ import { toast } from '../ui/use-toast';
 
 const type: ElementsType = 'SpectralField';
 
-const extraAttributes = {
+const questionPropertyList = {
   label: 'طیفی',
   helperText: '',
   required: false,
@@ -43,7 +43,7 @@ export const SpectralFormElement: FormElement = {
     type,
     groupId,
     temp,
-    extraAttributes,
+    questionPropertyList,
   }),
   designerBtnElement: {
     label: 'طیفی',
@@ -54,7 +54,7 @@ export const SpectralFormElement: FormElement = {
 
   validate: (formElement: FormElementInstance, currentValue: string): boolean => {
     const element = formElement as CustomInstance;
-    if (element.extraAttributes.required) {
+    if (element.questionPropertyList.required) {
       return currentValue.length > 0;
     }
 
@@ -63,12 +63,12 @@ export const SpectralFormElement: FormElement = {
 };
 
 type CustomInstance = FormElementInstance & {
-  extraAttributes: typeof extraAttributes;
+  questionPropertyList: typeof questionPropertyList;
 };
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
-  const { label, required } = element.extraAttributes;
+  const { label, required } = element.questionPropertyList;
 
   return (
     <div className="flex flex-row items-center gap-2 w-full">
@@ -93,7 +93,7 @@ function FormComponent({
 }) {
   const element = elementInstance as CustomInstance;
 
-  const { label, required, rows } = element.extraAttributes;
+  const { label, required, rows } = element.questionPropertyList;
   const [value, setValue] = useState(defaultValue || Math.round(rows / 2));
   const [error, setError] = useState(false);
 
@@ -128,16 +128,16 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     resolver: zodResolver(propertiesSchema),
     mode: 'onSubmit',
     defaultValues: {
-      label: element.extraAttributes.label,
-      helperText: element.extraAttributes.helperText,
-      required: element.extraAttributes.required,
-      placeHolder: element.extraAttributes.placeHolder,
-      rows: element.extraAttributes.rows,
+      label: element.questionPropertyList.label,
+      helperText: element.questionPropertyList.helperText,
+      required: element.questionPropertyList.required,
+      placeHolder: element.questionPropertyList.placeHolder,
+      rows: element.questionPropertyList.rows,
     },
   });
 
   useEffect(() => {
-    form.reset(element.extraAttributes);
+    form.reset(element.questionPropertyList);
   }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
@@ -150,7 +150,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       fieldElement.temp = false;
       addElement(position ?? elements.length, {
         ...fieldElement,
-        extraAttributes: {
+        questionPropertyList: {
           label,
           helperText,
           placeHolder,
@@ -161,7 +161,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     } else {
       updateElement(element.id, {
         ...element,
-        extraAttributes: {
+        questionPropertyList: {
           label,
           helperText,
           placeHolder,

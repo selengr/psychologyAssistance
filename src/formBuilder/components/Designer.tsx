@@ -260,6 +260,7 @@ function Designer() {
             justifyContent: 'flex-start',
             borderRadius: '10px',
           }}
+          gap={2}
         >
           <KanbanBoard />
         </Box>

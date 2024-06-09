@@ -2,6 +2,7 @@
 import { useFormContext, Controller } from 'react-hook-form';
 // @mui
 import { Switch, FormControlLabel, FormControlLabelProps, FormHelperText } from '@mui/material';
+import { IOSSwitch } from './RHFSwitchIOS.styled';
 
 // ----------------------------------------------------------------------
 
@@ -19,7 +20,7 @@ export default function RHFSwitch({ name, helperText, ...other }: Props) {
       control={control}
       render={({ field, fieldState: { error } }) => (
         <div>
-          <FormControlLabel control={<Switch {...field} checked={field.value} />} {...other} />
+          <FormControlLabel control={<IOSSwitch {...field} checked={field.value} />} {...other} />
 
           {(!!error || helperText) && (
             <FormHelperText error={!!error}>{error ? error?.message : helperText}</FormHelperText>

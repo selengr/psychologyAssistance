@@ -1,17 +1,24 @@
-import { GetFormById, GetFormWithSubmissions } from "@/actions/form";
-import FormLinkShare from "@/formBuilder/components/FormLinkShare";
-import VisitBtn from "@/formBuilder/components/VisitBtn";
-import React, { ReactNode } from "react";
-import { StatsCard } from "../../builder/page";
-import { LuView } from "react-icons/lu";
-import { FaWpforms } from "react-icons/fa";
-import { HiCursorClick } from "react-icons/hi";
-import { TbArrowBounce } from "react-icons/tb";
-import { ElementsType, FormElementInstance } from "@/formBuilder/components/FormElements";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/formBuilder/components/ui/table";
-import { format, formatDistance } from "date-fns";
-import { Badge } from "@/formBuilder/components/ui/badge";
-import { Checkbox } from "@/formBuilder/components/ui/checkbox";
+import { GetFormById, GetFormWithSubmissions } from '@/actions/form';
+import FormLinkShare from '@/formBuilder/components/FormLinkShare';
+import VisitBtn from '@/formBuilder/components/VisitBtn';
+import React, { ReactNode } from 'react';
+import { StatsCard } from '../../builder/page';
+import { LuView } from 'react-icons/lu';
+import { FaWpforms } from 'react-icons/fa';
+import { HiCursorClick } from 'react-icons/hi';
+import { TbArrowBounce } from 'react-icons/tb';
+import { ElementsType, FormElementInstance } from '@/formBuilder/components/FormElements';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/formBuilder/components/ui/table';
+import { format, formatDistance } from 'date-fns';
+import { Badge } from '@/formBuilder/components/ui/badge';
+import { Checkbox } from '@/formBuilder/components/ui/checkbox';
 
 async function FormDetailPage({
   params,
@@ -23,7 +30,7 @@ async function FormDetailPage({
   const { id } = params;
   const form = await GetFormById(Number(id));
   if (!form) {
-    throw new Error("form not found");
+    throw new Error('form not found');
   }
 
   const { visits, submissions } = form;
@@ -54,7 +61,7 @@ async function FormDetailPage({
           title="Total visits"
           icon={<LuView className="text-blue-600" />}
           helperText="All time form visits"
-          value={visits.toLocaleString() || ""}
+          value={visits.toLocaleString() || ''}
           loading={false}
           className="shadow-md shadow-blue-600"
         />
@@ -63,7 +70,7 @@ async function FormDetailPage({
           title="Total submissions"
           icon={<FaWpforms className="text-yellow-600" />}
           helperText="All time form submissions"
-          value={submissions.toLocaleString() || ""}
+          value={submissions.toLocaleString() || ''}
           loading={false}
           className="shadow-md shadow-yellow-600"
         />
@@ -72,7 +79,7 @@ async function FormDetailPage({
           title="Submission rate"
           icon={<HiCursorClick className="text-green-600" />}
           helperText="Visits that result in form submission"
-          value={submissionRate.toLocaleString() + "%" || ""}
+          value={submissionRate.toLocaleString() + '%' || ''}
           loading={false}
           className="shadow-md shadow-green-600"
         />
@@ -81,7 +88,7 @@ async function FormDetailPage({
           title="Bounce rate"
           icon={<TbArrowBounce className="text-red-600" />}
           helperText="Visits that leaves without interacting"
-          value={bounceRate.toLocaleString() + "%" || ""}
+          value={bounceRate.toLocaleString() + '%' || ''}
           loading={false}
           className="shadow-md shadow-red-600"
         />
@@ -104,7 +111,7 @@ async function SubmissionsTable({ id }: { id: number }) {
   const form = await GetFormWithSubmissions(id);
 
   if (!form) {
-    throw new Error("form not found");
+    throw new Error('form not found');
   }
 
   const formElements = JSON.parse(form.content) as FormElementInstance[];
@@ -117,16 +124,16 @@ async function SubmissionsTable({ id }: { id: number }) {
 
   formElements.forEach((element) => {
     switch (element.type) {
-      case "TextField":
-      case "NumberField":
-      case "TextAreaField":
-      case "DateField":
-      case "SelectField":
-      case "CheckboxField":
+      case 'TextField':
+      case 'NumberField':
+      case 'TextAreaField':
+      case 'DateField':
+      case 'SelectField':
+      case 'CheckboxField':
         columns.push({
           id: element.id,
-          label: element.extraAttributes?.label,
-          required: element.extraAttributes?.required,
+          label: element.questionPropertyList?.label,
+          required: element.questionPropertyList?.required,
           type: element.type,
         });
         break;
@@ -136,7 +143,7 @@ async function SubmissionsTable({ id }: { id: number }) {
   });
 
   const rows: Row[] = [];
-  form.FormSubmissions.forEach((submission:any) => {
+  form.FormSubmissions.forEach((submission: any) => {
     const content = JSON.parse(submission.content);
     rows.push({
       ...content,
@@ -156,7 +163,9 @@ async function SubmissionsTable({ id }: { id: number }) {
                   {column.label}
                 </TableHead>
               ))}
-              <TableHead className="text-muted-foreground text-right uppercase">Submitted at</TableHead>
+              <TableHead className="text-muted-foreground text-right uppercase">
+                Submitted at
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -183,13 +192,13 @@ function RowCell({ type, value }: { type: ElementsType; value: string }) {
   let node: ReactNode = value;
 
   switch (type) {
-    case "DateField":
+    case 'DateField':
       if (!value) break;
       const date = new Date(value);
-      node = <Badge variant={"outline"}>{format(date, "dd/MM/yyyy")}</Badge>;
+      node = <Badge variant={'outline'}>{format(date, 'dd/MM/yyyy')}</Badge>;
       break;
-    case "CheckboxField":
-      const checked = value === "true";
+    case 'CheckboxField':
+      const checked = value === 'true';
       node = <Checkbox checked={checked} disabled />;
       break;
   }

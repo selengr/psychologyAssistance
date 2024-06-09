@@ -1,29 +1,37 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from "../FormElements";
-import useDesigner from "../hooks/useDesigner";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from '../FormElements';
+import useDesigner from '../hooks/useDesigner';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
-import { cn } from "@/formBuilder/lib/utils";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-import { BsFillCalendarDateFill } from "react-icons/bs";
-import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Switch } from "../ui/switch";
+import { cn } from '@/formBuilder/lib/utils';
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { format } from 'date-fns';
+import { BsFillCalendarDateFill } from 'react-icons/bs';
+import { Button } from '../ui/button';
+import { Calendar } from '../ui/calendar';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Switch } from '../ui/switch';
 
-const type: ElementsType = "DateField";
+const type: ElementsType = 'DateField';
 
-const extraAttributes = {
-  label: "Date field",
-  helperText: "Pick a date",
+const questionPropertyList = {
+  label: 'Date field',
+  helperText: 'Pick a date',
   required: false,
 };
 
@@ -38,11 +46,11 @@ export const DateFieldFormElement: FormElement = {
   construct: (id: string) => ({
     id,
     type,
-    extraAttributes,
+    questionPropertyList,
   }),
   designerBtnElement: {
     icon: BsFillCalendarDateFill,
-    label: "Date Field",
+    label: 'Date Field',
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -50,7 +58,7 @@ export const DateFieldFormElement: FormElement = {
 
   validate: (formElement: FormElementInstance, currentValue: string): boolean => {
     const element = formElement as CustomInstance;
-    if (element.extraAttributes.required) {
+    if (element.questionPropertyList.required) {
       return currentValue.length > 0;
     }
 
@@ -59,19 +67,19 @@ export const DateFieldFormElement: FormElement = {
 };
 
 type CustomInstance = FormElementInstance & {
-  extraAttributes: typeof extraAttributes;
+  questionPropertyList: typeof questionPropertyList;
 };
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
-  const { label, required, placeHolder, helperText } = element.extraAttributes;
+  const { label, required, placeHolder, helperText } = element.questionPropertyList;
   return (
     <div className="flex flex-col gap-2 w-full">
       <Label>
         {label}
-        {required && "*"}
+        {required && '*'}
       </Label>
-      <Button variant={"outline"} className="w-full justify-start text-left font-normal">
+      <Button variant={'outline'} className="w-full justify-start text-left font-normal">
         <CalendarIcon className="mr-2 h-4 w-4" />
         <span>Pick a date</span>
       </Button>
@@ -93,7 +101,9 @@ function FormComponent({
 }) {
   const element = elementInstance as CustomInstance;
 
-  const [date, setDate] = useState<Date | undefined>(defaultValue ? new Date(defaultValue) : undefined);
+  const [date, setDate] = useState<Date | undefined>(
+    defaultValue ? new Date(defaultValue) : undefined
+  );
 
   const [error, setError] = useState(false);
 
@@ -101,25 +111,25 @@ function FormComponent({
     setError(isInvalid === true);
   }, [isInvalid]);
 
-  const { label, required, placeHolder, helperText } = element.extraAttributes;
+  const { label, required, placeHolder, helperText } = element.questionPropertyList;
   return (
     <div className="flex flex-col gap-2 w-full">
-      <Label className={cn(error && "text-red-500")}>
+      <Label className={cn(error && 'text-red-500')}>
         {label}
-        {required && "*"}
+        {required && '*'}
       </Label>
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            variant={"outline"}
+            variant={'outline'}
             className={cn(
-              "w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground",
-              error && "border-red-500",
+              'w-full justify-start text-left font-normal',
+              !date && 'text-muted-foreground',
+              error && 'border-red-500'
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP") : <span>Pick a date</span>}
+            {date ? format(date, 'PPP') : <span>Pick a date</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -130,7 +140,7 @@ function FormComponent({
               setDate(date);
 
               if (!submitValue) return;
-              const value = date?.toUTCString() || "";
+              const value = date?.toUTCString() || '';
               const valid = DateFieldFormElement.validate(element, value);
               setError(!valid);
               submitValue(element.id, value);
@@ -139,7 +149,11 @@ function FormComponent({
           />
         </PopoverContent>
       </Popover>
-      {helperText && <p className={cn("text-muted-foreground text-[0.8rem]", error && "text-red-500")}>{helperText}</p>}
+      {helperText && (
+        <p className={cn('text-muted-foreground text-[0.8rem]', error && 'text-red-500')}>
+          {helperText}
+        </p>
+      )}
     </div>
   );
 }
@@ -150,23 +164,23 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   const { updateElement } = useDesigner();
   const form = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: {
-      label: element.extraAttributes.label,
-      helperText: element.extraAttributes.helperText,
-      required: element.extraAttributes.required,
+      label: element.questionPropertyList.label,
+      helperText: element.questionPropertyList.helperText,
+      required: element.questionPropertyList.required,
     },
   });
 
   useEffect(() => {
-    form.reset(element.extraAttributes);
+    form.reset(element.questionPropertyList);
   }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
     const { label, helperText, required } = values;
     updateElement(element.id, {
       ...element,
-      extraAttributes: {
+      questionPropertyList: {
         label,
         helperText,
         required,
@@ -193,7 +207,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
               </FormControl>
@@ -214,7 +228,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
                 <Input
                   {...field}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
+                    if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
               </FormControl>

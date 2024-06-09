@@ -15,9 +15,9 @@ import { Box, Typography } from '@mui/material';
 
 const type: ElementsType = 'TitleFieldStart';
 
-const extraAttributes = {
+const questionPropertyList = {
   title: '',
-  label: 'صفحه شروع',
+  label: 'صفحه شروع پرسشنامه',
 };
 
 const propertiesSchema = z.object({
@@ -36,7 +36,7 @@ export const TitleFieldStartFormElement: FormElement = {
   construct: (id: string) => ({
     id,
     type,
-    extraAttributes,
+    questionPropertyList,
   }),
   designerBtnElement: {
     label: 'عنوان صفحه شروع',
@@ -49,13 +49,13 @@ export const TitleFieldStartFormElement: FormElement = {
 };
 
 type CustomInstance = FormElementInstance & {
-  extraAttributes: typeof extraAttributes;
+  questionPropertyList: typeof questionPropertyList;
 };
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
   const { label } = TitleFieldStartFormElement.designerBtnElement;
-  const { title } = element.extraAttributes;
+  const { title } = element.questionPropertyList;
 
   return (
     <Box
@@ -82,7 +82,7 @@ function DesignerComponent({ elementInstance }: { elementInstance: FormElementIn
 function FormComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
 
-  const { title } = element.extraAttributes;
+  const { title } = element.questionPropertyList;
   return <p className="text-xl">{title}</p>;
 }
 
@@ -102,12 +102,12 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     resolver: zodResolver(propertiesSchema),
     mode: 'onSubmit',
     defaultValues: {
-      title: element.extraAttributes.title,
+      title: element.questionPropertyList.title,
     },
   });
 
   useEffect(() => {
-    form.reset(element.extraAttributes);
+    form.reset(element.questionPropertyList);
   }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
@@ -117,16 +117,16 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     if (!startPage) {
       addStartPage({
         ...fieldElement,
-        extraAttributes: {
-          label: element?.extraAttributes?.label,
+        questionPropertyList: {
+          label: element?.questionPropertyList?.label,
           title,
         },
       } as FormElementInstance);
     } else {
       updateStartPage({
         ...element,
-        extraAttributes: {
-          label: element?.extraAttributes?.label,
+        questionPropertyList: {
+          label: element?.questionPropertyList?.label,
           title,
         },
       });

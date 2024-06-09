@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { FormElements } from '../FormElements';
 import useDesigner from '../hooks/useDesigner';
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 
 function QuestionCard({ question }) {
@@ -90,7 +90,7 @@ function QuestionCard({ question }) {
       }}
     >
       <DesignerElement elementInstance={question} />
-      <Box
+      <IconButton
         sx={{
           height: '100%',
           width: '35px',
@@ -105,7 +105,7 @@ function QuestionCard({ question }) {
         }}
       >
         <Iconify icon="ph:dots-three-vertical-bold" />
-      </Box>
+      </IconButton>
     </Box>
   );
 }
