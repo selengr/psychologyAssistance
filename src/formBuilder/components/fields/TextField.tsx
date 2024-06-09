@@ -8,21 +8,19 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useDesigner from '../hooks/useDesigner';
 import { cn } from '../../lib/utils';
-import { Box, Stack, Typography, Button } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import FormProvider from '@/components/hook-form/FormProvider';
 import { RHFSelect, RHFSwitch, RHFTextField } from '@/components/hook-form';
-import { LoadingButton } from '@mui/lab';
 import { Label } from '@radix-ui/react-label';
-import { deflate } from 'zlib';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
+import { IFormElementConstructor, IQPLTextField } from '@/@types/bulider';
+import callApi from '@/services/axios';
+import { errorUtil } from 'zod/lib/helpers/errorUtil';
+import { usePathname } from 'next/navigation';
 
-const type: ElementsType = 'TextField';
+const questionType: ElementsType = 'TEXT_FIELD';
 
-const questionPropertyList = [
-  {
-    questionPropertyEnum: 'label',
-    value: 'متنی',
-  },
+const questionPropertyList: IQPLTextField = [
   {
     questionPropertyEnum: 'pattern',
     value: 'numeric',
@@ -53,7 +51,7 @@ const fieldOptions: { type: string; value: string }[] = [
 ];
 
 const propertiesSchema = z.object({
-  label: z.string().min(2).max(50),
+  title: z.string().min(2).max(50),
   helperText: z.string().max(200),
   required: z.boolean().default(false),
   placeHolder: z.string().max(50),
@@ -61,11 +59,13 @@ const propertiesSchema = z.object({
 });
 
 export const TextFieldFormElement: FormElement = {
-  type,
-  construct: (id: string, groupId, temp: boolean) => ({
+  questionType,
+  construct: ({ id, questionGroupId, formId, title, temp }: IFormElementConstructor) => ({
     id,
-    type,
-    groupId,
+    questionGroupId,
+    formId,
+    title,
+    questionType,
     temp,
     questionPropertyList: questionPropertyList,
   }),
@@ -93,7 +93,7 @@ type CustomInstance = FormElementInstance & {
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
   const designerBtnLabel = TextFieldFormElement.designerBtnElement.label;
-  const labelText = element.questionPropertyList[0].value;
+  const labelText = element.title;
   const required = element.questionPropertyList[2].value;
 
   return (
@@ -167,6 +167,7 @@ function FormComponent({
 
 type propertiesFormSchemaType = z.infer<typeof propertiesSchema>;
 function PropertiesComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
+  const path = usePathname();
   const element = elementInstance as CustomInstance;
   const {
     updateElement,
@@ -177,14 +178,11 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     selectedElement,
   } = useDesigner();
 
-  const pattern = questionPropertyList.find(
-    (att) => att.questionPropertyEnum === 'pattern' && att.value
-  );
-
   const defaultValues = element.questionPropertyList.reduce((acc, attribute) => {
     acc[attribute.questionPropertyEnum] = attribute.value;
     return acc;
   }, {});
+  defaultValues.title = element.title;
 
   const methods = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
@@ -207,18 +205,14 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   //   form.reset(element.questionPropertyList);
   // }, [element, form]);
 
-  function onSubmit(values: propertiesFormSchemaType) {
-    const { label, helperText, placeHolder, required, pattern } = values;
-    const { fieldElement, position } = selectedElement;
+  async function onSubmit(values: propertiesFormSchemaType) {
+    const { title, helperText, placeHolder, required, pattern } = values;
+    const { position } = selectedElement;
 
     // finds whether a field is selected or not
     const selectedYet = elements?.find((el) => el?.id === element?.id);
 
     const data = [
-      {
-        questionPropertyEnum: 'label',
-        value: label,
-      },
       {
         questionPropertyEnum: 'pattern',
         value: pattern,
@@ -237,19 +231,31 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       },
     ];
 
-    console.log('data', data);
+    const sentField = {
+      ...element,
+      formId: path.split('/')[2],
+      title,
+      questionPropertyList: data,
+    };
+
     if (!selectedYet) {
-      fieldElement.temp = false;
-      addElement(position ?? elements.length, {
-        ...fieldElement,
-        questionPropertyList: data,
-      } as FormElementInstance);
+      try {
+        const response = await callApi().post('/question', sentField);
+        sentField.temp = false;
+        addElement(position ?? elements.length, sentField as FormElementInstance);
+      } catch (error) {
+        console.error(error);
+      }
     } else {
-      updateElement(element.id, {
-        ...element,
-        questionPropertyList: data,
-      });
+      try {
+        const response = await callApi().put('/question/' + sentField.id, sentField);
+        updateElement(element.id, sentField);
+      } catch (error) {
+        console.error(error);
+      }
     }
+
+    console.log(element);
 
     setOpenDialog(false);
     setSelectedElement(null);
@@ -268,7 +274,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       >
         <Stack spacing={1}>
           <Typography variant="subtitle2">متن سوال:</Typography>
-          <RHFTextField name="label" />
+          <RHFTextField name="title" />
         </Stack>
 
         <Stack spacing={1} marginTop={2.5}>
