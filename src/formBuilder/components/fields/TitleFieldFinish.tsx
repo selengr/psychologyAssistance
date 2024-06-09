@@ -7,13 +7,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useDesigner from '../hooks/useDesigner';
 import { toast } from '../ui/use-toast';
-import { Box, Stack, Typography, Button } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Box, Stack, Typography } from '@mui/material';
 import FormProvider from '@/components/hook-form/FormProvider';
 import { RHFTextField } from '@/components/hook-form';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
 
-const type: ElementsType = 'TitleFieldFinish';
+const questionType: ElementsType = 'TitleFieldFinish';
 
 const questionPropertyList = {
   title: '',
@@ -32,10 +31,10 @@ const propertiesSchema = z.object({
 });
 
 export const TitleFieldFinishFormElement: FormElement = {
-  type,
+  questionType,
   construct: (id: string) => ({
     id,
-    type,
+    questionType,
     questionPropertyList,
   }),
   designerBtnElement: {

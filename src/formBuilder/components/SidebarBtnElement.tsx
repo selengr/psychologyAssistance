@@ -9,9 +9,9 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
   const { label } = formElement.designerBtnElement;
 
   const draggable = useDraggable({
-    id: `designer-btn-${formElement.type}`,
+    id: `designer-btn-${formElement.questionType}`,
     data: {
-      type: formElement.type,
+      type: formElement.questionType,
       isDesignerBtnElement: true,
     },
   });
@@ -20,10 +20,12 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
     <Button
       onClick={() => {
         if (questionGroups.length) {
-          const newElement = FormElements[formElement.type].construct(
-            idGenerator(),
-            questionGroups[questionGroups.length - 1].id
-          );
+          const newElement = FormElements[formElement.questionType].construct({
+            id: idGenerator(),
+            questionGroupId: questionGroups[questionGroups.length - 1].id,
+            formId: 20,
+            title: '',
+          });
           setOpenDialog(true);
           setSelectedElement({ fieldElement: newElement, position: null });
         }

@@ -213,7 +213,7 @@ function KanbanBoard() {
             <QuestionGroup
               key={que?.id}
               group={que}
-              questions={elements?.filter((question) => question?.groupId === que?.id)}
+              questions={elements?.filter((question) => question?.questionGroupId === que?.id)}
             />
           ))}
         </SortableContext>

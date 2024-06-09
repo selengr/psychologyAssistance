@@ -421,7 +421,7 @@ function Designer() {
 
 function DesignerElementNoDnD({ element }: { element: FormElementInstance }) {
   const { removeStartPage, removeFinishPage, setSelectedElement, setOpenDialog } = useDesigner();
-  const DesignerElement = FormElements[element.type].designerComponent;
+  const DesignerElement = FormElements[element.questionType].designerComponent;
 
   return (
     <Box

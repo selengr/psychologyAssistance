@@ -1,20 +1,13 @@
-import { CheckboxFieldFormElement } from './fields/CheckboxField';
-import { DateFieldFormElement } from './fields/DateField';
-import { NumberFieldFormElement } from './fields/NumberField';
+import { IFormElementConstructor } from '@/@types/bulider';
 import { SelectFieldFormElement } from './fields/SelectField';
 import { SpectralFormElement } from './fields/SpectralField';
-import { TextAreaFormElement } from './fields/TextAreaField';
 import { TextFieldFormElement } from './fields/TextField';
 import { TitleFieldFinishFormElement } from './fields/TitleFieldFinish';
 import { TitleFieldStartFormElement } from './fields/TitleFieldStart';
 
 export type ElementsType =
-  | 'TextField'
-  | 'NumberField'
-  | 'TextAreaField'
-  | 'DateField'
+  | 'TEXT_FIELD'
   | 'SelectField'
-  | 'CheckboxField'
   | 'TitleFieldStart'
   | 'TitleFieldFinish'
   | 'SpectralField';
@@ -22,9 +15,14 @@ export type ElementsType =
 export type SubmitFunction = (key: string, value: string) => void;
 
 export type FormElement = {
-  type: ElementsType;
+  questionType: ElementsType;
 
-  construct: (id: string) => FormElementInstance;
+  construct: ({
+    id,
+    questionGroupId,
+    formId,
+    title,
+  }: IFormElementConstructor) => FormElementInstance;
 
   designerBtnElement: {
     label: string;
@@ -47,21 +45,21 @@ export type FormElement = {
 };
 
 export type FormElementInstance = {
-  id: string;
-  type: ElementsType;
+  id: number;
+  questionGroupId: number;
+  formId: number;
+  title: string;
+  questionType: ElementsType;
   questionPropertyList?: Record<string, any>;
 };
 
 type FormElementsType = {
   [key in ElementsType]: FormElement;
 };
+
 export const FormElements: FormElementsType = {
-  TextField: TextFieldFormElement,
-  NumberField: NumberFieldFormElement,
-  TextAreaField: TextAreaFormElement,
-  DateField: DateFieldFormElement,
+  TEXT_FIELD: TextFieldFormElement,
   SelectField: SelectFieldFormElement,
-  CheckboxField: CheckboxFieldFormElement,
   TitleFieldStart: TitleFieldStartFormElement,
   TitleFieldFinish: TitleFieldFinishFormElement,
   SpectralField: SpectralFormElement,

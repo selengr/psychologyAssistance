@@ -5,7 +5,7 @@ import { FormElementInstance } from '../FormElements';
 import { idGenerator } from '../../lib/idGenerator';
 
 type selectedElementObject = {
-  fieldElement: FormElementInstance | null;
+  fieldElement: FormElementInstance | null | undefined;
   position: number | null;
 };
 
@@ -101,7 +101,7 @@ export default function DesignerContextProvider({ children }: { children: ReactN
     }));
   };
 
-  const updateElement = (id: string, element: FormElementInstance) => {
+  const updateElement = (id: number, element: FormElementInstance) => {
     setElements((prev) => {
       const newElements = [...prev];
       const index = newElements.findIndex((el) => el.id === id);

@@ -19,7 +19,7 @@ function QuestionCard({ question }) {
     },
   });
 
-  const DesignerElement = FormElements[question.type].designerComponent;
+  const DesignerElement = FormElements[question.questionType].designerComponent;
 
   const style = {
     transition,

@@ -49,12 +49,9 @@ function DesignerSidebar() {
         gap={2}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }} gap={1.5}>
-          <SidebarBtnElement formElement={FormElements.TextField} />
-          <SidebarBtnElement formElement={FormElements.NumberField} />
-          <SidebarBtnElement formElement={FormElements.TextAreaField} />
-          <SidebarBtnElement formElement={FormElements.DateField} />
+          <SidebarBtnElement formElement={FormElements.TEXT_FIELD} />
           <SidebarBtnElement formElement={FormElements.SelectField} />
-          <SidebarBtnElement formElement={FormElements.CheckboxField} />
+          <SidebarBtnElement formElement={FormElements.SpectralField} />
         </Box>
         <Box sx={{ width: '100%' }}>
           <Button

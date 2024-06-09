@@ -6,9 +6,11 @@ import Line from './line';
 
 function PropertiesFormSidebar() {
   const { selectedElement } = useDesigner();
-  const { fieldElement } = selectedElement;
 
-  const PropertiesForm = FormElements[fieldElement!.type].propertiesComponent;
+  const PropertiesForm =
+    FormElements[selectedElement!.fieldElement!.questionType].propertiesComponent;
+
+  const label = FormElements[selectedElement!.fieldElement!.questionType].designerBtnElement.label;
 
   return (
     <Box
@@ -29,15 +31,10 @@ function PropertiesFormSidebar() {
           component={'p'}
           sx={{ fontWeight: 'bold', textAlign: 'right', fontSize: '1.2rem' }}
         >
-          {Array.isArray(fieldElement!.questionPropertyList)
-            ? `سوال ${
-                fieldElement!.questionPropertyList[0].questionPropertyEnum === 'label' &&
-                fieldElement!.questionPropertyList[0].value
-              }`
-            : fieldElement!.questionPropertyList.label}
+          {label}
         </Typography>
       </Box>
-      <PropertiesForm elementInstance={fieldElement as FormElementInstance} />
+      <PropertiesForm elementInstance={selectedElement!.fieldElement as FormElementInstance} />
     </Box>
   );
 }

@@ -13,7 +13,7 @@ import { Button } from '../ui/button';
 import { toast } from '../ui/use-toast';
 import { Box, Typography } from '@mui/material';
 
-const type: ElementsType = 'TitleFieldStart';
+const questionType: ElementsType = 'TitleFieldStart';
 
 const questionPropertyList = {
   title: '',
@@ -32,10 +32,10 @@ const propertiesSchema = z.object({
 });
 
 export const TitleFieldStartFormElement: FormElement = {
-  type,
+  questionType,
   construct: (id: string) => ({
     id,
-    type,
+    questionType,
     questionPropertyList,
   }),
   designerBtnElement: {
