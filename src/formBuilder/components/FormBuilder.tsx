@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Designer from './Designer';
 import {
   DndContext,
@@ -14,10 +15,24 @@ import Link from 'next/link';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import Confetti from 'react-confetti';
 import { Box } from '@mui/material';
+import { useSearchParams } from 'next/navigation';
+import useDesigner from './hooks/useDesigner';
 
 function FormBuilder({ form }: { form: any }) {
-  // const { setElements, setSelectedElement } = useDesigner();
   // const [isReady, setIsReady] = useState(false);
+  const { setQuestionGroups } = useDesigner();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const questionGroupIdFromUrl = searchParams.get('questionGroup');
+
+    setQuestionGroups([
+      {
+        id: Number(questionGroupIdFromUrl),
+        title: 'group-' + questionGroupIdFromUrl,
+      },
+    ]);
+  }, searchParams);
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {

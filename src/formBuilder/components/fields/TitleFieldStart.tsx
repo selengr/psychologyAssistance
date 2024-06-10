@@ -2,16 +2,15 @@
 
 import { useEffect } from 'react';
 import { ElementsType, FormElement, FormElementInstance } from '../FormElements';
-import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useDesigner from '../hooks/useDesigner';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
-import { Separator } from '@radix-ui/react-select';
-import { Button } from '../ui/button';
 import { toast } from '../ui/use-toast';
-import { Box, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
+import FormProvider from '@/components/hook-form/FormProvider';
+import { RHFTextField } from '@/components/hook-form';
+import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
 
 const questionType: ElementsType = 'TitleFieldStart';
 
@@ -39,7 +38,7 @@ export const TitleFieldStartFormElement: FormElement = {
     questionPropertyList,
   }),
   designerBtnElement: {
-    label: 'عنوان صفحه شروع',
+    label: 'صفحه شروع پرسشنامه',
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -94,11 +93,12 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     updateStartPage,
     setOpenDialog,
     setSelectedElement,
-    selectedElement,
     startPage,
     addStartPage,
+    selectedElement,
   } = useDesigner();
-  const form = useForm<propertiesFormSchemaType>({
+
+  const methods = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
     mode: 'onSubmit',
     defaultValues: {
@@ -106,9 +106,16 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     },
   });
 
-  useEffect(() => {
-    form.reset(element.questionPropertyList);
-  }, [element, form]);
+  const {
+    reset,
+    watch,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  // useEffect(() => {
+  //   form.reset(element.questionPropertyList);
+  // }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
     const { title } = values;
@@ -142,44 +149,24 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(applyChanges)} dir="rtl" className="space-y-3">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>عنوان صفحه:</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="عنوان..."
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') e.currentTarget.blur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Separator />
-        <div className="flex justify-between">
-          <Button className="flex-1 ml-2" type="submit">
-            ثبت
-          </Button>
-          <Button
-            className="flex-1 mr-2"
-            variant="outline"
-            onClick={() => {
-              setOpenDialog(false);
-              setSelectedElement(null);
-            }}
-          >
-            انصراف
-          </Button>
-        </div>
-      </form>
-    </Form>
+    <FormProvider methods={methods} onSubmit={handleSubmit(applyChanges)}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          direction: 'ltr',
+          width: '100%',
+          paddingX: 1.5,
+        }}
+      >
+        <Stack spacing={1}>
+          <Typography variant="subtitle2">توضیحات شروع:</Typography>
+          <RHFTextField multiline rows={3} name="label" />
+        </Stack>
+
+        <FieldDialogActionBottomButtons status={isSubmitting} />
+      </Box>
+    </FormProvider>
   );
 }

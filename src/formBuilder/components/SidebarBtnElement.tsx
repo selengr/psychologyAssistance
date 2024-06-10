@@ -3,9 +3,13 @@ import { FormElement, FormElements } from './FormElements';
 import { Button, Typography } from '@mui/material';
 import useDesigner from './hooks/useDesigner';
 import { idGenerator } from '../lib/idGenerator';
+import { IFormElementConstructor } from '@/@types/bulider';
+import { usePathname } from 'next/navigation';
 
 function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
   const { setOpenDialog, setSelectedElement, questionGroups } = useDesigner();
+  const path = usePathname();
+  const formId = Number(path.split('/')[2]);
   const { label } = formElement.designerBtnElement;
 
   const draggable = useDraggable({
@@ -21,11 +25,12 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
       onClick={() => {
         if (questionGroups.length) {
           const newElement = FormElements[formElement.questionType].construct({
-            id: idGenerator(),
+            questionId: idGenerator(),
             questionGroupId: questionGroups[questionGroups.length - 1].id,
-            formId: 20,
+            formId,
             title: '',
-          });
+            position: null,
+          } as IFormElementConstructor);
           setOpenDialog(true);
           setSelectedElement({ fieldElement: newElement, position: null });
         }
