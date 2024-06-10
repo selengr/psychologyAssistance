@@ -9,7 +9,7 @@ import Iconify from '@/components/iconify/Iconify';
 function QuestionGroup({ group, questions }) {
   const { questionGroups, deleteQuestionGroup } = useDesigner();
   const questionsIds = useMemo(() => {
-    return questions?.map((question: any) => question?.id);
+    return questions?.map((question: any) => question?.questionId);
   }, [questions]);
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
@@ -72,7 +72,7 @@ function QuestionGroup({ group, questions }) {
         >
           <SortableContext items={questionsIds} strategy={verticalListSortingStrategy}>
             {questions?.map((question: any) => (
-              <QuestionCard key={question.id} question={question} />
+              <QuestionCard key={question?.questionId} question={question} />
             ))}
           </SortableContext>
         </Box>

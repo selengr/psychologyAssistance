@@ -10,13 +10,11 @@ function PropertiesFormSidebar() {
   const PropertiesForm =
     FormElements[selectedElement!.fieldElement!.questionType].propertiesComponent;
 
-  const label = FormElements[selectedElement!.fieldElement!.questionType].designerBtnElement.label;
+  const fieldLabel =
+    FormElements[selectedElement!.fieldElement!.questionType].designerBtnElement.label;
 
   return (
-    <Box
-      sx={{ direction: 'rtl', display: 'flex', flexDirection: 'column', marginTop: 5 }}
-      padding={1}
-    >
+    <Box sx={{ direction: 'rtl', display: 'flex', flexDirection: 'column' }} padding={1}>
       <Box
         sx={{
           display: 'flex',
@@ -31,7 +29,7 @@ function PropertiesFormSidebar() {
           component={'p'}
           sx={{ fontWeight: 'bold', textAlign: 'right', fontSize: '1.2rem' }}
         >
-          {label}
+          {fieldLabel}
         </Typography>
       </Box>
       <PropertiesForm elementInstance={selectedElement!.fieldElement as FormElementInstance} />

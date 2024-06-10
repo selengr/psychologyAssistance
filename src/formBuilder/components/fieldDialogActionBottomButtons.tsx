@@ -2,10 +2,10 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Button } from '@mui/material';
 import useDesigner from './hooks/useDesigner';
 
-export default function FieldDialogActionBottomButtons({ status }) {
+export default function FieldDialogActionBottomButtons({ status }: { status: boolean }) {
   const { setOpenDialog, setSelectedElement } = useDesigner();
   return (
-    <Box display="flex" gap={2} width="100%">
+    <Box display="flex" gap={2} width="100%" marginTop={5}>
       <LoadingButton
         type="submit"
         fullWidth

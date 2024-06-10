@@ -1,28 +1,30 @@
-import { boolean } from 'zod';
-
 export type IFormElementConstructor = {
-  id: number;
-  questionGroupId: number;
+  questionId: number | null;
+  questionGroupId: number | null;
   formId: number;
   title: string;
   temp: boolean;
+  position: number | null;
 };
 
 export type IQPLTextField = [
   {
-    questionPropertyEnum: 'pattern';
+    questionPropertyEnum: 'TEXT_FIELD_PATTERN';
     value: string;
   },
   {
-    questionPropertyEnum: 'required';
-    value: boolean;
-  },
-  {
-    questionPropertyEnum: 'placeHolder';
+    questionPropertyEnum: 'REQUIRED';
     value: string;
   },
   {
-    questionPropertyEnum: 'helperText';
+    questionPropertyEnum: 'DESCRIPTION';
     value: string;
   },
 ];
+
+export type IDefaultValues = {
+  TEXT_FIELD_PATTERN: string;
+  REQUIRED: boolean;
+  DESCRIPTION: string;
+  title: string;
+};

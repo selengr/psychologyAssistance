@@ -38,7 +38,7 @@ export const TitleFieldFinishFormElement: FormElement = {
     questionPropertyList,
   }),
   designerBtnElement: {
-    label: 'عنوان صفحه پایان',
+    label: 'صفحه پایان پرسشنامه',
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -157,11 +157,12 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           height: '100%',
           direction: 'ltr',
           width: '100%',
+          paddingX: 1.5,
         }}
       >
-        <Stack spacing={1} marginBottom={4}>
+        <Stack spacing={1}>
           <Typography variant="subtitle2">توضیحات پایان:</Typography>
-          <RHFTextField name="label" />
+          <RHFTextField multiline rows={3} name="label" />
         </Stack>
 
         <FieldDialogActionBottomButtons status={isSubmitting} />

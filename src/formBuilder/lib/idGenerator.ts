@@ -1,3 +1,3 @@
-export function idGenerator(): string {
-  return Math.floor(Math.random() * 10001).toString();
+export function idGenerator(): number {
+  return Math.floor(Math.random() * 10001);
 }

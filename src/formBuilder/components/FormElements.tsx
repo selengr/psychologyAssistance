@@ -12,13 +12,13 @@ export type ElementsType =
   | 'TitleFieldFinish'
   | 'SpectralField';
 
-export type SubmitFunction = (key: string, value: string) => void;
+export type SubmitFunction = (key: number, value: string) => void;
 
 export type FormElement = {
   questionType: ElementsType;
 
   construct: ({
-    id,
+    questionId,
     questionGroupId,
     formId,
     title,
@@ -45,11 +45,12 @@ export type FormElement = {
 };
 
 export type FormElementInstance = {
-  id: number;
-  questionGroupId: number;
+  questionId: number | null;
+  questionGroupId: number | null;
   formId: number;
   title: string;
   questionType: ElementsType;
+  position: number | null;
   questionPropertyList?: Record<string, any>;
 };
 

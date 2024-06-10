@@ -12,6 +12,11 @@ import '../locales/i18n';
 // next
 import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
+import localFont from 'next/font/local';
+
+const IranSansFont = localFont({
+  src: '../../public/fonts/IranSans/IRANSansMobile(FaNum)_Medium.ttf',
+});
 
 // redux
 // import { store } from '../redux/store';
@@ -42,8 +47,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
 
   return (
-    <html lang="en">
-      <body>
+    <html lang="fa">
+      <body className={`${IranSansFont.className}`}>
         <NextTopLoader color="#DE74A3" showSpinner={false} />
         {/* <CacheProvider value={emotionCache}> */}
         {/* <AuthProvider> */}

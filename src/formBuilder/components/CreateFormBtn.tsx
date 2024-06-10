@@ -40,7 +40,7 @@ function CreateFormBtn() {
     try {
       let response: AxiosResponse = await callApi().post('/form', values);
       toast.success('Form created successfully');
-      router.push(`/builder/${response?.id}`);
+      router.push(`/builder/${response?.id}?questionGroup=${response?.questionGroupId}`);
     } catch (error) {
       toast.error('Something went wrong, please try again later');
     }

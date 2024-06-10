@@ -44,6 +44,11 @@ export function RHFSelect({
           {...field}
           select
           fullWidth
+          sx={{
+            '& select': {
+              padding: 1,
+            },
+          }}
           SelectProps={{
             native,
             MenuProps: {

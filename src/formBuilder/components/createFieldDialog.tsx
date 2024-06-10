@@ -1,5 +1,5 @@
 'use client';
-import { Dialog, DialogContent, IconButton } from '@mui/material';
+import { Box, Dialog, DialogContent, IconButton } from '@mui/material';
 import PropertiesFormSidebar from './PropertiesFormSidebar';
 import useDesigner from './hooks/useDesigner';
 import Iconify from '@/components/iconify/Iconify';
@@ -29,17 +29,15 @@ export default function CreateFieldDialog() {
         },
       }}
     >
-      <IconButton
-        aria-label="close"
-        onClick={handleClose}
-        sx={{
-          position: 'absolute',
-          left: 8,
-          top: 8,
-        }}
-      >
-        <Iconify icon="majesticons:close" sx={{ width: 25, height: 25 }} />
-      </IconButton>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{ marginX: 0.5, marginTop: 0.5, marginBottom: 0 }}
+        >
+          <Iconify icon="iconamoon:close-fill" sx={{ width: 35, height: 35 }} />
+        </IconButton>
+      </Box>
       <DialogContent
         dir="rtl"
         sx={{
@@ -48,7 +46,9 @@ export default function CreateFieldDialog() {
           scrollbarWidth: 'none',
           maxWidth: '100%',
           width: '450px',
-          padding: 1,
+          paddingX: 1,
+          paddingBottom: 1,
+          paddingTop: 0,
         }}
       >
         <PropertiesFormSidebar />

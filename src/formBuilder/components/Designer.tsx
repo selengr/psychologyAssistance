@@ -8,6 +8,7 @@ import { Box, IconButton, Typography } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 import KanbanBoard from './kanban/KanbanBoard';
 import CreateFieldDialog from './createFieldDialog';
+import { IFormElementConstructor } from '@/@types/bulider';
 
 function Designer() {
   const { setSelectedElement, setOpenDialog, openDialog, startPage, finishPage } = useDesigner();
@@ -205,7 +206,9 @@ function Designer() {
             <IconButton
               sx={{ position: 'relative', right: 8 }}
               onClick={() => {
-                const newElement = FormElements['TitleFieldStart'].construct(idGenerator());
+                const newElement = FormElements['TitleFieldStart'].construct(
+                  idGenerator() as IFormElementConstructor
+                );
                 setOpenDialog(true);
                 setSelectedElement({ fieldElement: newElement, position: null });
               }}
@@ -246,7 +249,7 @@ function Designer() {
             >
               صفحه شروع پرسشنامه
             </Typography>
-            <DesignerElementNoDnD key={startPage.id} element={startPage} />
+            <DesignerElementNoDnD key={startPage?.questionId} element={startPage} />
           </Box>
         )}
         <Box
@@ -295,7 +298,9 @@ function Designer() {
             <IconButton
               sx={{ position: 'relative', right: 8 }}
               onClick={() => {
-                const newElement = FormElements['TitleFieldFinish'].construct(idGenerator());
+                const newElement = FormElements['TitleFieldFinish'].construct(
+                  idGenerator() as IFormElementConstructor
+                );
                 setOpenDialog(true);
                 setSelectedElement({ fieldElement: newElement, position: null });
               }}
@@ -335,7 +340,7 @@ function Designer() {
             >
               صفحه پایان پرسشنامه
             </Typography>
-            <DesignerElementNoDnD key={finishPage.id} element={finishPage} />
+            <DesignerElementNoDnD key={finishPage?.questionId} element={finishPage} />
           </Box>
         )}
       </Box>

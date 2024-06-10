@@ -32,12 +32,12 @@ function DragOverlayWrapper() {
     const type = draggedItem.data?.current?.type as ElementsType;
     node = <SidebarBtnElementDragOverlay formElement={FormElements[type]} />;
   } else if (isDesignerElement) {
-    const elementId = draggedItem.data?.current?.elementId;
-    const element = elements.find((el) => el.id === elementId);
+    const elementId = draggedItem.data?.current?.question?.questionId;
+    const element = elements.find((el) => el.questionId === elementId);
 
     if (!element) node = <Box>فیلد یافت نشد!</Box>;
     else {
-      const DesignerElementComponent = FormElements[element.type].designerComponent;
+      const DesignerElementComponent = FormElements[element.questionType].designerComponent;
 
       node = (
         <Box
@@ -61,11 +61,11 @@ function DragOverlayWrapper() {
     }
   } else if (draggedItem.data?.current?.question?.type) {
     const elementId = draggedItem.data?.current?.question?.id;
-    const element = elements.find((el) => el.id === elementId);
+    const element = elements.find((el) => el.questionId === elementId);
 
     if (!element) node = <Box>فیلد یافت نشد!</Box>;
     else {
-      const DesignerElementComponent = FormElements[element.type].designerComponent;
+      const DesignerElementComponent = FormElements[element.questionType].designerComponent;
 
       node = (
         <Box
