@@ -3,6 +3,7 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useState } from 'react';
 import { FormElementInstance } from '../FormElements';
 import { idGenerator } from '../../lib/idGenerator';
+import { useSearchParams } from 'next/navigation';
 
 type selectedElementObject = {
   fieldElement: FormElementInstance | null | undefined;
@@ -14,10 +15,11 @@ type DesignerContextType = {
   startPage: FormElementInstance | null;
   finishPage: FormElementInstance | null;
   questionGroups: questionGroupsInterface[];
-  setQuestionGroups: Dispatch<SetStateAction<[questionGroupsInterface]>>;
+  setQuestionGroups: (value: SetStateAction<[questionGroupsInterface]>) => void;
   setElements: Dispatch<SetStateAction<FormElementInstance[]>>;
+  updateElement: (id: number, element: FormElementInstance) => void;
   addElement: (index: number, element: FormElementInstance) => void;
-  removeElement: (id: string) => void;
+  removeElement: (id: number) => void;
 
   addFinishPage: (element: FormElementInstance) => void;
   addStartPage: (element: FormElementInstance) => void;
@@ -34,8 +36,6 @@ type DesignerContextType = {
 
   openDialog: boolean;
   setOpenDialog: Dispatch<SetStateAction<boolean>>;
-
-  updateElement: (id: string, element: FormElementInstance) => void;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
@@ -44,16 +44,9 @@ interface questionGroupsInterface {
   title: string;
 }
 
-const random = idGenerator();
-
 export default function DesignerContextProvider({ children }: { children: ReactNode }) {
   const [elements, setElements] = useState<FormElementInstance[]>([]);
-  const [questionGroups, setQuestionGroups] = useState<[questionGroupsInterface]>([
-    {
-      id: Number(random),
-      title: 'group-' + random,
-    },
-  ]);
+  const [questionGroups, setQuestionGroups] = useState<[questionGroupsInterface]>([]);
   const [finishPage, setFinishPage] = useState<FormElementInstance | null>(null);
   const [startPage, setStartPage] = useState<FormElementInstance | null>(null);
   const [selectedElement, setSelectedElement] = useState<selectedElementObject | null>(null);
@@ -79,8 +72,8 @@ export default function DesignerContextProvider({ children }: { children: ReactN
     setStartPage(null);
   };
 
-  const removeElement = (id: string) => {
-    setElements((prev) => prev.filter((element) => element.id !== id));
+  const removeElement = (id: number) => {
+    setElements((prev) => prev.filter((element) => element?.questionId !== id));
   };
 
   const removeFinishPage = () => {
@@ -104,7 +97,7 @@ export default function DesignerContextProvider({ children }: { children: ReactN
   const updateElement = (id: number, element: FormElementInstance) => {
     setElements((prev) => {
       const newElements = [...prev];
-      const index = newElements.findIndex((el) => el.id === id);
+      const index = newElements.findIndex((el) => el?.questionId === id);
       newElements[index] = element;
       return newElements;
     });
@@ -112,7 +105,7 @@ export default function DesignerContextProvider({ children }: { children: ReactN
 
   function createNewQuestionGroup() {
     const randomId = idGenerator();
-    const groupToAdd = {
+    const groupToAdd: { id: number; title: string } = {
       id: randomId,
       title: 'group-' + randomId,
     };
@@ -121,11 +114,11 @@ export default function DesignerContextProvider({ children }: { children: ReactN
   }
 
   function deleteQuestionGroup(id: any) {
-    const newQuestions = elements?.filter((t) => t?.groupId !== id);
+    const newQuestions = elements?.filter((t) => t?.questionId !== id);
     setElements(newQuestions);
 
     const filteredGroups = questionGroups?.filter((group) => group?.id !== id);
-    setQuestionGroups(filteredGroups);
+    setQuestionGroups(filteredGroups as [questionGroupsInterface]);
   }
 
   return (

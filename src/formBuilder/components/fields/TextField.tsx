@@ -15,58 +15,56 @@ import { Label } from '@radix-ui/react-label';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
 import { IFormElementConstructor, IQPLTextField } from '@/@types/bulider';
 import callApi from '@/services/axios';
-import { errorUtil } from 'zod/lib/helpers/errorUtil';
-import { usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
 
 const questionType: ElementsType = 'TEXT_FIELD';
 
 const questionPropertyList: IQPLTextField = [
   {
-    questionPropertyEnum: 'pattern',
-    value: 'numeric',
+    questionPropertyEnum: 'TEXT_FIELD_PATTERN',
+    value: 'SHORT_TEXT',
   },
   {
-    questionPropertyEnum: 'required',
-    value: false,
+    questionPropertyEnum: 'REQUIRED',
+    value: 'false',
   },
   {
-    questionPropertyEnum: 'placeHolder',
-    value: 'متنی',
-  },
-  {
-    questionPropertyEnum: 'helperText',
+    questionPropertyEnum: 'DESCRIPTION',
     value: '',
   },
 ];
 
 const fieldOptions: { type: string; value: string }[] = [
-  { type: 'shortText', value: 'متنی کوتاه' },
-  { type: 'longText', value: 'متنی بلند' },
-  { type: 'numeric', value: 'عددی' },
-  { type: 'nationalCode', value: 'کدملی' },
-  { type: 'date', value: 'تاریخ' },
-  { type: 'email', value: 'ایمیل' },
-  { type: 'password', value: 'رمز' },
-  { type: 'telephone', value: 'تلفن' },
+  { type: 'SHORT_TEXT', value: 'متن ساده' },
+  { type: 'NUMBER', value: 'عددی' },
+  { type: 'NATIONAL_CODE', value: 'کدملی' },
+  { type: 'DATE', value: 'تاریخ' },
+  { type: 'PHONE_NUMBER', value: 'تلفن' },
 ];
 
 const propertiesSchema = z.object({
   title: z.string().min(2).max(50),
-  helperText: z.string().max(200),
-  required: z.boolean().default(false),
-  placeHolder: z.string().max(50),
-  pattern: z.string(),
+  DESCRIPTION: z.string().max(200),
+  REQUIRED: z.boolean().default(false),
+  TEXT_FIELD_PATTERN: z.string(),
 });
 
 export const TextFieldFormElement: FormElement = {
   questionType,
-  construct: ({ id, questionGroupId, formId, title, temp }: IFormElementConstructor) => ({
-    id,
+  construct: ({
+    questionId,
+    questionGroupId,
+    formId,
+    title,
+    position,
+  }: IFormElementConstructor) => ({
+    questionId,
     questionGroupId,
     formId,
     title,
     questionType,
-    temp,
+    position,
     questionPropertyList: questionPropertyList,
   }),
   designerBtnElement: {
@@ -94,7 +92,9 @@ function DesignerComponent({ elementInstance }: { elementInstance: FormElementIn
   const element = elementInstance as CustomInstance;
   const designerBtnLabel = TextFieldFormElement.designerBtnElement.label;
   const labelText = element.title;
-  const required = element.questionPropertyList[2].value;
+  const required = element.questionPropertyList.find(
+    (property) => property.questionPropertyEnum === 'REQUIRED' && property.value
+  );
 
   return (
     <Box
@@ -111,8 +111,8 @@ function DesignerComponent({ elementInstance }: { elementInstance: FormElementIn
         component={'p'}
         sx={{ fontSize: '1rem', '& .MuiTypography-root': { direction: 'rtl' } }}
       >
+        {required?.value === 'true' && '* '}
         {labelText}
-        {required && ' *'}
       </Typography>
       <Typography variant="body2" component={'p'} sx={{ fontSize: '0.7rem' }}>
         {designerBtnLabel}#
@@ -157,7 +157,7 @@ function FormComponent({
           const valid = TextFieldFormElement.validate(element, e.target.value);
           setError(!valid);
           if (!valid) return;
-          submitValue(element.id, e.target.value);
+          submitValue(element?.questionId, e.target.value);
         }}
         value={value}
       />
@@ -167,8 +167,18 @@ function FormComponent({
 
 type propertiesFormSchemaType = z.infer<typeof propertiesSchema>;
 function PropertiesComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
-  const path = usePathname();
   const element = elementInstance as CustomInstance;
+  const descriptionSwitchStatus: boolean = element.questionPropertyList.some((property) => {
+    if (property.questionPropertyEnum === 'DESCRIPTION') {
+      return property.value ? true : false;
+    } else {
+      return false;
+    }
+  });
+  const searchParams = useSearchParams();
+  const questionGroupIdFromUrl = Number(searchParams.get('questionGroup'));
+  const [openDescriptionSwitch, setOpenDescriptionSwitch] =
+    useState<boolean>(descriptionSwitchStatus);
   const {
     updateElement,
     setSelectedElement,
@@ -178,8 +188,13 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     selectedElement,
   } = useDesigner();
 
-  const defaultValues = element.questionPropertyList.reduce((acc, attribute) => {
-    acc[attribute.questionPropertyEnum] = attribute.value;
+  debugger;
+  const defaultValues = element.questionPropertyList.reduce((acc: any, attribute: any) => {
+    if (attribute.questionPropertyEnum === 'REQUIRED') {
+      acc[attribute.questionPropertyEnum] = attribute.value === 'true' ? true : false;
+    } else {
+      acc[attribute.questionPropertyEnum] = attribute.value;
+    }
     return acc;
   }, {});
   defaultValues.title = element.title;
@@ -206,59 +221,55 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   // }, [element, form]);
 
   async function onSubmit(values: propertiesFormSchemaType) {
-    const { title, helperText, placeHolder, required, pattern } = values;
-    const { position } = selectedElement;
+    const { title, DESCRIPTION, REQUIRED, TEXT_FIELD_PATTERN } = values;
 
     // finds whether a field is selected or not
-    const selectedYet = elements?.find((el) => el?.id === element?.id);
+    const selectedYet = elements?.find((el) => el?.questionId === element?.questionId);
 
     const data = [
       {
-        questionPropertyEnum: 'pattern',
-        value: pattern,
+        questionPropertyEnum: 'TEXT_FIELD_PATTERN',
+        value: TEXT_FIELD_PATTERN,
       },
       {
-        questionPropertyEnum: 'required',
-        value: required,
+        questionPropertyEnum: 'REQUIRED',
+        value: REQUIRED ? 'true' : 'false',
       },
       {
-        questionPropertyEnum: 'placeHolder',
-        value: placeHolder,
-      },
-      {
-        questionPropertyEnum: 'helperText',
-        value: helperText,
+        questionPropertyEnum: 'DESCRIPTION',
+        value: openDescriptionSwitch ? DESCRIPTION : '',
       },
     ];
 
-    const sentField = {
+    const finalFieldData = {
       ...element,
-      formId: path.split('/')[2],
+      questionGroupId: questionGroupIdFromUrl,
       title,
+      position: selectedElement?.position ?? elements.length,
       questionPropertyList: data,
     };
+    delete finalFieldData.temp;
 
     if (!selectedYet) {
       try {
-        const response = await callApi().post('/question', sentField);
-        sentField.temp = false;
-        addElement(position ?? elements.length, sentField as FormElementInstance);
+        const response = await callApi().post('/question', finalFieldData);
+        addElement(selectedElement!.position ?? elements.length, response);
+        setOpenDialog(false);
+        setSelectedElement(null);
       } catch (error) {
         console.error(error);
       }
     } else {
       try {
-        const response = await callApi().put('/question/' + sentField.id, sentField);
-        updateElement(element.id, sentField);
+        const response = await callApi().put(
+          '/question/' + finalFieldData.questionId,
+          finalFieldData
+        );
+        updateElement(element.questionId, response);
       } catch (error) {
         console.error(error);
       }
     }
-
-    console.log(element);
-
-    setOpenDialog(false);
-    setSelectedElement(null);
   }
 
   return (
@@ -268,21 +279,22 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
+          paddingX: 1.5,
           direction: 'ltr',
           width: '100%',
         }}
       >
         <Stack spacing={1}>
           <Typography variant="subtitle2">متن سوال:</Typography>
-          <RHFTextField name="title" />
+          <RHFTextField multiline rows={3} name="title" />
         </Stack>
 
         <Stack spacing={1} marginTop={2.5}>
           <Typography variant="subtitle2">الگوی فیلد پاسخ:</Typography>
-          <RHFSelect native name="pattern">
+          <RHFSelect native name="TEXT_FIELD_PATTERN">
             {fieldOptions.map((category) => (
               <option key={category.type} label={category.value}>
-                {category.value}
+                {category.type}
               </option>
             ))}
           </RHFSelect>
@@ -296,16 +308,38 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
         >
           <Typography variant="subtitle2">پاسخ به سوال اجباری باشد</Typography>
           <RHFSwitch
-            name="required"
+            label=""
+            name="REQUIRED"
             labelPlacement="start"
             sx={{ mb: 1, mx: 0, width: 1, justifyContent: 'space-between' }}
           />
         </Stack>
 
-        <Stack spacing={1} marginTop={2.5} marginBottom={5}>
+        <Stack
+          spacing={1}
+          marginTop={1}
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="flex-end"
+        >
           <Typography variant="subtitle2">توضیحات</Typography>
-          <RHFTextField multiline rows={3} name="helperText" />
+          <IOSSwitch
+            onChange={() => setOpenDescriptionSwitch(!openDescriptionSwitch)}
+            defaultChecked={openDescriptionSwitch}
+          />
         </Stack>
+
+        {openDescriptionSwitch && (
+          <Stack marginTop={2}>
+            <Typography variant="subtitle2" marginBottom={1.5}>
+              متن توضیح:
+            </Typography>
+            <RHFTextField
+              name="DESCRIPTION"
+              placeholder="پیامی برای توضیح بیشتر در مورد این سوال"
+            />
+          </Stack>
+        )}
 
         <FieldDialogActionBottomButtons status={isSubmitting} />
       </Box>

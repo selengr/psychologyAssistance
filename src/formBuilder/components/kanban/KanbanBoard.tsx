@@ -8,6 +8,8 @@ import { FormElements } from '../FormElements';
 import { idGenerator } from '../../lib/idGenerator';
 import { Box, Button, Typography } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
+import { usePathname } from 'next/navigation';
+import { IFormElementConstructor } from '@/@types/bulider';
 
 function KanbanBoard() {
   const {
@@ -20,19 +22,26 @@ function KanbanBoard() {
     createNewQuestionGroup,
   } = useDesigner();
   const groupsId = useMemo(() => questionGroups.map((group: any) => group.id), [questionGroups]);
+  const path = usePathname();
+  const formId = Number(path.split('/')[2]);
 
   useDndMonitor({
     onDragStart: (event: DragStartEvent) => {
       const { active } = event;
 
       const isDesignerBtnElement = active.data?.current?.isDesignerBtnElement;
+      const designerBtnType = active?.data?.current?.type;
 
       if (isDesignerBtnElement) {
-        const newElement = FormElements[active?.data?.current?.type].construct(
-          idGenerator(),
-          null,
-          true
-        );
+        const newElement = FormElements[designerBtnType].construct({
+          questionId: idGenerator(),
+          questionGroupId: null,
+          formId,
+          title: '',
+          position: null,
+        } as IFormElementConstructor);
+        newElement.temp = true;
+
         setElements((prev) => [...prev, newElement]);
       }
 
@@ -46,7 +55,7 @@ function KanbanBoard() {
         if (isTempElementExist && !over) {
           const tempEl = questions.find((p) => p?.temp);
           if (tempEl) {
-            tempEl.groupId = null;
+            tempEl.questionGroupId = null;
             return [tempEl, ...questions.filter((t) => !t?.temp)];
           } else {
             return questions;
@@ -70,22 +79,24 @@ function KanbanBoard() {
         startTransition(() => {
           setElements((questions) => {
             const activeIndex = questions.findIndex((t) => t?.temp);
-            const overIndex = questions.findIndex((t) => t.id === overId);
+            const overIndex = questions.findIndex((t) => t.questionId === overId);
 
-            // if (questions[activeIndex].groupId != questions[overIndex].groupId) {
-            questions[activeIndex].groupId = questions[overIndex].groupId;
+            // if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId)
+            questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
             return arrayMove(questions, activeIndex, overIndex);
           });
         });
 
         return;
       } else if (isDesignerBtnElement && isOverGroup) {
-        if (!elements.some((el) => el.groupId === over.data.current.group.id)) {
+        const overGroup = over?.data?.current?.group?.id;
+        if (!elements.some((el) => el.questionGroupId === overGroup)) {
           startTransition(() => {
             setElements((questions) => {
               const activeIndex = questions.findIndex((t) => t?.temp);
+              const overGroup = over?.data?.current?.group?.id;
 
-              questions[activeIndex].groupId = over?.data?.current?.group?.id;
+              questions[activeIndex].questionGroupId = overGroup;
               return arrayMove(questions, activeIndex, 0);
             });
           });
@@ -115,11 +126,11 @@ function KanbanBoard() {
       if (isActiveQuestion && isOverQuestion) {
         startTransition(() => {
           setElements((questions) => {
-            const activeIndex = questions.findIndex((t) => t.id === activeId);
-            const overIndex = questions.findIndex((t) => t.id === overId);
+            const activeIndex = questions.findIndex((t) => t.questionId === activeId);
+            const overIndex = questions.findIndex((t) => t.questionId === overId);
 
-            if (questions[activeIndex].groupId != questions[overIndex].groupId) {
-              questions[activeIndex].groupId = questions[overIndex].groupId;
+            if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId) {
+              questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
               return arrayMove(questions, activeIndex, overIndex - 1);
             }
 
@@ -133,9 +144,9 @@ function KanbanBoard() {
       if (isActiveQuestion && isOverGroup) {
         startTransition(() => {
           setElements((questions) => {
-            const activeIndex = questions.findIndex((t) => t?.id === activeId);
+            const activeIndex = questions.findIndex((t) => t?.questionId === activeId);
 
-            questions[activeIndex].groupId = overId;
+            questions[activeIndex].questionGroupId = Number(overId);
             return arrayMove(questions, activeIndex, activeIndex);
           });
         });
@@ -148,11 +159,11 @@ function KanbanBoard() {
         const droppedTempElIndex = elements?.findIndex((t: any) => t?.temp);
         const droppedEl = elements?.find((t: any) => t?.temp);
 
-        if (droppedEl?.groupId !== over?.data?.current?.group?.id) {
+        if (droppedEl?.questionGroupId !== over?.data?.current?.group?.id) {
           const elTemp = elements[droppedTempElIndex];
 
           if (elTemp?.temp) {
-            elements[droppedTempElIndex].groupId = over?.data?.current?.group?.id;
+            elements[droppedTempElIndex].questionGroupId = over?.data?.current?.group?.id;
             setOpenDialog(true);
             setSelectedElement({ fieldElement: elements[droppedTempElIndex], position: null });
           }
@@ -192,9 +203,12 @@ function KanbanBoard() {
     },
   });
 
+  console.log(questionGroups);
+  console.log(elements);
+
   const lastQuestionGroup = questionGroups[questionGroups.length - 1];
   const isLastQuestionGroupNotEmpty = elements.some(
-    (questions) => questions?.groupId === lastQuestionGroup?.id
+    (questions) => questions?.questionGroupId === lastQuestionGroup?.id
   );
 
   return (
@@ -213,7 +227,9 @@ function KanbanBoard() {
             <QuestionGroup
               key={que?.id}
               group={que}
-              questions={elements?.filter((question) => question?.questionGroupId === que?.id)}
+              questions={elements?.filter(
+                (question) => question?.questionGroupId === Number(que?.id)
+              )}
             />
           ))}
         </SortableContext>

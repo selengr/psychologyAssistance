@@ -1,23 +1,22 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FormElements } from '../FormElements';
+import { FormElement, FormElementInstance, FormElements } from '../FormElements';
 import useDesigner from '../hooks/useDesigner';
 import { Box, IconButton } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 
-function QuestionCard({ question }) {
+function QuestionCard({ question }: { question: FormElementInstance }) {
   const { setSelectedElement, setOpenDialog, removeElement } = useDesigner();
 
-  // add index to each question for later use
-  // things like sending the current or new position
-  // to the backend
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
-    id: question.id,
-    data: {
-      type: 'question',
-      question,
-    },
-  });
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging, index } =
+    useSortable({
+      id: question.questionId,
+      data: {
+        type: 'question',
+        question,
+        isDesignerElement: true,
+      },
+    });
 
   const DesignerElement = FormElements[question.questionType].designerComponent;
 
@@ -63,11 +62,15 @@ function QuestionCard({ question }) {
     );
   }
 
+  // update every single question's position
+  // after one question is moved
+  question.position = index;
+
   return (
     <Box
       onClick={(e) => {
         e.stopPropagation();
-        setSelectedElement({ fieldElement: question, position: null });
+        setSelectedElement({ fieldElement: question, position: index });
         setOpenDialog(true);
       }}
       ref={setNodeRef}
@@ -101,7 +104,7 @@ function QuestionCard({ question }) {
         }}
         onClick={(e) => {
           e.stopPropagation();
-          removeElement(question.id);
+          removeElement(question?.questionId);
         }}
       >
         <Iconify icon="ph:dots-three-vertical-bold" />
