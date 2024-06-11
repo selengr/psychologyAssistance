@@ -5,10 +5,15 @@ import FormBuilder from './FormBuilder';
 import useDesigner from './hooks/useDesigner';
 
 export default function FormBuilderMiddleware({ formData }) {
-  const { setQuestionGroups, questionGroups } = useDesigner();
+  const { setQuestionGroups, setElements } = useDesigner();
 
   useEffect(() => {
-    setQuestionGroups(formData?.questionGroups?.map((group: any) => group.questionGroupId));
+    const allQuestionGroups = formData?.questionGroups?.map((group: any) => group?.questionGroupId);
+    setQuestionGroups(allQuestionGroups);
+    const allQuestions = formData?.questionGroups?.map(
+      (group: any) => group?.questionFindModelList
+    );
+    setElements(...allQuestions);
   }, []);
 
   return (
