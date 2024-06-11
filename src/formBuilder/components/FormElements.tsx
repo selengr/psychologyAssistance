@@ -4,9 +4,11 @@ import { SpectralFormElement } from './fields/SpectralField';
 import { TextFieldFormElement } from './fields/TextField';
 import { TitleFieldFinishFormElement } from './fields/TitleFieldFinish';
 import { TitleFieldStartFormElement } from './fields/TitleFieldStart';
+import { MultipleChoiceFormElement } from './fields/MultipleChoice';
 
 export type ElementsType =
   | 'TEXT_FIELD'
+  | 'MULTIPLE_CHOICE'
   | 'SelectField'
   | 'TitleFieldStart'
   | 'TitleFieldFinish'
@@ -60,8 +62,9 @@ type FormElementsType = {
 
 export const FormElements: FormElementsType = {
   TEXT_FIELD: TextFieldFormElement,
+  MULTIPLE_CHOICE: MultipleChoiceFormElement,
+  SpectralField: SpectralFormElement,
   SelectField: SelectFieldFormElement,
   TitleFieldStart: TitleFieldStartFormElement,
   TitleFieldFinish: TitleFieldFinishFormElement,
-  SpectralField: SpectralFormElement,
 };

@@ -10,37 +10,28 @@ import useDesigner from '../hooks/useDesigner';
 import { cn } from '../../lib/utils';
 import { Box, Stack, Typography } from '@mui/material';
 import FormProvider from '@/components/hook-form/FormProvider';
-import { RHFSelect, RHFSwitch, RHFTextField } from '@/components/hook-form';
+import { RHFSwitch, RHFTextField } from '@/components/hook-form';
 import { Label } from '@radix-ui/react-label';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
-import { IFormElementConstructor, IQPLTextField } from '@/@types/bulider';
+import { IFormElementConstructor, IQPLMultipleChoice } from '@/@types/bulider';
 import callApi from '@/services/axios';
 import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
 
-const questionType: ElementsType = 'TEXT_FIELD';
+const questionType: ElementsType = 'MULTIPLE_CHOICE';
 
-const questionPropertyList: IQPLTextField = [
-  {
-    questionPropertyEnum: 'TEXT_FIELD_PATTERN',
-    value: 'SHORT_TEXT',
-  },
+const questionPropertyList: IQPLMultipleChoice = [
   {
     questionPropertyEnum: 'REQUIRED',
+    value: 'false',
+  },
+  {
+    questionPropertyEnum: 'RANDOMIZE_OPTIONS',
     value: 'false',
   },
   {
     questionPropertyEnum: 'DESCRIPTION',
     value: '',
   },
-];
-
-const fieldOptions: { type: string; value: string }[] = [
-  { type: 'SHORT_TEXT', value: 'متن ساده' },
-  { type: 'LONG_TEXT', value: 'متن بلند' },
-  { type: 'NUMBER', value: 'عددی' },
-  { type: 'NATIONAL_CODE', value: 'کدملی' },
-  { type: 'DATE', value: 'تاریخ' },
-  { type: 'PHONE', value: 'تلفن' },
 ];
 
 const propertiesSchema = z.object({
@@ -50,7 +41,7 @@ const propertiesSchema = z.object({
   TEXT_FIELD_PATTERN: z.string(),
 });
 
-export const TextFieldFormElement: FormElement = {
+export const MultipleChoiceFormElement: FormElement = {
   questionType,
   construct: ({
     questionId,
@@ -68,7 +59,7 @@ export const TextFieldFormElement: FormElement = {
     questionPropertyList: questionPropertyList,
   }),
   designerBtnElement: {
-    label: 'متنی',
+    label: 'چند گزینه‌ای',
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -90,7 +81,7 @@ type CustomInstance = FormElementInstance & {
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
-  const designerBtnLabel = TextFieldFormElement.designerBtnElement.label;
+  const designerBtnLabel = MultipleChoiceFormElement.designerBtnElement.label;
   const labelText = element.title;
   const required = element.questionPropertyList.find(
     (property) => property.questionPropertyEnum === 'REQUIRED' && property.value
@@ -154,7 +145,7 @@ function FormComponent({
         onChange={(e) => setValue(e.target.value)}
         onBlur={(e) => {
           if (!submitValue) return;
-          const valid = TextFieldFormElement.validate(element, e.target.value);
+          const valid = MultipleChoiceFormElement.validate(element, e.target.value);
           setError(!valid);
           if (!valid) return;
           submitValue(element?.questionId, e.target.value);
@@ -188,7 +179,10 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   } = useDesigner();
 
   const defaultValues = element.questionPropertyList.reduce((acc: any, attribute: any) => {
-    if (attribute.questionPropertyEnum === 'REQUIRED') {
+    if (
+      attribute.questionPropertyEnum === 'REQUIRED' ||
+      attribute.questionPropertyEnum === 'RANDOMIZE_OPTIONS'
+    ) {
       acc[attribute.questionPropertyEnum] = attribute.value === 'true' ? true : false;
     } else {
       acc[attribute.questionPropertyEnum] = attribute.value;
@@ -219,15 +213,15 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   // }, [element, form]);
 
   async function onSubmit(values: propertiesFormSchemaType) {
-    const { title, DESCRIPTION, REQUIRED, TEXT_FIELD_PATTERN } = values;
+    const { title, DESCRIPTION, REQUIRED, RANDOMIZE_OPTIONS } = values;
 
     // finds whether a field is selected or not
     const selectedYet = elements?.find((el) => el?.questionId === element?.questionId);
 
     const data = [
       {
-        questionPropertyEnum: 'TEXT_FIELD_PATTERN',
-        value: TEXT_FIELD_PATTERN,
+        questionPropertyEnum: 'RANDOMIZE_OPTIONS',
+        value: RANDOMIZE_OPTIONS,
       },
       {
         questionPropertyEnum: 'REQUIRED',
@@ -286,15 +280,19 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <RHFTextField multiline rows={3} name="title" />
         </Stack>
 
-        <Stack spacing={1} marginTop={2.5}>
-          <Typography variant="subtitle2">الگوی فیلد پاسخ:</Typography>
-          <RHFSelect native name="TEXT_FIELD_PATTERN">
-            {fieldOptions.map((category) => (
-              <option key={category.type} label={category.value}>
-                {category.type}
-              </option>
-            ))}
-          </RHFSelect>
+        <Stack
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          marginTop={3}
+        >
+          <Typography variant="subtitle2">چند انتخابی</Typography>
+          <RHFSwitch
+            label=""
+            name="REQUIRED"
+            labelPlacement="start"
+            sx={{ mb: 1, mx: 0, width: 1, justifyContent: 'space-between' }}
+          />
         </Stack>
 
         <Stack
@@ -304,6 +302,21 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           marginTop={3}
         >
           <Typography variant="subtitle2">پاسخ به سوال اجباری باشد</Typography>
+          <RHFSwitch
+            label=""
+            name="REQUIRED"
+            labelPlacement="start"
+            sx={{ mb: 1, mx: 0, width: 1, justifyContent: 'space-between' }}
+          />
+        </Stack>
+
+        <Stack
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          marginTop={3}
+        >
+          <Typography variant="subtitle2">توضیع تصادفی گزینه‌ها</Typography>
           <RHFSwitch
             label=""
             name="REQUIRED"

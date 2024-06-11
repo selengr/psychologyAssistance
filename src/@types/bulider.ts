@@ -22,6 +22,21 @@ export type IQPLTextField = [
   },
 ];
 
+export type IQPLMultipleChoice = [
+  {
+    questionPropertyEnum: 'REQUIRED';
+    value: string;
+  },
+  {
+    questionPropertyEnum: 'RANDOMIZE_OPTIONS';
+    value: string;
+  },
+  {
+    questionPropertyEnum: 'DESCRIPTION';
+    value: string;
+  },
+];
+
 export type IDefaultValues = {
   TEXT_FIELD_PATTERN: string;
   REQUIRED: boolean;

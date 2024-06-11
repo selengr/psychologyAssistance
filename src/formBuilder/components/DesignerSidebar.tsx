@@ -51,7 +51,7 @@ function DesignerSidebar() {
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }} gap={1.5}>
           <SidebarBtnElement formElement={FormElements.TEXT_FIELD} />
-          <SidebarBtnElement formElement={FormElements.SelectField} />
+          <SidebarBtnElement formElement={FormElements.MULTIPLE_CHOICE} />
           <SidebarBtnElement formElement={FormElements.SpectralField} />
         </Box>
         <Box sx={{ width: '100%' }}>
