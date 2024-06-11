@@ -45,7 +45,7 @@ export type FormElement = {
 };
 
 export type FormElementInstance = {
-  questionId: number | null;
+  questionId: number;
   questionGroupId: number | null;
   formId: number;
   title: string;

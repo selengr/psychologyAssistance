@@ -13,7 +13,7 @@ function QuestionGroup({ group, questions }) {
   }, [questions]);
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
-    id: group.id,
+    id: group,
     data: {
       type: 'question-group',
       group,
@@ -92,7 +92,7 @@ function QuestionGroup({ group, questions }) {
         <IconButton
           onClick={() => {
             if (questionGroups.length === 1) return;
-            deleteQuestionGroup(group.id);
+            deleteQuestionGroup(group);
           }}
         >
           {questions.length >= 1 && <Iconify icon="ph:dots-three-vertical-bold" />}

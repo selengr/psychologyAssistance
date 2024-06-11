@@ -14,10 +14,13 @@ export const IOSSwitch = styled(Switch)(({ theme }) => ({
       '& + .MuiSwitch-track': {
         backgroundColor: theme.palette.primary.main,
         opacity: 1,
-        border: `1px solid ${theme.palette.primary.main}`,
+        border: `1px solid ${theme.palette.primary.main} !important`,
       },
       '&.Mui-disabled + .MuiSwitch-track': {
         opacity: 0.5,
+      },
+      '& .MuiSwitch-thumb': {
+        border: `none !important`,
       },
     },
     '&.Mui-focusVisible .MuiSwitch-thumb': {

@@ -29,7 +29,7 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
         if (questionGroups.length) {
           const newElement = FormElements[formElement.questionType].construct({
             questionId: idGenerator(),
-            questionGroupId: questionGroups[questionGroups.length - 1].id,
+            questionGroupId: questionGroups[questionGroups.length - 1],
             formId,
             title: '',
             position: null,

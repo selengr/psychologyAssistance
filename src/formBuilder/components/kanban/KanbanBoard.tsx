@@ -21,7 +21,7 @@ function KanbanBoard() {
     setSelectedElement,
     createNewQuestionGroup,
   } = useDesigner();
-  const groupsId = useMemo(() => questionGroups.map((group: any) => group.id), [questionGroups]);
+  const groupsId = useMemo(() => questionGroups.map((group: any) => group), [questionGroups]);
   const path = usePathname();
   const formId = Number(path.split('/')[2]);
 
@@ -89,12 +89,12 @@ function KanbanBoard() {
 
         return;
       } else if (isDesignerBtnElement && isOverGroup) {
-        const overGroup = over?.data?.current?.group?.id;
+        const overGroup = over?.data?.current?.group;
         if (!elements.some((el) => el.questionGroupId === overGroup)) {
           startTransition(() => {
             setElements((questions) => {
               const activeIndex = questions.findIndex((t) => t?.temp);
-              const overGroup = over?.data?.current?.group?.id;
+              const overGroup = over?.data?.current?.group;
 
               questions[activeIndex].questionGroupId = overGroup;
               return arrayMove(questions, activeIndex, 0);
@@ -159,11 +159,11 @@ function KanbanBoard() {
         const droppedTempElIndex = elements?.findIndex((t: any) => t?.temp);
         const droppedEl = elements?.find((t: any) => t?.temp);
 
-        if (droppedEl?.questionGroupId !== over?.data?.current?.group?.id) {
+        if (droppedEl?.questionGroupId !== over?.data?.current?.group) {
           const elTemp = elements[droppedTempElIndex];
 
           if (elTemp?.temp) {
-            elements[droppedTempElIndex].questionGroupId = over?.data?.current?.group?.id;
+            elements[droppedTempElIndex].questionGroupId = over?.data?.current?.group;
             setOpenDialog(true);
             setSelectedElement({ fieldElement: elements[droppedTempElIndex], position: null });
           }
@@ -195,20 +195,20 @@ function KanbanBoard() {
       if (!isActiveAGroup) return;
 
       setQuestionGroups((groups: any) => {
-        const activeGroupIndex = groups.findIndex((group: any) => group.id === activeId);
-        const overGroupIndex = groups.findIndex((group: any) => group.id === overId);
+        const activeGroupIndex = groups.findIndex((group: any) => group === activeId);
+        const overGroupIndex = groups.findIndex((group: any) => group === overId);
 
         return arrayMove(groups, activeGroupIndex, overGroupIndex);
       });
     },
   });
 
-  console.log(questionGroups);
-  console.log(elements);
+  console.log('questionGroups', questionGroups);
+  console.log('elements', elements);
 
   const lastQuestionGroup = questionGroups[questionGroups.length - 1];
   const isLastQuestionGroupNotEmpty = elements.some(
-    (questions) => questions?.questionGroupId === lastQuestionGroup?.id
+    (questions) => questions?.questionGroupId === lastQuestionGroup
   );
 
   return (
@@ -225,11 +225,9 @@ function KanbanBoard() {
         <SortableContext items={groupsId} strategy={verticalListSortingStrategy}>
           {questionGroups?.map((que: any) => (
             <QuestionGroup
-              key={que?.id}
+              key={que}
               group={que}
-              questions={elements?.filter(
-                (question) => question?.questionGroupId === Number(que?.id)
-              )}
+              questions={elements?.filter((question) => question?.questionGroupId === Number(que))}
             />
           ))}
         </SortableContext>

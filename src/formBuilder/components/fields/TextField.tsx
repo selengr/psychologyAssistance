@@ -176,8 +176,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       return false;
     }
   });
-  const searchParams = useSearchParams();
-  const questionGroupIdFromUrl = Number(searchParams.get('questionGroup'));
+
   const [openDescriptionSwitch, setOpenDescriptionSwitch] =
     useState<boolean>(descriptionSwitchStatus);
   const {
@@ -243,7 +242,6 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
     const finalFieldData = {
       ...element,
-      questionGroupId: questionGroupIdFromUrl,
       title,
       position: selectedElement?.position ?? elements.length,
       questionPropertyList: data,

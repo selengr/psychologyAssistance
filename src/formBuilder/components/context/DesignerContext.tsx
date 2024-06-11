@@ -3,7 +3,6 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useState } from 'react';
 import { FormElementInstance } from '../FormElements';
 import { idGenerator } from '../../lib/idGenerator';
-import { useSearchParams } from 'next/navigation';
 
 type selectedElementObject = {
   fieldElement: FormElementInstance | null | undefined;
@@ -14,8 +13,8 @@ type DesignerContextType = {
   elements: FormElementInstance[];
   startPage: FormElementInstance | null;
   finishPage: FormElementInstance | null;
-  questionGroups: questionGroupsInterface[];
-  setQuestionGroups: (value: SetStateAction<[questionGroupsInterface]>) => void;
+  questionGroups: number[];
+  setQuestionGroups: (value: SetStateAction<number[]>) => void;
   setElements: Dispatch<SetStateAction<FormElementInstance[]>>;
   updateElement: (id: number, element: FormElementInstance) => void;
   addElement: (index: number, element: FormElementInstance) => void;
@@ -39,14 +38,10 @@ type DesignerContextType = {
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
-interface questionGroupsInterface {
-  id: number;
-  title: string;
-}
 
 export default function DesignerContextProvider({ children }: { children: ReactNode }) {
   const [elements, setElements] = useState<FormElementInstance[]>([]);
-  const [questionGroups, setQuestionGroups] = useState<[questionGroupsInterface]>([]);
+  const [questionGroups, setQuestionGroups] = useState<number[]>([]);
   const [finishPage, setFinishPage] = useState<FormElementInstance | null>(null);
   const [startPage, setStartPage] = useState<FormElementInstance | null>(null);
   const [selectedElement, setSelectedElement] = useState<selectedElementObject | null>(null);
@@ -105,10 +100,7 @@ export default function DesignerContextProvider({ children }: { children: ReactN
 
   function createNewQuestionGroup() {
     const randomId = idGenerator();
-    const groupToAdd: { id: number; title: string } = {
-      id: randomId,
-      title: 'group-' + randomId,
-    };
+    const groupToAdd = randomId;
 
     setQuestionGroups((questionGroups) => [...questionGroups, groupToAdd]);
   }
@@ -117,8 +109,8 @@ export default function DesignerContextProvider({ children }: { children: ReactN
     const newQuestions = elements?.filter((t) => t?.questionId !== id);
     setElements(newQuestions);
 
-    const filteredGroups = questionGroups?.filter((group) => group?.id !== id);
-    setQuestionGroups(filteredGroups as [questionGroupsInterface]);
+    const filteredGroups = questionGroups?.filter((group) => group !== id);
+    setQuestionGroups(filteredGroups as number[]);
   }
 
   return (
