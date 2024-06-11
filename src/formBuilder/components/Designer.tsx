@@ -216,7 +216,12 @@ function Designer() {
             >
               <Iconify
                 icon="uiw:plus-square"
-                sx={{ height: '35px', width: '35px', color: (theme) => theme.palette.primary.main }}
+                sx={{
+                  borderRadius: '5px',
+                  height: '35px',
+                  width: '35px',
+                  color: (theme) => theme.palette.primary.main,
+                }}
               />
             </IconButton>
           </Box>
@@ -308,7 +313,12 @@ function Designer() {
             >
               <Iconify
                 icon="uiw:plus-square"
-                sx={{ height: '35px', width: '35px', color: (theme) => theme.palette.primary.main }}
+                sx={{
+                  borderRadius: '5px',
+                  height: '35px',
+                  width: '35px',
+                  color: (theme) => theme.palette.primary.main,
+                }}
               />
             </IconButton>
           </Box>
