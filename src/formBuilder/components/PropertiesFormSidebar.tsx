@@ -13,6 +13,8 @@ function PropertiesFormSidebar() {
   const fieldLabel =
     FormElements[selectedElement!.fieldElement!.questionType].designerBtnElement.label;
 
+  const questionType = selectedElement!.fieldElement!.questionType;
+
   return (
     <Box sx={{ direction: 'rtl', display: 'flex', flexDirection: 'column' }} padding={1}>
       <Box
@@ -29,7 +31,9 @@ function PropertiesFormSidebar() {
           component={'p'}
           sx={{ fontWeight: 'bold', textAlign: 'right', fontSize: '1.2rem' }}
         >
-          {fieldLabel}
+          {questionType === 'TitleFieldStart' || questionType === 'TitleFieldFinish'
+            ? fieldLabel
+            : `سوال ${fieldLabel}`}
         </Typography>
       </Box>
       <PropertiesForm elementInstance={selectedElement!.fieldElement as FormElementInstance} />

@@ -299,7 +299,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           flexDirection="row"
           justifyContent="space-between"
           alignItems="flex-start"
-          marginTop={3}
+          marginTop={1.5}
         >
           <Typography variant="subtitle2">پاسخ به سوال اجباری باشد</Typography>
           <RHFSwitch
@@ -314,7 +314,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           flexDirection="row"
           justifyContent="space-between"
           alignItems="flex-start"
-          marginTop={3}
+          marginTop={1.5}
         >
           <Typography variant="subtitle2">توضیع تصادفی گزینه‌ها</Typography>
           <RHFSwitch
@@ -326,11 +326,10 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
         </Stack>
 
         <Stack
-          spacing={1}
-          marginTop={1}
+          marginTop={1.5}
           flexDirection="row"
           justifyContent="space-between"
-          alignItems="flex-end"
+          alignItems="flex-start"
         >
           <Typography variant="subtitle2">توضیحات</Typography>
           <IOSSwitch
