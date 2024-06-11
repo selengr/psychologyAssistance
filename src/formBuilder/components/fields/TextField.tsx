@@ -37,10 +37,11 @@ const questionPropertyList: IQPLTextField = [
 
 const fieldOptions: { type: string; value: string }[] = [
   { type: 'SHORT_TEXT', value: 'متن ساده' },
+  { type: 'LONG_TEXT', value: 'متن بلند' },
   { type: 'NUMBER', value: 'عددی' },
   { type: 'NATIONAL_CODE', value: 'کدملی' },
   { type: 'DATE', value: 'تاریخ' },
-  { type: 'PHONE_NUMBER', value: 'تلفن' },
+  { type: 'PHONE', value: 'تلفن' },
 ];
 
 const propertiesSchema = z.object({

@@ -33,7 +33,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
-
   const renderContent = (
     <Scrollbar
       sx={{
@@ -48,15 +47,15 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       <Stack
         spacing={3}
         sx={{
-          pt: 3,
+          pt: isDesktop && 3,
           pb: 2,
           px: 2.5,
           flexShrink: 0,
-          display : 'flex',
-          alignItems : "center"
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
-        {isDesktop && <Logo /> }
+        {isDesktop && <Logo />}
 
         {/* <NavAccount /> */}
       </Stack>
@@ -64,7 +63,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       <NavSectionVertical data={navConfig} />
 
       {/* <Box sx={{ flexGrow: 1 }} /> */}
-
     </Scrollbar>
   );
 
@@ -88,7 +86,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
               width: NAV.W_DASHBOARD,
               bgcolor: 'transparent',
               // borderRightStyle: 'dashed',
-              boxShadow: (theme)=>theme.customShadows.z20,
+              boxShadow: (theme) => theme.customShadows.z20,
             },
           }}
         >
