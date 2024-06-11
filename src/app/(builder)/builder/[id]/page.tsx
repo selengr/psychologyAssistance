@@ -1,6 +1,7 @@
-import { GetFormById } from "@/actions/form";
-import FormBuilder from "@/formBuilder/components/FormBuilder";
-import React from "react";
+import FormBuilderMiddleware from '@/formBuilder/components/FormBuilderMiddleware';
+import callApi from '@/services/axios';
+import { AxiosResponse } from 'axios';
+import React from 'react';
 
 async function BuilderPage({
   params,
@@ -9,12 +10,12 @@ async function BuilderPage({
     id: string;
   };
 }) {
-  // const { id } = params;
-  // const form = await GetFormById(Number(id));
-  // if (!form) {
-  //   throw new Error("form not found");
-  // }
-  return <FormBuilder form={{name: "a", id: 5}} />;
+  const { id } = params;
+  const response = await callApi().get('/form/' + id);
+  if (!response) {
+    throw new Error('form not found');
+  }
+  return <FormBuilderMiddleware formData={response} />;
 }
 
 export default BuilderPage;
