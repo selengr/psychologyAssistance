@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import Designer from './Designer';
 import {
   DndContext,
@@ -11,28 +10,13 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import DragOverlayWrapper from './DragOverlayWrapper';
-import Link from 'next/link';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import Confetti from 'react-confetti';
 import { Box } from '@mui/material';
-import { useSearchParams } from 'next/navigation';
-import useDesigner from './hooks/useDesigner';
+import { createPortal } from 'react-dom';
 
-function FormBuilder({ form }: { form: any }) {
+function FormBuilder() {
   // const [isReady, setIsReady] = useState(false);
-  const { setQuestionGroups } = useDesigner();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const questionGroupIdFromUrl = searchParams.get('questionGroup');
-
-    setQuestionGroups([
-      {
-        id: Number(questionGroupIdFromUrl),
-        title: 'group-' + questionGroupIdFromUrl,
-      },
-    ]);
-  }, searchParams);
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
@@ -129,21 +113,6 @@ function FormBuilder({ form }: { form: any }) {
   return (
     <DndContext sensors={sensors}>
       <Box component="main" sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        {/* <nav className="flex justify-between border-b-2 p-4 gap-3 items-center">
-          <h2 className="truncate font-medium">
-            <span className="text-muted-foreground mr-2">Form:</span>
-            {form.name}
-          </h2>
-          <div className="flex items-center gap-2">
-            <PreviewDialogBtn />
-            {!form.published && (
-              <>
-                <SaveFormBtn id={form.id} />
-                <PublishFormBtn id={form.id} />
-              </>
-            )}
-          </div>
-        </nav> */}
         <Box
           sx={{
             display: 'flex',
@@ -152,12 +121,13 @@ function FormBuilder({ form }: { form: any }) {
             justifyContent: 'center',
             position: 'relative',
             height: '100%',
+            backgroundColor: (theme) => theme.palette.primary.darker,
           }}
         >
           <Designer />
         </Box>
       </Box>
-      <DragOverlayWrapper />
+      {createPortal(<DragOverlayWrapper />, document.body)}
     </DndContext>
   );
 }
