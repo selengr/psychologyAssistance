@@ -61,6 +61,7 @@ function DesignerSidebar() {
               borderWidth: '1px',
               borderStyle: 'solid',
               width: '100%',
+              borderRadius: 1,
             }}
           >
             <Typography variant="body2" component={'p'} py={0.5}>
@@ -76,6 +77,7 @@ function DesignerSidebar() {
           borderWidth: '1px',
           borderStyle: 'solid',
           width: '100%',
+          borderRadius: 1,
           marginTop: 1.5,
           '&.MuiButtonBase-root:hover': {
             bgcolor: (theme) => theme.palette.primary.main,

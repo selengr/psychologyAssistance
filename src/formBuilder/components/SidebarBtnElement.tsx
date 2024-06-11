@@ -43,6 +43,7 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
       sx={{
         borderColor: (theme) => theme.palette.primary.main,
         width: '100%',
+        borderRadius: 1,
       }}
       {...draggable.listeners}
       {...draggable.attributes}
@@ -66,7 +67,7 @@ export function SidebarBtnElementDragOverlay({ formElement }: { formElement: For
         // borderColor: 'primary.main',
         borderStyle: 'solid',
         width: '100%',
-        borderRadius: '10px',
+        borderRadius: 1,
         backgroundColor: 'white',
         '&.MuiButtonBase-root:hover': {
           backgroundColor: 'white',
