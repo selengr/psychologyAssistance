@@ -22,6 +22,7 @@ export default function CreateFieldDialog() {
         scrollbarWidth: 'none',
         '& .MuiPaper-root': {
           margin: '10px',
+          boxShadow: (theme) => theme.customShadows.fieldDialog,
         },
         '& .MuiDialog-container': {
           backdropFilter: 'blur(4px)',

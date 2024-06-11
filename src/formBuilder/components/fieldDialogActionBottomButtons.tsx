@@ -12,6 +12,8 @@ export default function FieldDialogActionBottomButtons({ status }: { status: boo
         variant="contained"
         loading={status}
         sx={{
+          fontWeight: '400',
+          fontSize: '15px',
           height: '45px',
           '&.MuiButtonBase-root:hover': {
             bgcolor: (theme) => theme.palette.primary.main,
@@ -25,7 +27,7 @@ export default function FieldDialogActionBottomButtons({ status }: { status: boo
         type="button"
         fullWidth
         variant="outlined"
-        sx={{ height: '45px' }}
+        sx={{ height: '45px', fontWeight: '400', fontSize: '15px' }}
         onClick={() => {
           setOpenDialog(false);
           setSelectedElement(null);

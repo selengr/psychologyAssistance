@@ -32,7 +32,7 @@ export default function Main({ children, sx, ...other }: BoxProps) {
             // pt: `${HEADER.H_DASHBOARD_DESKTOP + 80}px`,
             pb: `${HEADER.H_DASHBOARD_DESKTOP + SPACING}px`,
           }),
-          height: "100vh",
+          height: '100vh',
         }}
       >
         {children}
@@ -45,16 +45,16 @@ export default function Main({ children, sx, ...other }: BoxProps) {
       component="main"
       sx={{
         flexGrow: 1,
-        pt: `${HEADER.H_MOBILE + SPACING}px`,
+        pt: `${HEADER.H_MOBILE}px`,
         ...(isDesktop && {
-          px: 2,
+          px: 0,
           py: 0,
           width: `calc(100% - ${NAV.W_DASHBOARD}px)`,
           ...(isNavMini && {
             width: `calc(100% - ${NAV.W_DASHBOARD_MINI}px)`,
           }),
         }),
-        height: "100vh",
+        height: '100vh',
         ...sx,
       }}
       {...other}

@@ -20,6 +20,7 @@ function DesignerSidebar() {
         height: '100%',
         marginRight: '1rem',
         scrollbarWidth: 'none',
+        boxShadow: (theme) => theme.customShadows.box,
       }}
       padding={2}
       gap={1}

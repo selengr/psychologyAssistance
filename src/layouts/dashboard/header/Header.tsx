@@ -37,12 +37,12 @@ export default function Header({ onOpenNav }: Props) {
         <Stack
           flexGrow={1}
           direction="row"
-          alignItems="center"
+          alignItems="flex-start"
           justifyContent="space-between"
           spacing={{ xs: 0.5, sm: 1.5 }}
         >
           <IconButton onClick={onOpenNav} sx={{ mr: 1, color: 'text.primary' }}>
-            <Iconify icon="eva:menu-2-fill" />
+            <Iconify icon="hugeicons:menu-11" />
           </IconButton>
           <Logo sx={{ mr: 2.5 }} />
         </Stack>

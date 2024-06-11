@@ -172,6 +172,7 @@ function Designer() {
           alignItems: 'center',
           scrollbarWidth: 'none',
           backgroundColor: 'white',
+          boxShadow: (theme) => theme.customShadows.box,
         }}
         gap={2}
       >

@@ -189,7 +189,6 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     selectedElement,
   } = useDesigner();
 
-  debugger;
   const defaultValues = element.questionPropertyList.reduce((acc: any, attribute: any) => {
     if (attribute.questionPropertyEnum === 'REQUIRED') {
       acc[attribute.questionPropertyEnum] = attribute.value === 'true' ? true : false;
@@ -207,8 +206,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   });
 
   const {
-    reset,
-    watch,
+    // reset,
+    // watch,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;

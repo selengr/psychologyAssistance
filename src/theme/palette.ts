@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { alpha } from '@mui/material/styles';
 
@@ -35,13 +35,13 @@ const GREY = {
   900: '#161C24',
 };
 
-
 const PRIMARY = {
   lighter: '#C8FACD',
   light: '#5BE584',
   main: '#433792', // ps
   dark: '#007B55',
-  darker: '#005249',
+  // darker: '#005249',
+  darker: '#f7f7f7',
   contrastText: '#FFFFFF',
 };
 
@@ -66,7 +66,7 @@ const INFO = {
 const SUCCESS = {
   lighter: '#D8FBDE',
   light: '#86E8AB',
-  main: '#30AC62',// ps
+  main: '#30AC62', // ps
   dark: '#1B806A',
   darker: '#0A5554',
   contrastText: '#FFFFFF',
@@ -75,7 +75,7 @@ const SUCCESS = {
 const WARNING = {
   lighter: '#FFF5CC',
   light: '#FFD666',
-  main: '#F8CD11',// ps
+  main: '#F8CD11', // ps
   dark: '#B76E00',
   darker: '#7A4100',
   contrastText: GREY[800],
@@ -89,7 +89,6 @@ const ERROR = {
   darker: '#7A0916',
   contrastText: '#FFFFFF',
 };
-
 
 // psya
 // hover: '#6359A3',
@@ -112,7 +111,7 @@ const COMMON = {
   error: ERROR,
   grey: GREY,
   divider: alpha(GREY[500], 0.24),
-  
+
   action: {
     hover: alpha(GREY[500], 0.08),
     selected: alpha(GREY[500], 0.16),

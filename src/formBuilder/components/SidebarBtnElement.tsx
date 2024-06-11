@@ -1,3 +1,5 @@
+'use client';
+
 import { useDraggable } from '@dnd-kit/core';
 import { FormElement, FormElements } from './FormElements';
 import { Button, Typography } from '@mui/material';
@@ -5,6 +7,7 @@ import useDesigner from './hooks/useDesigner';
 import { idGenerator } from '../lib/idGenerator';
 import { IFormElementConstructor } from '@/@types/bulider';
 import { usePathname } from 'next/navigation';
+import { indigo } from '@mui/material/colors';
 
 function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
   const { setOpenDialog, setSelectedElement, questionGroups } = useDesigner();
@@ -56,10 +59,20 @@ export function SidebarBtnElementDragOverlay({ formElement }: { formElement: For
 
   return (
     <Button
-      variant={'outlined'}
+      variant="contained"
       sx={{
-        borderColor: (theme) => theme.palette.primary.main,
+        borderWidth: '1px',
+        borderColor: indigo[100],
+        // borderColor: 'primary.main',
+        borderStyle: 'solid',
         width: '100%',
+        borderRadius: '10px',
+        backgroundColor: 'white',
+        '&.MuiButtonBase-root:hover': {
+          backgroundColor: 'white',
+          color: 'primary.main',
+          boxShadow: (theme) => theme.customShadows.primary,
+        },
       }}
     >
       <Typography variant="body2" component={'p'} py={0.5}>
