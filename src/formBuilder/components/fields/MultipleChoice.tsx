@@ -16,10 +16,15 @@ import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
 import { IFormElementConstructor, IQPLMultipleChoice } from '@/@types/bulider';
 import callApi from '@/services/axios';
 import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
+import RHFTextFieldOptionList from '@/components/hook-form/RHFTextFieldOptionList';
 
 const questionType: ElementsType = 'MULTIPLE_CHOICE';
 
 const questionPropertyList: IQPLMultipleChoice = [
+  {
+    questionPropertyEnum: 'MULTIPLE_SELECT',
+    value: 'false',
+  },
   {
     questionPropertyEnum: 'REQUIRED',
     value: 'false',
@@ -34,11 +39,23 @@ const questionPropertyList: IQPLMultipleChoice = [
   },
 ];
 
+const optionList = [
+  {
+    title: 'گزینه 1',
+    score: 0,
+  },
+  {
+    title: 'گزینه 2',
+    score: 0,
+  },
+];
+
 const propertiesSchema = z.object({
   title: z.string().min(2).max(50),
   DESCRIPTION: z.string().max(200),
   REQUIRED: z.boolean().default(false),
-  TEXT_FIELD_PATTERN: z.string(),
+  RANDOMIZE_OPTIONS: z.boolean().default(false),
+  optionList: z.array(z.object({ title: z.string(), score: z.number() })),
 });
 
 export const MultipleChoiceFormElement: FormElement = {
@@ -57,6 +74,7 @@ export const MultipleChoiceFormElement: FormElement = {
     questionType,
     position,
     questionPropertyList: questionPropertyList,
+    optionList: optionList,
   }),
   designerBtnElement: {
     label: 'چند گزینه‌ای',
@@ -181,7 +199,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   const defaultValues = element.questionPropertyList.reduce((acc: any, attribute: any) => {
     if (
       attribute.questionPropertyEnum === 'REQUIRED' ||
-      attribute.questionPropertyEnum === 'RANDOMIZE_OPTIONS'
+      attribute.questionPropertyEnum === 'RANDOMIZE_OPTIONS' ||
+      attribute.questionPropertyEnum === 'MULTIPLE_SELECT'
     ) {
       acc[attribute.questionPropertyEnum] = attribute.value === 'true' ? true : false;
     } else {
@@ -190,6 +209,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     return acc;
   }, {});
   defaultValues.title = element.title;
+  defaultValues.optionList = element.optionList;
 
   const methods = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
@@ -199,12 +219,12 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
   const {
     // reset,
-    // watch,
+    setValue,
+    getValues,
+    watch,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
-
-  // const values = watch();
 
   // ----------------------------------------------------------------------
 
@@ -213,12 +233,16 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   // }, [element, form]);
 
   async function onSubmit(values: propertiesFormSchemaType) {
-    const { title, DESCRIPTION, REQUIRED, RANDOMIZE_OPTIONS } = values;
+    const { title, DESCRIPTION, REQUIRED, RANDOMIZE_OPTIONS, MULTIPLE_SELECT, optionList } = values;
 
     // finds whether a field is selected or not
     const selectedYet = elements?.find((el) => el?.questionId === element?.questionId);
 
     const data = [
+      {
+        questionPropertyEnum: 'MULTIPLE_SELECT',
+        value: MULTIPLE_SELECT,
+      },
       {
         questionPropertyEnum: 'RANDOMIZE_OPTIONS',
         value: RANDOMIZE_OPTIONS,
@@ -233,11 +257,14 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       },
     ];
 
+    const optionListData = optionList;
+
     const finalFieldData = {
       ...element,
       title,
       position: selectedElement?.position ?? elements.length,
       questionPropertyList: data,
+      optionList: optionListData,
     };
     delete finalFieldData.temp;
 
@@ -280,6 +307,15 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <RHFTextField multiline rows={3} name="title" />
         </Stack>
 
+        <Stack>
+          <RHFTextFieldOptionList
+            name="optionList"
+            watch={watch}
+            setValue={setValue}
+            getValues={getValues}
+          />
+        </Stack>
+
         <Stack
           flexDirection="row"
           justifyContent="space-between"
@@ -289,7 +325,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <Typography variant="subtitle2">چند انتخابی</Typography>
           <RHFSwitch
             label=""
-            name="REQUIRED"
+            name="MULTIPLE_SELECT"
             labelPlacement="start"
             sx={{ mb: 1, mx: 0, width: 1, justifyContent: 'space-between' }}
           />
@@ -319,7 +355,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <Typography variant="subtitle2">توضیع تصادفی گزینه‌ها</Typography>
           <RHFSwitch
             label=""
-            name="REQUIRED"
+            name="RANDOMIZE_OPTIONS"
             labelPlacement="start"
             sx={{ mb: 1, mx: 0, width: 1, justifyContent: 'space-between' }}
           />
@@ -334,7 +370,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <Typography variant="subtitle2">توضیحات</Typography>
           <IOSSwitch
             onChange={() => setOpenDescriptionSwitch(!openDescriptionSwitch)}
-            defaultChecked={openDescriptionSwitch}
+            defaultValue={openDescriptionSwitch}
           />
         </Stack>
 

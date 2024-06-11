@@ -24,6 +24,10 @@ export type IQPLTextField = [
 
 export type IQPLMultipleChoice = [
   {
+    questionPropertyEnum: 'MULTIPLE_SELECT';
+    value: string;
+  },
+  {
     questionPropertyEnum: 'REQUIRED';
     value: string;
   },

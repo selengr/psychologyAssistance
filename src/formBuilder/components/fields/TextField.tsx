@@ -322,7 +322,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <Typography variant="subtitle2">توضیحات</Typography>
           <IOSSwitch
             onChange={() => setOpenDescriptionSwitch(!openDescriptionSwitch)}
-            defaultChecked={openDescriptionSwitch}
+            defaultValue={openDescriptionSwitch}
           />
         </Stack>
 
