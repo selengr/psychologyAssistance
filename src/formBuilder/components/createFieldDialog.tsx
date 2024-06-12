@@ -36,7 +36,7 @@ export default function CreateFieldDialog() {
           onClick={handleClose}
           sx={{ marginX: 0.5, marginTop: 0.5, marginBottom: 0 }}
         >
-          <Iconify icon="iconamoon:close-fill" sx={{ width: 35, height: 35 }} />
+          <Iconify icon="mingcute:close-line" sx={{ width: 25, height: 25 }} />
         </IconButton>
       </Box>
       <DialogContent

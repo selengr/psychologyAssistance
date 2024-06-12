@@ -55,7 +55,11 @@ const propertiesSchema = z.object({
   DESCRIPTION: z.string().max(200),
   REQUIRED: z.boolean().default(false),
   RANDOMIZE_OPTIONS: z.boolean().default(false),
-  optionList: z.array(z.object({ title: z.string(), score: z.number() })),
+  // MULTIPLE_SELECT: z.boolean().default(false),
+  optionList: z
+    .array(z.object({ title: z.string().min(2), score: z.number().positive() }))
+    .min(2)
+    .max(10),
 });
 
 export const MultipleChoiceFormElement: FormElement = {
@@ -239,13 +243,13 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     const selectedYet = elements?.find((el) => el?.questionId === element?.questionId);
 
     const data = [
-      {
-        questionPropertyEnum: 'MULTIPLE_SELECT',
-        value: MULTIPLE_SELECT,
-      },
+      // {
+      //   questionPropertyEnum: 'MULTIPLE_SELECT',
+      //   value: MULTIPLE_SELECT ? 'true' : 'false',
+      // },
       {
         questionPropertyEnum: 'RANDOMIZE_OPTIONS',
-        value: RANDOMIZE_OPTIONS,
+        value: RANDOMIZE_OPTIONS ? 'true' : 'false',
       },
       {
         questionPropertyEnum: 'REQUIRED',

@@ -65,7 +65,7 @@ export default function RHFTextFieldOptionList({ name, watch, setValue, getValue
                     }}
                   />
                   <IconButton
-                    aria-label="delete"
+                    aria-label="trash"
                     onClick={(e) => {
                       e.preventDefault();
                       if (getValues()?.optionList?.length <= 1) return;
@@ -86,9 +86,16 @@ export default function RHFTextFieldOptionList({ name, watch, setValue, getValue
                 </Box>
               ))}
             </Box>
-            <Box className="flex items-center flex-row-reverse justify-between">
+            <Box
+              width="100%"
+              display="flex"
+              alignItems="center"
+              flexDirection="row-reverse"
+              justifyContent="space-between"
+            >
               <Button
                 sx={{
+                  width: '100%',
                   left: 0,
                   gap: 2,
                   marginTop: 1.5,
@@ -96,7 +103,7 @@ export default function RHFTextFieldOptionList({ name, watch, setValue, getValue
                     bgcolor: (theme) => theme.palette.primary.main,
                   },
                 }}
-                variant="contained"
+                variant="outlined"
                 onClick={(e) => {
                   e.preventDefault(); // avoid submit
                   if (getValues()?.optionList?.length >= 10) return;
@@ -106,8 +113,8 @@ export default function RHFTextFieldOptionList({ name, watch, setValue, getValue
               >
                 اضافه کردن
               </Button>
-              <Typography sx={{ fontSize: '12px', color: 'red' }}>{error?.message}</Typography>
             </Box>
+            <Typography sx={{ fontSize: '12px', color: 'red' }}>{error?.message}</Typography>
           </Box>
         )}
       />
