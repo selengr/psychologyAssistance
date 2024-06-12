@@ -1,5 +1,5 @@
 import FormBuilderMiddleware from '@/formBuilder/components/FormBuilderMiddleware';
-import callApi from '@/services/axios';
+import { callApiForm } from '@/services/apis/builder';
 import { AxiosResponse } from 'axios';
 import React from 'react';
 
@@ -11,7 +11,7 @@ async function BuilderPage({
   };
 }) {
   const { id } = params;
-  const response = await callApi().get('/form/' + id);
+  const response = callApiForm(id);
   if (!response) {
     throw new Error('form not found');
   }

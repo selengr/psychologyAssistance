@@ -16,6 +16,7 @@ import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
 import { IFormElementConstructor, IQPLTextField } from '@/@types/bulider';
 import callApi from '@/services/axios';
 import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
+import { callApiQuestionCreate, callApiQuestionUpdate } from '@/services/apis/builder';
 
 const questionType: ElementsType = 'TEXT_FIELD';
 
@@ -249,7 +250,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
     if (!selectedYet) {
       try {
-        const response = await callApi().post('/question', finalFieldData);
+        const response: any = await callApiQuestionCreate(finalFieldData);
         addElement(selectedElement!.position ?? elements.length, response);
         setOpenDialog(false);
         setSelectedElement(null);
@@ -258,10 +259,11 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       }
     } else {
       try {
-        const response = await callApi().put(
-          '/question/' + finalFieldData.questionId,
+        const response: any = await callApiQuestionUpdate(
+          finalFieldData.questionId,
           finalFieldData
         );
+
         updateElement(element.questionId, response);
       } catch (error) {
         console.error(error);

@@ -14,9 +14,11 @@ import { RHFSwitch, RHFTextField } from '@/components/hook-form';
 import { Label } from '@radix-ui/react-label';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
 import { IFormElementConstructor, IQPLMultipleChoice } from '@/@types/bulider';
-import callApi from '@/services/axios';
+// import callApi from '@/services/axios';
 import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
 import RHFTextFieldOptionList from '@/components/hook-form/RHFTextFieldOptionList';
+import { callApiQuestionCreate, callApiQuestionUpdate } from '@/services/apis/builder';
+import { AxiosResponse } from 'axios';
 
 const questionType: ElementsType = 'MULTIPLE_CHOICE';
 
@@ -274,7 +276,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
     if (!selectedYet) {
       try {
-        const response = await callApi().post('/question', finalFieldData);
+        const response : any = await callApiQuestionCreate(finalFieldData);
         addElement(selectedElement!.position ?? elements.length, response);
         setOpenDialog(false);
         setSelectedElement(null);
@@ -283,10 +285,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       }
     } else {
       try {
-        const response = await callApi().put(
-          '/question/' + finalFieldData.questionId,
-          finalFieldData
-        );
+        const response : any  = await callApiQuestionUpdate(finalFieldData.questionId, finalFieldData);
         updateElement(element.questionId, response);
       } catch (error) {
         console.error(error);

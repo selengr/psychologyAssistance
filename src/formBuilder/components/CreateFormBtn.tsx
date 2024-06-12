@@ -19,11 +19,8 @@ import { CreateForm } from '@/actions/form';
 import { BsFileEarmarkPlus } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import callApi from '@/services/axios';
-import { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
-import { LoadingButton } from '@mui/lab';
-import { Direction } from '@dnd-kit/core/dist/types';
+import { callApiCreateForm } from '@/services/apis/builder';
 
 function CreateFormBtn() {
   const router = useRouter();
@@ -38,11 +35,11 @@ function CreateFormBtn() {
 
   async function onSubmit(values: formSchemaType) {
     try {
-      let response: AxiosResponse = await callApi().post('/form', values);
+      let response :any = await callApiCreateForm(values);
       toast.success('Form created successfully');
       router.push(`/builder/${response?.id}`);
     } catch (error) {
-      toast.error('Something went wrong, please try again later');
+      console.log('object');
     }
   }
 
