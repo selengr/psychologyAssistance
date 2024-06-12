@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { TOKEN_KEY } from 'rootApp/core/enum/enumGlobal';
+export const TOKEN_KEY = 'token';
 
 export const setToken = (token: string) => {
   Cookies.set(TOKEN_KEY, token);

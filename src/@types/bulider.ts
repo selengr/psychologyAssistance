@@ -47,3 +47,8 @@ export type IDefaultValues = {
   DESCRIPTION: string;
   title: string;
 };
+
+
+export type ITest = {
+  name: string;
+};
