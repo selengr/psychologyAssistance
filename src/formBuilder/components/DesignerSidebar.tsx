@@ -20,7 +20,7 @@ const DesignerSidebar = memo(function DesignerSidebar() {
         height: '100%',
         marginRight: '1rem',
         scrollbarWidth: 'none',
-        boxShadow: (theme) => theme.customShadows.box,
+        boxShadow: (theme) => theme.customShadows.primary,
       }}
       padding={2}
       gap={1}

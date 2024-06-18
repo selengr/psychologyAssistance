@@ -15,6 +15,7 @@ const FormBuilderMiddleware = memo(function FormBuilderMiddleware({
   console.log(formData);
 
   useEffect(() => {
+    const fetchBusinesses = () => {
     const allQuestionGroups = formData?.questionGroups?.map((group: any) => group?.questionGroupId);
     setQuestionGroups(allQuestionGroups);
     const allQuestions: any[] = formData?.questionGroups?.map(
@@ -27,6 +28,10 @@ const FormBuilderMiddleware = memo(function FormBuilderMiddleware({
       id: undefined,
     }));
     setElements(updatedElements);
+
+  };
+  fetchBusinesses();
+
   }, []);
 
   return <FormBuilder />;

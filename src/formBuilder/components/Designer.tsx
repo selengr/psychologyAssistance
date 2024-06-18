@@ -39,7 +39,7 @@ function Designer() {
           alignItems: 'center',
           scrollbarWidth: 'none',
           backgroundColor: 'white',
-          boxShadow: (theme) => theme.customShadows.box,
+          boxShadow: (theme) => theme.customShadows.primary,
         }}
         gap={2}
       >
@@ -75,7 +75,7 @@ function Designer() {
               sx={{ position: 'relative', right: 8 }}
               onClick={() => {
                 const newElement = FormElements['TitleFieldStart'].construct(
-                  idGenerator() as IFormElementConstructor
+                  idGenerator() as any
                 );
                 setOpenDialog(true);
                 setSelectedElement({ fieldElement: newElement, position: null });
@@ -172,7 +172,7 @@ function Designer() {
               sx={{ position: 'relative', right: 8 }}
               onClick={() => {
                 const newElement = FormElements['TitleFieldFinish'].construct(
-                  idGenerator() as IFormElementConstructor
+                  idGenerator() as any
                 );
                 setOpenDialog(true);
                 setSelectedElement({ fieldElement: newElement, position: null });
