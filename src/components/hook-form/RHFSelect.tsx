@@ -15,6 +15,7 @@ import {
   TextFieldProps,
   FormHelperText,
 } from '@mui/material';
+import { Dispatch, SetStateAction } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -89,6 +90,7 @@ type RHFMultiSelectProps = SelectProps & {
   checkbox?: boolean;
   placeholder?: string;
   helperText?: React.ReactNode;
+  setProp?: Dispatch<SetStateAction<boolean>>;
   options: {
     label: string;
     value: string;
@@ -103,13 +105,14 @@ export function RHFMultiSelect({
   checkbox,
   placeholder,
   helperText,
+  setProp,
   sx,
   ...other
 }: RHFMultiSelectProps) {
   const { control } = useFormContext();
 
   const renderValues = (selectedIds: string[]) => {
-    const selectedItems = options.filter((item) => selectedIds.includes(item.value));
+    const selectedItems = options?.filter((item) => selectedIds?.includes(item?.value));
 
     if (!selectedItems.length && placeholder) {
       return (
@@ -141,8 +144,12 @@ export function RHFMultiSelect({
           {label && <InputLabel id={name}> {label} </InputLabel>}
 
           <Select
+            sx={{
+              '& .MuiSelect-select': {
+                padding: 1,
+              },
+            }}
             {...field}
-            multiple
             displayEmpty={!!placeholder}
             labelId={name}
             input={<OutlinedInput fullWidth label={label} error={!!error} />}
@@ -151,6 +158,12 @@ export function RHFMultiSelect({
               PaperProps: {
                 sx: { px: 1, maxHeight: 280 },
               },
+            }}
+            onChange={(e) => {
+              field.onChange(e.target.value);
+              if (!setProp) return;
+
+              e.target.value === 'SHORT_TEXT' ? setProp(true) : setProp(false);
             }}
             {...other}
           >
@@ -170,7 +183,7 @@ export function RHFMultiSelect({
             )}
 
             {options.map((option) => {
-              const selected = field.value.includes(option.value);
+              const selected = field?.value?.includes(option?.value);
 
               return (
                 <MenuItem

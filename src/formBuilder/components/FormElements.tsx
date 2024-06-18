@@ -1,4 +1,4 @@
-import { IFormElementConstructor } from '@/@types/bulider';
+import { IFormElementConstructor, tempObj } from '@/@types/bulider';
 import { SelectFieldFormElement } from './fields/SelectField';
 import { SpectralFormElement } from './fields/SpectralField';
 import { TextFieldFormElement } from './fields/TextField';
@@ -12,7 +12,7 @@ export type ElementsType =
   | 'SelectField'
   | 'TitleFieldStart'
   | 'TitleFieldFinish'
-  | 'SpectralField';
+  | 'SPECTRAL';
 
 export type SubmitFunction = (key: number, value: string) => void;
 
@@ -54,6 +54,7 @@ export type FormElementInstance = {
   questionType: ElementsType;
   position: number | null;
   questionPropertyList?: Record<string, any>;
+  temp?: boolean | tempObj;
 };
 
 type FormElementsType = {
@@ -63,7 +64,7 @@ type FormElementsType = {
 export const FormElements: FormElementsType = {
   TEXT_FIELD: TextFieldFormElement,
   MULTIPLE_CHOICE: MultipleChoiceFormElement,
-  SpectralField: SpectralFormElement,
+  SPECTRAL: SpectralFormElement,
   SelectField: SelectFieldFormElement,
   TitleFieldStart: TitleFieldStartFormElement,
   TitleFieldFinish: TitleFieldFinishFormElement,

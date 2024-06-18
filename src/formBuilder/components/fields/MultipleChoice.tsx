@@ -13,18 +13,17 @@ import FormProvider from '@/components/hook-form/FormProvider';
 import { RHFSwitch, RHFTextField } from '@/components/hook-form';
 import { Label } from '@radix-ui/react-label';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
-import { IFormElementConstructor, IQPLMultipleChoice } from '@/@types/bulider';
-// import callApi from '@/services/axios';
+import { IFormElementConstructor, IFormOptionList, IQPLMultipleChoice } from '@/@types/bulider';
 import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
 import RHFTextFieldOptionList from '@/components/hook-form/RHFTextFieldOptionList';
 import { callApiQuestionCreate, callApiQuestionUpdate } from '@/services/apis/builder';
-import { AxiosResponse } from 'axios';
+import { UppyUploader } from '@/components/mresalatUploader/UppyUploader';
 
 const questionType: ElementsType = 'MULTIPLE_CHOICE';
 
 const questionPropertyList: IQPLMultipleChoice = [
   {
-    questionPropertyEnum: 'MULTIPLE_SELECT',
+    questionPropertyEnum: 'MULTI_SELECT',
     value: 'false',
   },
   {
@@ -41,7 +40,7 @@ const questionPropertyList: IQPLMultipleChoice = [
   },
 ];
 
-const optionList = [
+const optionList: IFormOptionList[] = [
   {
     title: 'گزینه 1',
     score: 0,
@@ -52,16 +51,27 @@ const optionList = [
   },
 ];
 
+const optionsSchema = z.object({
+  title: z
+    .string()
+    .min(2, { message: 'حداقل 2 و حداکثر 50 کاراکتر داشته باشد' })
+    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر داشته باشد' }),
+  score: z.number(),
+});
+
 const propertiesSchema = z.object({
-  title: z.string().min(2).max(50),
-  DESCRIPTION: z.string().max(200),
+  title: z
+    .string()
+    .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
+  DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
   REQUIRED: z.boolean().default(false),
   RANDOMIZE_OPTIONS: z.boolean().default(false),
-  // MULTIPLE_SELECT: z.boolean().default(false),
+  MULTI_SELECT: z.boolean().default(false),
   optionList: z
-    .array(z.object({ title: z.string().min(2), score: z.number().positive() }))
-    .min(2)
-    .max(10),
+    .array(optionsSchema)
+    .min(2, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' })
+    .max(10, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' }),
 });
 
 export const MultipleChoiceFormElement: FormElement = {
@@ -101,6 +111,7 @@ export const MultipleChoiceFormElement: FormElement = {
 
 type CustomInstance = FormElementInstance & {
   questionPropertyList: typeof questionPropertyList;
+  optionList: typeof optionList;
 };
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
@@ -206,7 +217,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     if (
       attribute.questionPropertyEnum === 'REQUIRED' ||
       attribute.questionPropertyEnum === 'RANDOMIZE_OPTIONS' ||
-      attribute.questionPropertyEnum === 'MULTIPLE_SELECT'
+      attribute.questionPropertyEnum === 'MULTI_SELECT'
     ) {
       acc[attribute.questionPropertyEnum] = attribute.value === 'true' ? true : false;
     } else {
@@ -214,8 +225,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     }
     return acc;
   }, {});
-  defaultValues.title = element.title;
-  defaultValues.optionList = element.optionList;
+  defaultValues.title = element?.title;
+  defaultValues.optionList = element?.optionList;
 
   const methods = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
@@ -224,7 +235,6 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   });
 
   const {
-    // reset,
     setValue,
     getValues,
     watch,
@@ -232,23 +242,21 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     formState: { isSubmitting },
   } = methods;
 
-  // ----------------------------------------------------------------------
-
   // useEffect(() => {
   //   form.reset(element.questionPropertyList);
   // }, [element, form]);
 
   async function onSubmit(values: propertiesFormSchemaType) {
-    const { title, DESCRIPTION, REQUIRED, RANDOMIZE_OPTIONS, MULTIPLE_SELECT, optionList } = values;
+    const { title, DESCRIPTION, REQUIRED, RANDOMIZE_OPTIONS, MULTI_SELECT, optionList } = values;
 
-    // finds whether a field is selected or not
+    // ? finds whether a field is selected or not
     const selectedYet = elements?.find((el) => el?.questionId === element?.questionId);
 
     const data = [
-      // {
-      //   questionPropertyEnum: 'MULTIPLE_SELECT',
-      //   value: MULTIPLE_SELECT ? 'true' : 'false',
-      // },
+      {
+        questionPropertyEnum: 'MULTI_SELECT',
+        value: MULTI_SELECT ? 'true' : 'false',
+      },
       {
         questionPropertyEnum: 'RANDOMIZE_OPTIONS',
         value: RANDOMIZE_OPTIONS ? 'true' : 'false',
@@ -272,12 +280,13 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       questionPropertyList: data,
       optionList: optionListData,
     };
-    delete finalFieldData.temp;
+
+    // ! elements.length problem
 
     if (!selectedYet) {
       try {
-        const response : any = await callApiQuestionCreate(finalFieldData);
-        addElement(selectedElement!.position ?? elements.length, response);
+        const response: any = await callApiQuestionCreate(finalFieldData);
+        addElement(selectedElement!.position ?? elements.length, response.data);
         setOpenDialog(false);
         setSelectedElement(null);
       } catch (error) {
@@ -285,8 +294,11 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       }
     } else {
       try {
-        const response : any  = await callApiQuestionUpdate(finalFieldData.questionId, finalFieldData);
-        updateElement(element.questionId, response);
+        const response: any = await callApiQuestionUpdate(
+          finalFieldData.questionId,
+          finalFieldData
+        );
+        updateElement(element.questionId, response.data);
       } catch (error) {
         console.error(error);
       }
@@ -328,7 +340,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <Typography variant="subtitle2">چند انتخابی</Typography>
           <RHFSwitch
             label=""
-            name="MULTIPLE_SELECT"
+            name="MULTI_SELECT"
             labelPlacement="start"
             sx={{ mb: 1, mx: 0, width: 1, justifyContent: 'space-between' }}
           />
@@ -373,7 +385,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <Typography variant="subtitle2">توضیحات</Typography>
           <IOSSwitch
             onChange={() => setOpenDescriptionSwitch(!openDescriptionSwitch)}
-            defaultValue={openDescriptionSwitch}
+            checked={openDescriptionSwitch}
           />
         </Stack>
 
@@ -388,6 +400,10 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
             />
           </Stack>
         )}
+
+        <Box marginTop={3}>
+          <UppyUploader sx={{}} />
+        </Box>
 
         <FieldDialogActionBottomButtons status={isSubmitting} />
       </Box>

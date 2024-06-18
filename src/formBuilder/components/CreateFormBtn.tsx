@@ -4,18 +4,10 @@ import { formSchema, formSchemaType } from '@/formBuilder/schemas/form';
 import { useForm } from 'react-hook-form';
 import { ImSpinner2 } from 'react-icons/im';
 import { Button } from './ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from './ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-import { CreateForm } from '@/actions/form';
 import { BsFileEarmarkPlus } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -35,9 +27,9 @@ function CreateFormBtn() {
 
   async function onSubmit(values: formSchemaType) {
     try {
-      let response :any = await callApiCreateForm(values);
+      const response: any = await callApiCreateForm(values);
       toast.success('Form created successfully');
-      router.push(`/builder/${response?.id}`);
+      router.push(`/builder/${response?.data?.id}`);
     } catch (error) {
       console.log('object');
     }

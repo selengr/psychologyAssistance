@@ -24,14 +24,14 @@ function DragOverlayWrapper() {
   if (!draggedItem) return null;
 
   let node = <Box>No drag overlay</Box>;
-  const isSidebarBtnElement = draggedItem.data?.current?.isDesignerBtnElement;
+  const isSidebarBtn = draggedItem.data?.current?.isSidebarBtnElement;
 
-  const isDesignerElement = draggedItem.data?.current?.isDesignerElement;
+  const isQuestionElement = draggedItem.data?.current?.isQuestionElement;
 
-  if (isSidebarBtnElement) {
+  if (isSidebarBtn) {
     const type = draggedItem.data?.current?.type as ElementsType;
     node = <SidebarBtnElementDragOverlay formElement={FormElements[type]} />;
-  } else if (isDesignerElement) {
+  } else if (isQuestionElement) {
     const elementId = draggedItem.data?.current?.question?.questionId;
     const element = elements.find((el) => el.questionId === elementId);
 
@@ -45,40 +45,15 @@ function DragOverlayWrapper() {
             direction: 'ltr',
             display: 'flex',
             justifyContent: 'center',
-            border: '1px solid #d8d8d8',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: (theme) => theme.palette.primary.main,
             borderRadius: '5px',
+            backgroundColor: '#fff',
             height: '65px',
             width: '100%',
             pointerEvents: 'none',
-            opacity: '0.8',
-            paddingX: 2,
-            paddingY: 1,
-          }}
-        >
-          <DesignerElementComponent elementInstance={element} />
-        </Box>
-      );
-    }
-  } else if (draggedItem.data?.current?.question?.type) {
-    const elementId = draggedItem.data?.current?.question?.id;
-    const element = elements.find((el) => el.questionId === elementId);
-
-    if (!element) node = <Box>فیلد یافت نشد!</Box>;
-    else {
-      const DesignerElementComponent = FormElements[element.questionType].designerComponent;
-
-      node = (
-        <Box
-          sx={{
-            direction: 'ltr',
-            display: 'flex',
-            justifyContent: 'center',
-            border: '1px solid #d8d8d8',
-            borderRadius: '5px',
-            height: '65px',
-            width: '100%',
-            pointerEvents: 'none',
-            opacity: '0.8',
+            opacity: '0.9',
             paddingX: 2,
             paddingY: 1,
           }}

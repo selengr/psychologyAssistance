@@ -1,11 +1,27 @@
 export type IFormElementConstructor = {
-  questionId: number | null;
+  questionId: number;
   questionGroupId: number | null;
   formId: number;
   title: string;
-  temp: boolean;
   position: number | null;
+  temp?: boolean | tempObj;
+  optionList: IFormOptionList;
 };
+
+export type tempObj = {
+  prevPosition: number;
+  prevQuestionGroupId: number;
+};
+
+export type IFormOptionList = {
+  score: number;
+  title: string;
+};
+
+export type ITextFieldFormPatternOptions = {
+  value: string;
+  label: string;
+}[];
 
 export type IQPLTextField = [
   {
@@ -20,11 +36,52 @@ export type IQPLTextField = [
     questionPropertyEnum: 'DESCRIPTION';
     value: string;
   },
+  {
+    questionPropertyEnum: 'MINIMUM_LEN';
+    value: string | number;
+  },
+  {
+    questionPropertyEnum: 'MAXIMUM_LEN';
+    value: string | number;
+  },
+];
+
+export type ISpectralQTapAndOptionsType = { value: string; label: string }[];
+
+export type IQPLSpectral = [
+  {
+    questionPropertyEnum: 'SPECTRAL_TYPE';
+    value: string;
+  },
+  {
+    questionPropertyEnum: 'REQUIRED';
+    value: string;
+  },
+  {
+    questionPropertyEnum: 'DESCRIPTION';
+    value: string;
+  },
+  {
+    questionPropertyEnum: 'TAP_TYPE';
+    value: string;
+  },
+  {
+    questionPropertyEnum: 'STEP';
+    value: number | string;
+  },
+  {
+    questionPropertyEnum: 'SPECTRAL_START';
+    value: number | string;
+  },
+  {
+    questionPropertyEnum: 'SPECTRAL_END';
+    value: number | string;
+  },
 ];
 
 export type IQPLMultipleChoice = [
   {
-    questionPropertyEnum: 'MULTIPLE_SELECT';
+    questionPropertyEnum: 'MULTI_SELECT';
     value: string;
   },
   {
@@ -47,7 +104,6 @@ export type IDefaultValues = {
   DESCRIPTION: string;
   title: string;
 };
-
 
 export type ITest = {
   name: string;

@@ -5,8 +5,9 @@ import QuestionCard from './QuestionCard';
 import useDesigner from '../hooks/useDesigner';
 import { Box, IconButton, Typography } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
+import { FormElementInstance } from '../FormElements';
 
-function QuestionGroup({ group, questions }) {
+function QuestionGroup({ group, questions }: { group: number; questions: FormElementInstance[] }) {
   const { questionGroups, deleteQuestionGroup } = useDesigner();
   const questionsIds = useMemo(() => {
     return questions?.map((question: any) => question?.questionId);

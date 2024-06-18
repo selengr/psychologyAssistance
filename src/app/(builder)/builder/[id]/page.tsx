@@ -1,7 +1,5 @@
 import FormBuilderMiddleware from '@/formBuilder/components/FormBuilderMiddleware';
-import { callApiForm } from '@/services/apis/builder';
-import { AxiosResponse } from 'axios';
-import React from 'react';
+import axios from 'axios';
 
 async function BuilderPage({
   params,
@@ -11,11 +9,15 @@ async function BuilderPage({
   };
 }) {
   const { id } = params;
-  const response = callApiForm(id);
+
+  // ? Temporary
+  const response = await axios.get('http://172.16.11.24:8080/psya/form/' + id);
+
   if (!response) {
     throw new Error('form not found');
   }
-  return <FormBuilderMiddleware formData={response} />;
+
+  return <FormBuilderMiddleware formData={response.data} />;
 }
 
 export default BuilderPage;

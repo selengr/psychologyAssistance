@@ -2,7 +2,6 @@
 const nextConfig = {
   experimental: {
     // ppr: true,
-    serverActions: true,
     optimizePackageImports: [
       "@emotion/react",
       "axios",

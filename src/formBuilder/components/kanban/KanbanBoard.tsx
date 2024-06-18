@@ -4,7 +4,7 @@ import { DragEndEvent, DragOverEvent, DragStartEvent, useDndMonitor } from '@dnd
 import { verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import useDesigner from '../hooks/useDesigner';
-import { FormElements } from '../FormElements';
+import { ElementsType, FormElements } from '../FormElements';
 import { idGenerator } from '../../lib/idGenerator';
 import { Box, Button, Typography } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
@@ -27,12 +27,15 @@ function KanbanBoard() {
 
   useDndMonitor({
     onDragStart: (event: DragStartEvent) => {
+      // * detect active qeuestion
+      // * add a temp prop to it
+      // * save the current question group and position
       const { active } = event;
 
-      const isDesignerBtnElement = active.data?.current?.isDesignerBtnElement;
-      const designerBtnType = active?.data?.current?.type;
+      const isSidebarBtn = active.data?.current?.isSidebarBtnElement;
+      const designerBtnType: ElementsType = active?.data?.current?.type;
 
-      if (isDesignerBtnElement) {
+      if (isSidebarBtn) {
         const newElement = FormElements[designerBtnType].construct({
           questionId: idGenerator(),
           questionGroupId: null,
@@ -71,35 +74,35 @@ function KanbanBoard() {
 
       if (activeId === overId) return;
 
-      const isDesignerBtnElement = active.data?.current?.isDesignerBtnElement;
+      const isSidebarBtn = active.data?.current?.isSidebarBtnElement;
       const isOverMyQuestion = over.data?.current?.type === 'question';
       const isOverGroup = over.data?.current?.type === 'question-group';
 
-      if (isDesignerBtnElement && isOverMyQuestion) {
-        startTransition(() => {
-          setElements((questions) => {
-            const activeIndex = questions.findIndex((t) => t?.temp);
-            const overIndex = questions.findIndex((t) => t.questionId === overId);
+      if (isSidebarBtn && isOverMyQuestion) {
+        // startTransition(() => {
+        setElements((questions) => {
+          const activeIndex = questions.findIndex((t) => t?.temp);
+          const overIndex = questions.findIndex((t) => t.questionId === overId);
 
-            // if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId)
-            questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
-            return arrayMove(questions, activeIndex, overIndex);
-          });
+          // if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId)
+          questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
+          return arrayMove(questions, activeIndex, overIndex);
         });
+        // });
 
         return;
-      } else if (isDesignerBtnElement && isOverGroup) {
+      } else if (isSidebarBtn && isOverGroup) {
         const overGroup = over?.data?.current?.group;
-        if (!elements.some((el) => el.questionGroupId === overGroup)) {
-          startTransition(() => {
-            setElements((questions) => {
-              const activeIndex = questions.findIndex((t) => t?.temp);
-              const overGroup = over?.data?.current?.group;
+        if (!elements?.some((el) => el.questionGroupId === overGroup)) {
+          // startTransition(() => {
+          setElements((questions) => {
+            const activeIndex = questions.findIndex((t) => t?.temp);
+            const overGroup = over?.data?.current?.group;
 
-              questions[activeIndex].questionGroupId = overGroup;
-              return arrayMove(questions, activeIndex, 0);
-            });
+            questions[activeIndex].questionGroupId = overGroup;
+            return arrayMove(questions, activeIndex, 0);
           });
+          // });
         }
         // else if (isOverGroup) {
         //   console.log("sdsd");
@@ -124,19 +127,18 @@ function KanbanBoard() {
 
       // Im dropping a Question over another Question
       if (isActiveQuestion && isOverQuestion) {
-        startTransition(() => {
-          setElements((questions) => {
-            const activeIndex = questions.findIndex((t) => t.questionId === activeId);
-            const overIndex = questions.findIndex((t) => t.questionId === overId);
+        setElements((questions) => {
+          const activeIndex = questions.findIndex((t) => t.questionId === activeId);
+          const overIndex = questions.findIndex((t) => t.questionId === overId);
 
-            if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId) {
-              questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
-              return arrayMove(questions, activeIndex, overIndex - 1);
-            }
+          if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId) {
+            questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
+            return arrayMove(questions, activeIndex, overIndex - 1);
+          }
 
-            return arrayMove(questions, activeIndex, overIndex);
-          });
+          return arrayMove(questions, activeIndex, overIndex);
         });
+
         return;
       }
 
@@ -153,6 +155,11 @@ function KanbanBoard() {
       }
     },
     onDragEnd: (event: DragEndEvent) => {
+      // * get the active question based on specified property
+      // * read the previous question group and current group
+      // * call api with new data and get new position to send
+      // * if the element's group is not changes and the postion
+      // * in the current group again has not chnage do not call api
       const { active, over } = event;
       // if (!over) return;
       if (elements.length && over && active?.data?.current?.type !== 'question-group') {

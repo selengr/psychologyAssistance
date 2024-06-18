@@ -1,14 +1,16 @@
 import { LoadingButton } from '@mui/lab';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import useDesigner from './hooks/useDesigner';
 
 export default function FieldDialogActionBottomButtons({ status }: { status: boolean }) {
   const { setOpenDialog, setSelectedElement } = useDesigner();
+
   return (
     <Box display="flex" gap={3} width="100%" marginTop={5}>
       <LoadingButton
         type="submit"
         fullWidth
+        disableRipple
         variant="contained"
         loading={status}
         sx={{
@@ -20,7 +22,9 @@ export default function FieldDialogActionBottomButtons({ status }: { status: boo
           },
         }}
       >
-        ثبت
+        <Typography variant="body2" component={'p'} py={0.5}>
+          ثبت
+        </Typography>
       </LoadingButton>
 
       <Button
@@ -33,7 +37,9 @@ export default function FieldDialogActionBottomButtons({ status }: { status: boo
           setSelectedElement(null);
         }}
       >
-        انصراف
+        <Typography variant="body2" component={'p'} py={0.5}>
+          انصراف
+        </Typography>
       </Button>
     </Box>
   );

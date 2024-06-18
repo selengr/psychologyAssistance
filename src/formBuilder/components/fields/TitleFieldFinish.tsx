@@ -119,11 +119,10 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
   function applyChanges(values: propertiesFormSchemaType) {
     const { title } = values;
-    const { fieldElement } = selectedElement;
 
     if (!finishPage) {
       addFinishPage({
-        ...fieldElement,
+        ...selectedElement?.fieldElement,
         questionPropertyList: {
           label: element.questionPropertyList.label,
           title,

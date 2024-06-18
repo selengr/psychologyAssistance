@@ -19,7 +19,7 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
     id: `designer-btn-${formElement.questionType}`,
     data: {
       type: formElement.questionType,
-      isDesignerBtnElement: true,
+      isSidebarBtnElement: true,
     },
   });
 

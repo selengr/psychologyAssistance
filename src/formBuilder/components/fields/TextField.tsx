@@ -10,11 +10,14 @@ import useDesigner from '../hooks/useDesigner';
 import { cn } from '../../lib/utils';
 import { Box, Stack, Typography } from '@mui/material';
 import FormProvider from '@/components/hook-form/FormProvider';
-import { RHFSelect, RHFSwitch, RHFTextField } from '@/components/hook-form';
+import { RHFMultiSelect, RHFSelect, RHFSwitch, RHFTextField } from '@/components/hook-form';
 import { Label } from '@radix-ui/react-label';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
-import { IFormElementConstructor, IQPLTextField } from '@/@types/bulider';
-import callApi from '@/services/axios';
+import {
+  IFormElementConstructor,
+  IQPLTextField,
+  ITextFieldFormPatternOptions,
+} from '@/@types/bulider';
 import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
 import { callApiQuestionCreate, callApiQuestionUpdate } from '@/services/apis/builder';
 
@@ -23,7 +26,7 @@ const questionType: ElementsType = 'TEXT_FIELD';
 const questionPropertyList: IQPLTextField = [
   {
     questionPropertyEnum: 'TEXT_FIELD_PATTERN',
-    value: 'SHORT_TEXT',
+    value: 'NATIONAL_CODE',
   },
   {
     questionPropertyEnum: 'REQUIRED',
@@ -33,20 +36,33 @@ const questionPropertyList: IQPLTextField = [
     questionPropertyEnum: 'DESCRIPTION',
     value: '',
   },
+  {
+    questionPropertyEnum: 'MINIMUM_LEN',
+    value: 0,
+  },
+  {
+    questionPropertyEnum: 'MAXIMUM_LEN',
+    value: 255,
+  },
 ];
 
-const fieldOptions: { type: string; value: string }[] = [
-  { type: 'SHORT_TEXT', value: 'متن ساده' },
-  { type: 'LONG_TEXT', value: 'متن بلند' },
-  { type: 'NUMBER', value: 'عددی' },
-  { type: 'NATIONAL_CODE', value: 'کدملی' },
-  { type: 'DATE', value: 'تاریخ' },
-  { type: 'PHONE', value: 'تلفن' },
+const fieldPatternOptions: ITextFieldFormPatternOptions = [
+  { value: 'SHORT_TEXT', label: 'متن ساده' },
+  { value: 'LONG_TEXT', label: 'متن بلند' },
+  { value: 'NUMBER', label: 'عددی' },
+  { value: 'NATIONAL_CODE', label: 'کدملی' },
+  { value: 'DATE', label: 'تاریخ' },
+  { value: 'PHONE', label: 'تلفن' },
 ];
 
 const propertiesSchema = z.object({
-  title: z.string().min(2).max(50),
-  DESCRIPTION: z.string().max(200),
+  title: z
+    .string()
+    .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
+  MINIMUM_LEN: z.number(),
+  MAXIMUM_LEN: z.number(),
+  DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
   REQUIRED: z.boolean().default(false),
   TEXT_FIELD_PATTERN: z.string(),
 });
@@ -176,7 +192,12 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       return false;
     }
   });
-
+  const isShortTextPatternSelected =
+    element.questionPropertyList.find((prop) => prop.questionPropertyEnum === 'TEXT_FIELD_PATTERN')
+      ?.value === 'SHORT_TEXT'
+      ? true
+      : false;
+  const [showMinMaxProps, setShowMinMaxProps] = useState<boolean>(isShortTextPatternSelected);
   const [openDescriptionSwitch, setOpenDescriptionSwitch] =
     useState<boolean>(descriptionSwitchStatus);
   const {
@@ -191,6 +212,11 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   const defaultValues = element.questionPropertyList.reduce((acc: any, attribute: any) => {
     if (attribute.questionPropertyEnum === 'REQUIRED') {
       acc[attribute.questionPropertyEnum] = attribute.value === 'true' ? true : false;
+    } else if (
+      attribute.questionPropertyEnum === 'MINIMUM_LEN' ||
+      attribute.questionPropertyEnum === 'MAXIMUM_LEN'
+    ) {
+      acc[attribute.questionPropertyEnum] = attribute.value === '' ? 0 : Number(attribute.value);
     } else {
       acc[attribute.questionPropertyEnum] = attribute.value;
     }
@@ -205,22 +231,16 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
   });
 
   const {
-    // reset,
-    // watch,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
-
-  // const values = watch();
-
-  // ----------------------------------------------------------------------
 
   // useEffect(() => {
   //   form.reset(element.questionPropertyList);
   // }, [element, form]);
 
   async function onSubmit(values: propertiesFormSchemaType) {
-    const { title, DESCRIPTION, REQUIRED, TEXT_FIELD_PATTERN } = values;
+    const { title, DESCRIPTION, REQUIRED, TEXT_FIELD_PATTERN, MAXIMUM_LEN, MINIMUM_LEN } = values;
 
     // finds whether a field is selected or not
     const selectedYet = elements?.find((el) => el?.questionId === element?.questionId);
@@ -238,6 +258,14 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
         questionPropertyEnum: 'DESCRIPTION',
         value: openDescriptionSwitch ? DESCRIPTION : '',
       },
+      {
+        questionPropertyEnum: 'MAXIMUM_LEN',
+        value: !MAXIMUM_LEN ? '' : MAXIMUM_LEN,
+      },
+      {
+        questionPropertyEnum: 'MINIMUM_LEN',
+        value: !MINIMUM_LEN ? '' : MINIMUM_LEN,
+      },
     ];
 
     const finalFieldData = {
@@ -246,12 +274,11 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       position: selectedElement?.position ?? elements.length,
       questionPropertyList: data,
     };
-    delete finalFieldData.temp;
 
     if (!selectedYet) {
       try {
         const response: any = await callApiQuestionCreate(finalFieldData);
-        addElement(selectedElement!.position ?? elements.length, response);
+        addElement(selectedElement!.position ?? elements.length, response.data);
         setOpenDialog(false);
         setSelectedElement(null);
       } catch (error) {
@@ -264,7 +291,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           finalFieldData
         );
 
-        updateElement(element.questionId, response);
+        updateElement(element.questionId, response.data);
       } catch (error) {
         console.error(error);
       }
@@ -290,14 +317,25 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
         <Stack spacing={1} marginTop={2.5}>
           <Typography variant="subtitle2">الگوی فیلد پاسخ:</Typography>
-          <RHFSelect native name="TEXT_FIELD_PATTERN">
-            {fieldOptions.map((category) => (
-              <option key={category.type} label={category.value}>
-                {category.type}
-              </option>
-            ))}
-          </RHFSelect>
+          <RHFMultiSelect
+            name="TEXT_FIELD_PATTERN"
+            options={fieldPatternOptions}
+            setProp={setShowMinMaxProps}
+          />
         </Stack>
+
+        {showMinMaxProps && (
+          <Stack flexDirection="row" gap={2} alignItems="baseline" marginTop={2}>
+            <Box>
+              <Typography variant="subtitle2">حداقل کرکتر مجاز:</Typography>
+              <RHFTextField name="MINIMUM_LEN" type="number" />
+            </Box>
+            <Box>
+              <Typography variant="subtitle2">حداکثر کرکتر مجاز:</Typography>
+              <RHFTextField name="MAXIMUM_LEN" type="number" />
+            </Box>
+          </Stack>
+        )}
 
         <Stack
           flexDirection="row"
@@ -324,7 +362,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           <Typography variant="subtitle2">توضیحات</Typography>
           <IOSSwitch
             onChange={() => setOpenDescriptionSwitch(!openDescriptionSwitch)}
-            defaultValue={openDescriptionSwitch}
+            checked={openDescriptionSwitch}
           />
         </Stack>
 

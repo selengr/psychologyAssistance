@@ -2,48 +2,121 @@
 
 import { useEffect, useState } from 'react';
 import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from '../FormElements';
-import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useDesigner from '../hooks/useDesigner';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
-import { Switch } from '../ui/switch';
 import { cn } from '../../lib/utils';
-import { RiSpectrumLine } from 'react-icons/ri';
-import { Slider } from '../ui/slider';
-import { Separator } from '@radix-ui/react-select';
-import { Button } from '../ui/button';
-import { toast } from '../ui/use-toast';
-// import ButtonGroup from "../ui/button-group";
+import { Box, Stack, Typography } from '@mui/material';
+import FormProvider from '@/components/hook-form/FormProvider';
+import { RHFMultiSelect, RHFSwitch, RHFTextField } from '@/components/hook-form';
+import { Label } from '@radix-ui/react-label';
+import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
+import {
+  IFormElementConstructor,
+  IFormOptionList,
+  IQPLSpectral,
+  ISpectralQTapAndOptionsType,
+} from '@/@types/bulider';
+import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
+import { callApiQuestionCreate, callApiQuestionUpdate } from '@/services/apis/builder';
+import RHFTextFieldOptionList from '@/components/hook-form/RHFTextFieldOptionList';
 
-const type: ElementsType = 'SpectralField';
+const questionType: ElementsType = 'SPECTRAL';
 
-const questionPropertyList = {
-  label: 'طیفی',
-  helperText: '',
-  required: false,
-  placeHolder: '',
-  rows: 3,
-};
+const questionPropertyList: IQPLSpectral = [
+  {
+    questionPropertyEnum: 'SPECTRAL_TYPE',
+    value: 'CONTINUOUS',
+  },
+  {
+    questionPropertyEnum: 'REQUIRED',
+    value: 'false',
+  },
+  {
+    questionPropertyEnum: 'DESCRIPTION',
+    value: '',
+  },
+  {
+    questionPropertyEnum: 'TAP_TYPE',
+    value: 'RANGE',
+  },
+  {
+    questionPropertyEnum: 'STEP',
+    value: 1,
+  },
+  {
+    questionPropertyEnum: 'SPECTRAL_START',
+    value: 0,
+  },
+  {
+    questionPropertyEnum: 'SPECTRAL_END',
+    value: 255,
+  },
+];
+
+const optionList: IFormOptionList[] = [
+  {
+    title: 'گزینه 1',
+    score: 0,
+  },
+  {
+    title: 'گزینه 2',
+    score: 0,
+  },
+];
+
+const spectralTypeOptions: ISpectralQTapAndOptionsType = [
+  { value: 'CONTINUOUS', label: 'پیوسته' },
+  { value: 'DISCRETE', label: 'گسسته' },
+];
+
+const tapTypeOptions: ISpectralQTapAndOptionsType = [{ value: 'RANGE', label: 'دامنه' }];
+
+const optionsSchema = z.object({
+  title: z
+    .string()
+    .min(2, { message: 'حداقل 2 و حداکثر 50 کاراکتر داشته باشد' })
+    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر داشته باشد' }),
+  score: z.number(),
+});
 
 const propertiesSchema = z.object({
-  label: z.string().min(2).max(50),
-  helperText: z.string().max(200),
-  required: z.boolean().default(false),
-  placeHolder: z.string().max(50),
-  rows: z.number().min(1).max(10),
+  title: z
+    .string()
+    .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
+  TAP_TYPE: z.string(),
+  SPECTRAL_TYPE: z.string(),
+  STEP: z.number(),
+  DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
+  SPECTRAL_END: z.number(),
+  SPECTRAL_START: z.number(),
+  REQUIRED: z.boolean().default(false),
+  optionList: z
+    .array(optionsSchema)
+    .min(2, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' })
+    .max(10, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' }),
 });
 
 export const SpectralFormElement: FormElement = {
-  type,
-  construct: (id: string, groupId, temp: boolean) => ({
-    id,
-    type,
-    groupId,
-    temp,
-    questionPropertyList,
+  questionType,
+  construct: ({
+    questionId,
+    questionGroupId,
+    formId,
+    title,
+    position,
+  }: IFormElementConstructor) => ({
+    questionId,
+    questionGroupId,
+    formId,
+    title,
+    questionType,
+    position,
+    questionPropertyList: questionPropertyList,
+    optionList: optionList,
   }),
   designerBtnElement: {
     label: 'طیفی',
@@ -64,19 +137,39 @@ export const SpectralFormElement: FormElement = {
 
 type CustomInstance = FormElementInstance & {
   questionPropertyList: typeof questionPropertyList;
+  optionList: typeof optionList;
 };
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
-  const { label, required } = element.questionPropertyList;
+  const designerBtnLabel = SpectralFormElement.designerBtnElement.label;
+  const labelText = element.title;
+  const required = element.questionPropertyList.find(
+    (property) => property.questionPropertyEnum === 'REQUIRED' && property.value
+  );
 
   return (
-    <div className="flex flex-row items-center gap-2 w-full">
-      <Label>
-        {label}
-        {required && ' *'}
-      </Label>
-    </div>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'flex-end',
+        width: '100%',
+        flexDirection: 'column',
+        direction: 'rtl',
+      }}
+    >
+      <Typography
+        variant="body2"
+        component={'p'}
+        sx={{ fontSize: '1rem', '& .MuiTypography-root': { direction: 'rtl' } }}
+      >
+        {required?.value === 'true' && '* '}
+        {labelText}
+      </Typography>
+      <Typography variant="body2" component={'p'} sx={{ fontSize: '0.7rem' }}>
+        {designerBtnLabel}#
+      </Typography>
+    </Box>
   );
 }
 
@@ -93,29 +186,50 @@ function FormComponent({
 }) {
   const element = elementInstance as CustomInstance;
 
-  const { label, required, rows } = element.questionPropertyList;
-  const [value, setValue] = useState(defaultValue || Math.round(rows / 2));
+  const [value, setValue] = useState(defaultValue || '');
   const [error, setError] = useState(false);
 
   useEffect(() => {
     setError(isInvalid === true);
   }, [isInvalid]);
 
+  const { label, required, placeHolder } = element.questionPropertyList;
   return (
     <div className="flex flex-col gap-2 w-full">
       <Label className={cn(error && 'text-red-500')}>
         {label}
         {required && ' *'}
       </Label>
-      {/* <ButtonGroup rows={rows} onChange={(v: any) => setValue(v)} value={value} /> */}
+      <Input
+        className={cn(error && 'border-red-500')}
+        placeholder={placeHolder}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={(e) => {
+          if (!submitValue) return;
+          const valid = SpectralFormElement.validate(element, e.target.value);
+          setError(!valid);
+          if (!valid) return;
+          submitValue(element?.questionId, e.target.value);
+        }}
+        value={value}
+      />
     </div>
   );
 }
 
 type propertiesFormSchemaType = z.infer<typeof propertiesSchema>;
-
 function PropertiesComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
+  const descriptionSwitchStatus: boolean = element.questionPropertyList.some((property) => {
+    if (property.questionPropertyEnum === 'DESCRIPTION') {
+      return property.value ? true : false;
+    } else {
+      return false;
+    }
+  });
+
+  const [openDescriptionSwitch, setOpenDescriptionSwitch] =
+    useState<boolean>(descriptionSwitchStatus);
   const {
     updateElement,
     setSelectedElement,
@@ -124,155 +238,217 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     addElement,
     selectedElement,
   } = useDesigner();
-  const form = useForm<propertiesFormSchemaType>({
+
+  const defaultValues = element.questionPropertyList.reduce((acc: any, attribute: any) => {
+    if (attribute.questionPropertyEnum === 'REQUIRED') {
+      acc[attribute.questionPropertyEnum] = attribute.value === 'true' ? true : false;
+    } else if (
+      attribute.questionPropertyEnum === 'SPECTRAL_START' ||
+      attribute.questionPropertyEnum === 'SPECTRAL_END' ||
+      attribute.questionPropertyEnum === 'STEP'
+    ) {
+      acc[attribute.questionPropertyEnum] = attribute.value === '' ? 0 : Number(attribute.value);
+    } else {
+      acc[attribute.questionPropertyEnum] = attribute.value;
+    }
+    return acc;
+  }, {});
+  defaultValues.title = element.title;
+  defaultValues.optionList = element.optionList;
+
+  const methods = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
     mode: 'onSubmit',
-    defaultValues: {
-      label: element.questionPropertyList.label,
-      helperText: element.questionPropertyList.helperText,
-      required: element.questionPropertyList.required,
-      placeHolder: element.questionPropertyList.placeHolder,
-      rows: element.questionPropertyList.rows,
-    },
+    defaultValues,
   });
 
-  useEffect(() => {
-    form.reset(element.questionPropertyList);
-  }, [element, form]);
+  const {
+    watch,
+    setValue,
+    getValues,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
 
-  function applyChanges(values: propertiesFormSchemaType) {
-    const { label, helperText, placeHolder, required, rows } = values;
-    const { fieldElement, position } = selectedElement;
+  // useEffect(() => {
+  //   form.reset(element.questionPropertyList);
+  // }, [element, form]);
 
-    const selectedYet = elements?.find((el) => el?.id === element?.id);
+  async function onSubmit(values: propertiesFormSchemaType) {
+    const {
+      title,
+      DESCRIPTION,
+      REQUIRED,
+      SPECTRAL_TYPE,
+      TAP_TYPE,
+      STEP,
+      SPECTRAL_START,
+      SPECTRAL_END,
+      optionList,
+    } = values;
+
+    // ? finds whether a field is selected or not
+    const selectedYet = elements?.find((el) => el?.questionId === element?.questionId);
+
+    const data = [
+      {
+        questionPropertyEnum: 'SPECTRAL_TYPE',
+        value: SPECTRAL_TYPE,
+      },
+      {
+        questionPropertyEnum: 'REQUIRED',
+        value: REQUIRED ? 'true' : 'false',
+      },
+      {
+        questionPropertyEnum: 'DESCRIPTION',
+        value: openDescriptionSwitch ? DESCRIPTION : '',
+      },
+      {
+        questionPropertyEnum: 'TAP_TYPE',
+        value: TAP_TYPE,
+      },
+      {
+        questionPropertyEnum: 'STEP',
+        value: STEP,
+      },
+      {
+        questionPropertyEnum: 'SPECTRAL_START',
+        value: SPECTRAL_START,
+      },
+      {
+        questionPropertyEnum: 'SPECTRAL_END',
+        value: SPECTRAL_END,
+      },
+    ];
+
+    const optionListData = optionList;
+
+    const finalFieldData = {
+      ...element,
+      title,
+      position: selectedElement?.position ?? elements.length,
+      questionPropertyList: data,
+      optionList: optionListData,
+    };
 
     if (!selectedYet) {
-      fieldElement.temp = false;
-      addElement(position ?? elements.length, {
-        ...fieldElement,
-        questionPropertyList: {
-          label,
-          helperText,
-          placeHolder,
-          required,
-          rows,
-        },
-      } as FormElementInstance);
+      try {
+        const response: any = await callApiQuestionCreate(finalFieldData);
+        addElement(selectedElement!.position ?? elements.length, response.data);
+        setOpenDialog(false);
+        setSelectedElement(null);
+      } catch (error) {
+        console.error(error);
+      }
     } else {
-      updateElement(element.id, {
-        ...element,
-        questionPropertyList: {
-          label,
-          helperText,
-          placeHolder,
-          required,
-          rows,
-        },
-      });
+      try {
+        const response: any = await callApiQuestionUpdate(
+          finalFieldData.questionId,
+          finalFieldData
+        );
+
+        updateElement(element.questionId, response.data);
+      } catch (error) {
+        console.error(error);
+      }
     }
-
-    toast({
-      title: 'موفقیت آمیز بود',
-      description: 'خصوصیات بصورت موفقیت آمیز ذخیره شدند',
-    });
-
-    setOpenDialog(false);
-    setSelectedElement(null);
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(applyChanges)} className="space-y-3">
-        <FormField
-          control={form.control}
-          name="label"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>عنوان سوال</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') e.currentTarget.blur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="helperText"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>توضیحات</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="توضیحات"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') e.currentTarget.blur();
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="rows"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>سطرها {form.watch('rows')}</FormLabel>
-              <FormControl>
-                <Slider
-                  defaultValue={[field.value]}
-                  min={1}
-                  max={10}
-                  step={1}
-                  onValueChange={(value) => {
-                    field.onChange(value[0]);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="required"
-          render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel>اجباری می باشد</FormLabel>
-              </div>
-              <FormControl>
-                <Switch dir="ltr" checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Separator />
-        <div className="flex justify-between">
-          <Button className="flex-1 ml-2" type="submit">
-            ثبت
-          </Button>
-          <Button
-            className="flex-1 mr-2"
-            variant="outline"
-            onClick={() => {
-              setOpenDialog(false);
-              setSelectedElement(null);
-            }}
-          >
-            انصراف
-          </Button>
-        </div>
-      </form>
-    </Form>
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          paddingX: 1.5,
+          direction: 'ltr',
+          width: '100%',
+        }}
+      >
+        <Stack spacing={1}>
+          <Typography variant="subtitle2">متن سوال:</Typography>
+          <RHFTextField multiline rows={3} name="title" />
+        </Stack>
+
+        <Stack spacing={1} marginTop={2.5}>
+          <Typography variant="subtitle2">نوع نوار لغزان:</Typography>
+          <RHFMultiSelect name="TAP_TYPE" options={tapTypeOptions} />
+        </Stack>
+
+        <Stack spacing={1} marginTop={2.5}>
+          <Typography variant="subtitle2">نوع انتخاب:</Typography>
+          <RHFMultiSelect name="SPECTRAL_TYPE" options={spectralTypeOptions} />
+        </Stack>
+
+        <Stack justifyContent="space-between" alignItems="flex-start" marginTop={2.5}>
+          <Typography variant="subtitle2">گام:</Typography>
+          <RHFTextField name="STEP" type="number" />
+        </Stack>
+
+        <Stack flexDirection="row" gap={2} spacing={1} alignItems="baseline" marginTop={2.5}>
+          <Box>
+            <Typography variant="subtitle2">شروع:</Typography>
+            <RHFTextField name="SPECTRAL_START" type="number" />
+          </Box>
+          <Box>
+            <Typography variant="subtitle2">پایان:</Typography>
+            <RHFTextField name="SPECTRAL_END" type="number" />
+          </Box>
+        </Stack>
+
+        <Stack>
+          <RHFTextFieldOptionList
+            name="optionList"
+            watch={watch as any}
+            setValue={setValue as any}
+            getValues={getValues as any}
+          />
+        </Stack>
+
+        <Stack
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          marginTop={3}
+        >
+          <Typography variant="subtitle2">پاسخ به سوال اجباری باشد</Typography>
+          <RHFSwitch
+            label=""
+            name="REQUIRED"
+            labelPlacement="start"
+            sx={{ mb: 1, mx: 0, width: 1, justifyContent: 'space-between' }}
+          />
+        </Stack>
+
+        <Stack
+          spacing={1}
+          marginTop={1}
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="flex-end"
+        >
+          <Typography variant="subtitle2">توضیحات</Typography>
+          <IOSSwitch
+            onChange={() => setOpenDescriptionSwitch(!openDescriptionSwitch)}
+            checked={openDescriptionSwitch}
+          />
+        </Stack>
+
+        {openDescriptionSwitch && (
+          <Stack marginTop={2}>
+            <Typography variant="subtitle2" marginBottom={1.5}>
+              متن توضیح:
+            </Typography>
+            <RHFTextField
+              name="DESCRIPTION"
+              placeholder="پیامی برای توضیح بیشتر در مورد این سوال"
+            />
+          </Stack>
+        )}
+
+        <FieldDialogActionBottomButtons status={isSubmitting} />
+      </Box>
+    </FormProvider>
   );
 }

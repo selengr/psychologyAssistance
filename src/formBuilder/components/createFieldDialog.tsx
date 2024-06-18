@@ -15,7 +15,6 @@ export default function CreateFieldDialog() {
   return (
     <Dialog
       open={openDialog}
-      onClose={handleClose}
       dir="ltr"
       sx={{
         overflow: 'hidden',

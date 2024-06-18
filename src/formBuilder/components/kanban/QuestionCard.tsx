@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FormElement, FormElementInstance, FormElements } from '../FormElements';
+import { FormElementInstance, FormElements } from '../FormElements';
 import useDesigner from '../hooks/useDesigner';
 import { Box, IconButton } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
@@ -8,15 +8,16 @@ import Iconify from '@/components/iconify/Iconify';
 function QuestionCard({ question }: { question: FormElementInstance }) {
   const { setSelectedElement, setOpenDialog, removeElement } = useDesigner();
 
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging, index } =
-    useSortable({
+  let { setNodeRef, attributes, listeners, transform, transition, isDragging, index } = useSortable(
+    {
       id: question.questionId,
       data: {
         type: 'question',
         question,
-        isDesignerElement: true,
+        isQuestionElement: true,
       },
-    });
+    }
+  );
 
   const DesignerElement = FormElements[question.questionType].designerComponent;
 
@@ -66,8 +67,8 @@ function QuestionCard({ question }: { question: FormElementInstance }) {
     );
   }
 
-  // update every single question's position
-  // after one question is moved
+  // ? update every single question's position
+  // ? after one question is moved
   question.position = index;
 
   return (

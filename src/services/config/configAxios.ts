@@ -3,8 +3,6 @@ import { BASE_URL_API } from 'config-global';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { getToken, handelErrorsApi, removeToken } from '@/helpers';
 
-
-
 interface IApiError {
   status: number;
   message: string;
@@ -59,7 +57,7 @@ api.interceptors.response.use(
     };
 
     return Promise.reject(apiError);
-  },
+  }
 );
 
-export const fetchApi = api;
+export const callApi = api;
