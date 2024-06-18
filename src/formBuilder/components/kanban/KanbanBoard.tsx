@@ -220,15 +220,7 @@ function KanbanBoard() {
 
   return (
     <>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          width: '100%',
-        }}
-        gap={2}
-      >
+      <Box display="flex" flexDirection="column" height="100%" width="100%" gap={2}>
         <SortableContext items={groupsId} strategy={verticalListSortingStrategy}>
           {questionGroups?.map((que: any) => (
             <QuestionGroup

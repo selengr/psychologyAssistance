@@ -1,10 +1,10 @@
-import React from 'react';
+import { memo } from 'react';
 import { FormElements } from './FormElements';
 import SidebarBtnElement from './SidebarBtnElement';
 import { Box, Button, Typography } from '@mui/material';
 import Line from './line';
 
-function DesignerSidebar() {
+const DesignerSidebar = memo(function DesignerSidebar() {
   return (
     <Box
       dir="rtl"
@@ -90,6 +90,6 @@ function DesignerSidebar() {
       </Button>
     </Box>
   );
-}
+});
 
 export default DesignerSidebar;

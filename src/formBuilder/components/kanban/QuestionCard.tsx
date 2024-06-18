@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { FormElementInstance, FormElements } from '../FormElements';
@@ -5,7 +6,7 @@ import useDesigner from '../hooks/useDesigner';
 import { Box, IconButton } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 
-function QuestionCard({ question }: { question: FormElementInstance }) {
+const QuestionCard = memo(function QuestionCard({ question }: { question: FormElementInstance }) {
   const { setSelectedElement, setOpenDialog, removeElement } = useDesigner();
 
   let { setNodeRef, attributes, listeners, transform, transition, isDragging, index } = useSortable(
@@ -73,7 +74,7 @@ function QuestionCard({ question }: { question: FormElementInstance }) {
 
   return (
     <Box
-      onClick={(e) => {
+      onClick={(e: any) => {
         e.stopPropagation();
         setSelectedElement({ fieldElement: question, position: index });
         setOpenDialog(true);
@@ -83,19 +84,17 @@ function QuestionCard({ question }: { question: FormElementInstance }) {
       {...attributes}
       {...listeners}
       dir="rtl"
-      sx={{
-        backgroundColor: 'white',
-        height: '65px',
-        width: '100%',
-        position: 'relative',
-        borderRadius: '5px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        padding: 2,
-        border: '1px solid #d8d8d8',
-      }}
+      bgcolor="white"
+      height="65px"
+      width="100%"
+      position="relative"
+      borderRadius="5px"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      flexDirection="row"
+      padding={2}
+      border="1px solid #d8d8d8"
     >
       <DesignerElement elementInstance={question} />
       <IconButton
@@ -116,6 +115,6 @@ function QuestionCard({ question }: { question: FormElementInstance }) {
       </IconButton>
     </Box>
   );
-}
+});
 
 export default QuestionCard;

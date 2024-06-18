@@ -1,22 +1,27 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import FormBuilder from './FormBuilder';
 import useDesigner from './hooks/useDesigner';
+import { formResDataTypes } from '@/app/(builder)/builder/[id]/page';
 
-export default function FormBuilderMiddleware({ formData }: { formData: any }) {
+const FormBuilderMiddleware = memo(function FormBuilderMiddleware({
+  formData,
+}: {
+  formData: formResDataTypes;
+}) {
   const { setQuestionGroups, setElements } = useDesigner();
 
-  console.log(formData.questionGroups);
+  console.log(formData);
 
   useEffect(() => {
     const allQuestionGroups = formData?.questionGroups?.map((group: any) => group?.questionGroupId);
     setQuestionGroups(allQuestionGroups);
-    const allQuestions: [] = formData?.questionGroups?.map(
+    const allQuestions: any[] = formData?.questionGroups?.map(
       (group: any) => group?.questionFindModelList
     );
     // ? temp
-    const updatedElements = allQuestions[0].map((el) => ({
+    const updatedElements = allQuestions[0].map((el: any) => ({
       ...el,
       ['questionId']: el.id,
       id: undefined,
@@ -25,4 +30,6 @@ export default function FormBuilderMiddleware({ formData }: { formData: any }) {
   }, []);
 
   return <FormBuilder />;
-}
+});
+
+export default FormBuilderMiddleware;

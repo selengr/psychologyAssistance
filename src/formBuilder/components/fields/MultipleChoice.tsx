@@ -220,6 +220,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       attribute.questionPropertyEnum === 'MULTI_SELECT'
     ) {
       acc[attribute.questionPropertyEnum] = attribute.value === 'true' ? true : false;
+    } else if (attribute.questionPropertyEnum === 'DESCRIPTION') {
+      acc[attribute.questionPropertyEnum] = attribute.value === null ? '' : attribute.value;
     } else {
       acc[attribute.questionPropertyEnum] = attribute.value;
     }
@@ -267,7 +269,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       },
       {
         questionPropertyEnum: 'DESCRIPTION',
-        value: openDescriptionSwitch ? DESCRIPTION : '',
+        value: openDescriptionSwitch && DESCRIPTION ? DESCRIPTION : null,
       },
     ];
 

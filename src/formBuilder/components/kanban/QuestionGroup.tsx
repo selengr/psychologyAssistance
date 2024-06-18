@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import QuestionCard from './QuestionCard';
@@ -7,7 +7,13 @@ import { Box, IconButton, Typography } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 import { FormElementInstance } from '../FormElements';
 
-function QuestionGroup({ group, questions }: { group: number; questions: FormElementInstance[] }) {
+const QuestionGroup = memo(function QuestionGroup({
+  group,
+  questions,
+}: {
+  group: number;
+  questions: FormElementInstance[];
+}) {
   const { questionGroups, deleteQuestionGroup } = useDesigner();
   const questionsIds = useMemo(() => {
     return questions?.map((question: any) => question?.questionId);
@@ -29,46 +35,40 @@ function QuestionGroup({ group, questions }: { group: number; questions: FormEle
   if (isDragging) {
     return (
       <Box
+        display="flex"
+        width="100%"
+        height="75px"
+        borderRadius="5px"
+        border="1px solid #d8d8d8"
         ref={setNodeRef}
         style={style}
-        sx={{
-          width: '100%',
-          height: '75px',
-          borderRadius: '5px',
-          border: '1px solid #d8d8d8',
-          display: 'flex',
-        }}
       ></Box>
     );
   }
 
   return (
     <Box
+      display="flex"
+      width="100%"
+      borderRadius="5px"
+      border="1px solid #D8D8D8"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      sx={{
-        width: '100%',
-        borderRadius: '5px',
-        border: '1px solid #D8D8D8',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
     >
       {questions.length >= 1 && (
         <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            minHeight: '60px',
-            paddingX: 2,
-            paddingTop: 2,
-            flexGrow: '1',
-          }}
+          display="flex"
+          flexDirection="column"
+          width="100%"
+          minHeight="60px"
+          paddingX={2}
+          paddingTop={2}
+          flexGrow="1"
           gap={2}
         >
           <SortableContext items={questionsIds} strategy={verticalListSortingStrategy}>
@@ -79,15 +79,8 @@ function QuestionGroup({ group, questions }: { group: number; questions: FormEle
         </Box>
       )}
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row-reverse',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Typography sx={{ marginX: 'auto', padding: '1rem' }} variant="body2" component={'p'}>
+      <Box display="flex" flexDirection="row-reverse" alignItems="center" justifyContent="center">
+        <Typography padding={1} marginX="auto" variant="body2" component={'p'}>
           نوع سوال را از فهرست کناری به اینجا بکشید
         </Typography>
         <IconButton
@@ -101,6 +94,6 @@ function QuestionGroup({ group, questions }: { group: number; questions: FormEle
       </Box>
     </Box>
   );
-}
+});
 
 export default QuestionGroup;

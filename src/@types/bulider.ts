@@ -34,15 +34,15 @@ export type IQPLTextField = [
   },
   {
     questionPropertyEnum: 'DESCRIPTION';
-    value: string;
+    value: string | null;
   },
   {
     questionPropertyEnum: 'MINIMUM_LEN';
-    value: string | number;
+    value: string | number | null;
   },
   {
     questionPropertyEnum: 'MAXIMUM_LEN';
-    value: string | number;
+    value: string | number | null;
   },
 ];
 
@@ -59,7 +59,7 @@ export type IQPLSpectral = [
   },
   {
     questionPropertyEnum: 'DESCRIPTION';
-    value: string;
+    value: string | null;
   },
   {
     questionPropertyEnum: 'TAP_TYPE';
@@ -94,16 +94,9 @@ export type IQPLMultipleChoice = [
   },
   {
     questionPropertyEnum: 'DESCRIPTION';
-    value: string;
+    value: string | null;
   },
 ];
-
-export type IDefaultValues = {
-  TEXT_FIELD_PATTERN: string;
-  REQUIRED: boolean;
-  DESCRIPTION: string;
-  title: string;
-};
 
 export type ITest = {
   name: string;

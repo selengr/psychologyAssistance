@@ -217,6 +217,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       attribute.questionPropertyEnum === 'MAXIMUM_LEN'
     ) {
       acc[attribute.questionPropertyEnum] = attribute.value === '' ? 0 : Number(attribute.value);
+    } else if (attribute.questionPropertyEnum === 'DESCRIPTION') {
+      acc[attribute.questionPropertyEnum] = attribute.value === null ? '' : attribute.value;
     } else {
       acc[attribute.questionPropertyEnum] = attribute.value;
     }
@@ -256,15 +258,15 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       },
       {
         questionPropertyEnum: 'DESCRIPTION',
-        value: openDescriptionSwitch ? DESCRIPTION : '',
+        value: openDescriptionSwitch && DESCRIPTION ? DESCRIPTION : null,
       },
       {
         questionPropertyEnum: 'MAXIMUM_LEN',
-        value: !MAXIMUM_LEN ? '' : MAXIMUM_LEN,
+        value: MAXIMUM_LEN < 0 || TEXT_FIELD_PATTERN !== 'SHORT_TEXT' ? null : MAXIMUM_LEN,
       },
       {
         questionPropertyEnum: 'MINIMUM_LEN',
-        value: !MINIMUM_LEN ? '' : MINIMUM_LEN,
+        value: MINIMUM_LEN < 0 || TEXT_FIELD_PATTERN !== 'SHORT_TEXT' ? null : MINIMUM_LEN,
       },
     ];
 

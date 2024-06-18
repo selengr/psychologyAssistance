@@ -1,5 +1,17 @@
 import FormBuilderMiddleware from '@/formBuilder/components/FormBuilderMiddleware';
+import { FormElementInstance } from '@/formBuilder/components/FormElements';
 import axios from 'axios';
+
+export type formResDataTypes = {
+  name: string;
+  description: string;
+  typeValue: string;
+  questionGroups: {
+    formId: number;
+    questionGroupId: number;
+    questionFindModelList: FormElementInstance[];
+  }[];
+};
 
 async function BuilderPage({
   params,
@@ -17,7 +29,7 @@ async function BuilderPage({
     throw new Error('form not found');
   }
 
-  return <FormBuilderMiddleware formData={response.data} />;
+  return <FormBuilderMiddleware formData={response.data as formResDataTypes} />;
 }
 
 export default BuilderPage;

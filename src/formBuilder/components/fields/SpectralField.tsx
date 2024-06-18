@@ -248,6 +248,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       attribute.questionPropertyEnum === 'STEP'
     ) {
       acc[attribute.questionPropertyEnum] = attribute.value === '' ? 0 : Number(attribute.value);
+    } else if (attribute.questionPropertyEnum === 'DESCRIPTION') {
+      acc[attribute.questionPropertyEnum] = attribute.value === null ? '' : attribute.value;
     } else {
       acc[attribute.questionPropertyEnum] = attribute.value;
     }
@@ -301,7 +303,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       },
       {
         questionPropertyEnum: 'DESCRIPTION',
-        value: openDescriptionSwitch ? DESCRIPTION : '',
+        value: openDescriptionSwitch && DESCRIPTION ? DESCRIPTION : null,
       },
       {
         questionPropertyEnum: 'TAP_TYPE',

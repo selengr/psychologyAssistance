@@ -1,4 +1,4 @@
-import { IFormElementConstructor, tempObj } from '@/@types/bulider';
+import { IFormElementConstructor, IFormOptionList, tempObj } from '@/@types/bulider';
 import { SelectFieldFormElement } from './fields/SelectField';
 import { SpectralFormElement } from './fields/SpectralField';
 import { TextFieldFormElement } from './fields/TextField';
@@ -54,6 +54,7 @@ export type FormElementInstance = {
   questionType: ElementsType;
   position: number | null;
   questionPropertyList?: Record<string, any>;
+  optionList?: IFormOptionList[] | [] | null | undefined;
   temp?: boolean | tempObj;
 };
 
