@@ -8,7 +8,7 @@ import { Box, IconButton, Typography } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 import KanbanBoard from './kanban/KanbanBoard';
 import { IFormElementConstructor } from '@/@types/bulider';
-import CreateFieldDialog from './CreateFieldDialog';
+import CreateFieldDialog from './createFieldDialog';
 
 function Designer() {
   const { setSelectedElement, setOpenDialog, openDialog, startPage, finishPage } = useDesigner();
