@@ -11,7 +11,7 @@ import { IFormElementConstructor } from '@/@types/bulider';
 import CreateFieldDialog from './CreateFieldDialog';
 
 function Designer() {
-  const { setSelectedElement, setOpenDialog, openDialog, startPage, finishPage } = useDesigner();
+  const { setSelectedElement, setOpenDialog, startPage, finishPage } = useDesigner();
 
   return (
     <Box
@@ -23,7 +23,7 @@ function Designer() {
         paddingY: 2,
       }}
     >
-      {openDialog && <CreateFieldDialog />}
+      <CreateFieldDialog />
       <Box
         sx={{
           padding: 2,
@@ -39,6 +39,7 @@ function Designer() {
           alignItems: 'center',
           scrollbarWidth: 'none',
           backgroundColor: 'white',
+          userSelect: 'none',
           boxShadow: (theme) => theme.customShadows.box,
         }}
         gap={2}

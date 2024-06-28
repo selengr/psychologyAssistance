@@ -1,4 +1,4 @@
-import { useMemo, startTransition } from 'react';
+import { useMemo, startTransition, useState } from 'react';
 import QuestionGroup from './QuestionGroup';
 import { DragEndEvent, DragOverEvent, DragStartEvent, useDndMonitor } from '@dnd-kit/core';
 import { verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -20,16 +20,15 @@ function KanbanBoard() {
     setOpenDialog,
     setSelectedElement,
     createNewQuestionGroup,
+    changeOrMovePositionApiReducer,
   } = useDesigner();
+  const [oneGroupIsDragged, setOneGroupIsDragged] = useState(false);
   const groupsId = useMemo(() => questionGroups.map((group: any) => group), [questionGroups]);
   const path = usePathname();
   const formId = Number(path.split('/')[2]);
 
   useDndMonitor({
     onDragStart: (event: DragStartEvent) => {
-      // * detect active qeuestion
-      // * add a temp prop to it
-      // * save the current question group and position
       const { active } = event;
 
       const isSidebarBtn = active.data?.current?.isSidebarBtnElement;
@@ -46,6 +45,22 @@ function KanbanBoard() {
         newElement.temp = true;
 
         setElements((prev) => [...prev, newElement]);
+      } else if (active?.data?.current?.type === 'question') {
+        setElements((questions) => {
+          const activeQuestionId = active?.data?.current?.question?.questionId;
+          const newOnes = questions.map((que) => {
+            if (que.questionId === activeQuestionId) {
+              return {
+                ...que,
+                draft: { prevGroup: que.questionGroupId, prevPosition: que.position },
+              };
+            }
+            return que;
+          });
+          return newOnes;
+        });
+      } else if (active?.data?.current?.type === 'question-group') {
+        setOneGroupIsDragged(true);
       }
 
       return;
@@ -155,14 +170,15 @@ function KanbanBoard() {
       }
     },
     onDragEnd: (event: DragEndEvent) => {
-      // * get the active question based on specified property
-      // * read the previous question group and current group
-      // * call api with new data and get new position to send
-      // * if the element's group is not changes and the postion
-      // * in the current group again has not chnage do not call api
       const { active, over } = event;
       // if (!over) return;
-      if (elements.length && over && active?.data?.current?.type !== 'question-group') {
+
+      if (
+        elements.length &&
+        over &&
+        active?.data?.current?.type !== 'question-group' &&
+        active?.data?.current?.isSidebarBtnElement
+      ) {
         const droppedTempElIndex = elements?.findIndex((t: any) => t?.temp);
         const droppedEl = elements?.find((t: any) => t?.temp);
 
@@ -185,13 +201,43 @@ function KanbanBoard() {
         setElements((prev) => {
           return prev.filter((p) => !p?.temp);
         });
-
-        return;
       }
 
       setElements((prev) => {
         return prev.filter((p) => !p?.temp);
       });
+
+      const activeEl = active?.data?.current;
+
+      if (activeEl?.type === 'question') {
+        const currentQuestion = activeEl?.question;
+        if (currentQuestion?.questionGroupId !== currentQuestion?.draft?.prevGroup) {
+          changeOrMovePositionApiReducer(
+            {
+              formBuilderId: formId,
+              questionId: currentQuestion?.questionId,
+              questionGroupId: currentQuestion?.draft?.prevGroup,
+              targetQuestionGroupId: currentQuestion?.questionGroupId,
+              newPosition: currentQuestion?.position,
+            },
+            activeEl
+          );
+        } else if (currentQuestion?.position !== currentQuestion?.draft?.prevPosition) {
+          changeOrMovePositionApiReducer(
+            {
+              formBuilderId: formId,
+              questionId: currentQuestion?.questionId,
+              questionGroupId: currentQuestion?.questionGroupId,
+              targetQuestionGroupId: null,
+              newPosition: currentQuestion?.position,
+            },
+            activeEl
+          );
+        } else {
+          console.log('no change in group or position');
+          return;
+        }
+      }
 
       const activeId = active?.id;
       const overId = over?.id;

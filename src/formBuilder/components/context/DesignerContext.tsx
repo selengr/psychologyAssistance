@@ -3,6 +3,7 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useState } from 'react';
 import { FormElementInstance } from '../FormElements';
 import { idGenerator } from '../../lib/idGenerator';
+import { callApiQuestionNewPosition } from '@/services/apis/builder';
 
 type selectedElementObject = {
   fieldElement: FormElementInstance | null | undefined;
@@ -46,6 +47,22 @@ export default function DesignerContextProvider({ children }: { children: ReactN
   const [startPage, setStartPage] = useState<FormElementInstance | null>(null);
   const [selectedElement, setSelectedElement] = useState<selectedElementObject | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+
+  async function changeOrMovePositionApiReducer(payload, activeElement) {
+    try {
+      await callApiQuestionNewPosition(payload);
+      setElements((allQuestions) => {
+        const targetQuestion = allQuestions.find(
+          (que) => que.questionId === activeElement?.question?.questionId
+        );
+        delete targetQuestion?.draft;
+
+        return allQuestions;
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const addFinishPage = (element: FormElementInstance) => {
     setFinishPage(element);
@@ -140,6 +157,8 @@ export default function DesignerContextProvider({ children }: { children: ReactN
 
         createNewQuestionGroup,
         deleteQuestionGroup,
+
+        changeOrMovePositionApiReducer,
 
         openDialog,
         setOpenDialog,

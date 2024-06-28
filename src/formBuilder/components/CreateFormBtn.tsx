@@ -1,29 +1,52 @@
 'use client';
 
-import { formSchema, formSchemaType } from '@/formBuilder/schemas/form';
+import { formSchemaType } from '@/formBuilder/schemas/form';
 import { useForm } from 'react-hook-form';
 import { ImSpinner2 } from 'react-icons/im';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
 import { BsFileEarmarkPlus } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { callApiCreateForm } from '@/services/apis/builder';
+import { Box, Stack, Typography } from '@mui/material';
+import { RHFSelect, RHFTextField } from '@/components/hook-form';
+import FormProvider from '@/components/hook-form/FormProvider';
+import FieldDialogActionBottomButtons from './fieldDialogActionBottomButtons';
+import { z } from 'zod';
 
+const formTypeOptions = [
+  { value: 'TEST', label: 'آزمون' },
+  { value: 'QUESTION', label: 'پرسشنامه' },
+  { value: 'SURVEY', label: 'نظرسنجی' },
+  { value: 'COMPETITION', label: 'مسابقه' },
+];
+
+const propertiesSchema = z.object({
+  title: z
+    .string()
+    .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
+  FORM_TYPE: z.string(),
+});
+
+type propertiesFormSchemaType = z.infer<typeof propertiesSchema>;
 function CreateFormBtn() {
   const router = useRouter();
-  const form = useForm<formSchemaType | any>({
-    resolver: zodResolver(formSchema),
+  const methods = useForm<propertiesFormSchemaType>({
+    resolver: zodResolver(propertiesSchema),
+    mode: 'onSubmit',
     defaultValues: {
-      name: '',
-      description: '',
-      type: 'QUESTION',
+      title: '',
+      FORM_TYPE: 'QUESTION',
     },
   });
+
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
 
   async function onSubmit(values: formSchemaType) {
     try {
@@ -52,47 +75,36 @@ function CreateFormBtn() {
         <DialogHeader className="flex text-center justify-center items-center">
           <DialogTitle>ساخت پرسشنامه</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>عنوان:</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>توضیحات:</FormLabel>
-                  <FormControl>
-                    <Textarea rows={5} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              disabled={form.formState.isSubmitting || form.formState.isSubmitSuccessful}
-              className="w-full mt-4"
-            >
-              {form.formState.isSubmitting || form.formState.isSubmitSuccessful ? (
-                <ImSpinner2 className="animate-spin" />
-              ) : (
-                <span>ذخیره</span>
-              )}
-            </Button>
-          </form>
-        </Form>
+        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              paddingX: 1.5,
+              direction: 'ltr',
+              width: '100%',
+            }}
+          >
+            <Stack spacing={1}>
+              <Typography variant="subtitle2">عنوان پرسشنامه:</Typography>
+              <RHFTextField name="title" />
+            </Stack>
+
+            <Stack spacing={1} marginTop={2.5}>
+              <Typography variant="subtitle2">نوع:</Typography>
+              <RHFSelect native name="FORM_TYPE">
+                {formTypeOptions.map((category) => (
+                  <option key={category.label} label={category.label}>
+                    {category.value}
+                  </option>
+                ))}
+              </RHFSelect>
+            </Stack>
+
+            <FieldDialogActionBottomButtons status={isSubmitting} />
+          </Box>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

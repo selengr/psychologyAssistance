@@ -20,6 +20,10 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
     }
   );
 
+  // ? update every single question's position
+  // ? after one question is moved
+  question.position = index;
+
   const DesignerElement = FormElements[question.questionType].designerComponent;
 
   const style = {
@@ -67,10 +71,6 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
       />
     );
   }
-
-  // ? update every single question's position
-  // ? after one question is moved
-  question.position = index;
 
   return (
     <Box

@@ -21,7 +21,7 @@ export default function CreateFieldDialog() {
         scrollbarWidth: 'none',
         '& .MuiPaper-root': {
           margin: '10px',
-          boxShadow: (theme) => theme.customShadows.fieldDialog,
+          boxShadow: (theme) => theme?.customShadows?.fieldDialog,
         },
         '& .MuiDialog-container': {
           backdropFilter: 'blur(4px)',
@@ -29,30 +29,34 @@ export default function CreateFieldDialog() {
         },
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          sx={{ marginX: 0.5, marginTop: 0.5, marginBottom: 0 }}
-        >
-          <Iconify icon="mingcute:close-line" sx={{ width: 25, height: 25 }} />
-        </IconButton>
-      </Box>
-      <DialogContent
-        dir="rtl"
-        sx={{
-          maxHeight: '75vh',
-          height: 'auto',
-          scrollbarWidth: 'none',
-          maxWidth: '100%',
-          width: '450px',
-          paddingX: 1,
-          paddingBottom: 1,
-          paddingTop: 0,
-        }}
-      >
-        <PropertiesFormSidebar />
-      </DialogContent>
+      {openDialog && (
+        <>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{ marginX: 0.5, marginTop: 0.5, marginBottom: 0 }}
+            >
+              <Iconify icon="mingcute:close-line" sx={{ width: 25, height: 25 }} />
+            </IconButton>
+          </Box>
+          <DialogContent
+            dir="rtl"
+            sx={{
+              maxHeight: '75vh',
+              height: 'auto',
+              scrollbarWidth: 'none',
+              maxWidth: '100%',
+              width: '450px',
+              paddingX: 1,
+              paddingBottom: 1,
+              paddingTop: 0,
+            }}
+          >
+            <PropertiesFormSidebar />
+          </DialogContent>
+        </>
+      )}
     </Dialog>
   );
 }

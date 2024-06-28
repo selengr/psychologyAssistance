@@ -56,6 +56,12 @@ export type FormElementInstance = {
   questionPropertyList?: Record<string, any>;
   optionList?: IFormOptionList[] | [] | null | undefined;
   temp?: boolean | tempObj;
+  draft?: draftObj;
+};
+
+type draftObj = {
+  prevGroup: number;
+  position: number;
 };
 
 type FormElementsType = {

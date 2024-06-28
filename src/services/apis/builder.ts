@@ -23,5 +23,9 @@ export function callApiQuestionCreate(finalFieldData: any) {
 }
 
 export function callApiQuestionUpdate(id: number, finalFieldData: any) {
-  return callApi.put<any>('/question' + id, finalFieldData);
+  return callApi.put<any>('/question/' + id, finalFieldData);
+}
+
+export function callApiQuestionNewPosition(finalFieldData: any) {
+  return callApi.post<any>('/question/change-position-or-move', finalFieldData);
 }

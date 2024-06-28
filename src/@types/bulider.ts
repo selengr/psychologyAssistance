@@ -62,7 +62,7 @@ export type IQPLSpectral = [
     value: string | null;
   },
   {
-    questionPropertyEnum: 'TAP_TYPE';
+    questionPropertyEnum: 'SELECTION_TYPE';
     value: string;
   },
   {

@@ -39,7 +39,7 @@ const questionPropertyList: IQPLSpectral = [
     value: '',
   },
   {
-    questionPropertyEnum: 'TAP_TYPE',
+    questionPropertyEnum: 'SELECTION_TYPE',
     value: 'RANGE',
   },
   {
@@ -48,11 +48,11 @@ const questionPropertyList: IQPLSpectral = [
   },
   {
     questionPropertyEnum: 'SPECTRAL_START',
-    value: 0,
+    value: 5,
   },
   {
     questionPropertyEnum: 'SPECTRAL_END',
-    value: 255,
+    value: 250,
   },
 ];
 
@@ -82,23 +82,32 @@ const optionsSchema = z.object({
   score: z.number(),
 });
 
-const propertiesSchema = z.object({
-  title: z
-    .string()
-    .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
-    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
-  TAP_TYPE: z.string(),
-  SPECTRAL_TYPE: z.string(),
-  STEP: z.number(),
-  DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
-  SPECTRAL_END: z.number(),
-  SPECTRAL_START: z.number(),
-  REQUIRED: z.boolean().default(false),
-  optionList: z
-    .array(optionsSchema)
-    .min(2, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' })
-    .max(10, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' }),
-});
+const propertiesSchema = z
+  .object({
+    title: z
+      .string()
+      .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+      .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
+    SELECTION_TYPE: z.string(),
+    SPECTRAL_TYPE: z.string(),
+    STEP: z.number(),
+    DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
+    SPECTRAL_START: z.number({ invalid_type_error: 'اجباری است' }),
+    SPECTRAL_END: z.number({ invalid_type_error: 'اجباری است' }),
+    REQUIRED: z.boolean().default(false),
+    optionList: z
+      .array(optionsSchema)
+      .min(2, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' })
+      .max(10, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' }),
+  })
+  .refine((val) => val.SPECTRAL_END > val.SPECTRAL_START, {
+    message: 'پایان باید بزرگتر باشد',
+    path: ['SPECTRAL_END'],
+  })
+  .refine((val) => val.SPECTRAL_END - val.SPECTRAL_START >= val.STEP, {
+    message: 'گام نمیتواند از پایان بیشتر باشد',
+    path: ['STEP'],
+  });
 
 export const SpectralFormElement: FormElement = {
   questionType,
@@ -282,7 +291,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       DESCRIPTION,
       REQUIRED,
       SPECTRAL_TYPE,
-      TAP_TYPE,
+      SELECTION_TYPE,
       STEP,
       SPECTRAL_START,
       SPECTRAL_END,
@@ -306,8 +315,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
         value: openDescriptionSwitch && DESCRIPTION ? DESCRIPTION : null,
       },
       {
-        questionPropertyEnum: 'TAP_TYPE',
-        value: TAP_TYPE,
+        questionPropertyEnum: 'SELECTION_TYPE',
+        value: SELECTION_TYPE,
       },
       {
         questionPropertyEnum: 'STEP',
@@ -375,7 +384,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
         <Stack spacing={1} marginTop={2.5}>
           <Typography variant="subtitle2">نوع نوار لغزان:</Typography>
-          <RHFMultiSelect name="TAP_TYPE" options={tapTypeOptions} />
+          <RHFMultiSelect name="SELECTION_TYPE" options={tapTypeOptions} />
         </Stack>
 
         <Stack spacing={1} marginTop={2.5}>

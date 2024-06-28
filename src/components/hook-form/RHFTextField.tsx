@@ -16,8 +16,12 @@ export default function RHFTextField({ name, helperText, ...other }: Props) {
       render={({ field, fieldState: { error } }) => {
         const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           if (other.type === 'number') {
-            const value = e.target.value;
-            field.onChange(parseFloat(value));
+            if (e.target.value === '') {
+              field.onChange(0);
+            } else {
+              const value = Number(e?.target?.value);
+              field.onChange(value);
+            }
           } else {
             const value = e.target.value;
             field.onChange(value);

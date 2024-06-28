@@ -10,7 +10,7 @@ import useDesigner from '../hooks/useDesigner';
 import { cn } from '../../lib/utils';
 import { Box, Stack, Typography } from '@mui/material';
 import FormProvider from '@/components/hook-form/FormProvider';
-import { RHFMultiSelect, RHFSelect, RHFSwitch, RHFTextField } from '@/components/hook-form';
+import { RHFMultiSelect, RHFSwitch, RHFTextField } from '@/components/hook-form';
 import { Label } from '@radix-ui/react-label';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
 import {
@@ -38,11 +38,11 @@ const questionPropertyList: IQPLTextField = [
   },
   {
     questionPropertyEnum: 'MINIMUM_LEN',
-    value: 0,
+    value: 5,
   },
   {
     questionPropertyEnum: 'MAXIMUM_LEN',
-    value: 255,
+    value: 250,
   },
 ];
 
@@ -55,17 +55,28 @@ const fieldPatternOptions: ITextFieldFormPatternOptions = [
   { value: 'PHONE', label: 'تلفن' },
 ];
 
-const propertiesSchema = z.object({
-  title: z
-    .string()
-    .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
-    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
-  MINIMUM_LEN: z.number(),
-  MAXIMUM_LEN: z.number(),
-  DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
-  REQUIRED: z.boolean().default(false),
-  TEXT_FIELD_PATTERN: z.string(),
-});
+const propertiesSchema = z
+  .object({
+    title: z
+      .string()
+      .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+      .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
+    MINIMUM_LEN: z
+      .number({ invalid_type_error: 'اجباری است' })
+      .min(0)
+      .max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
+    MAXIMUM_LEN: z
+      .number({ invalid_type_error: 'اجباری است' })
+      .min(0)
+      .max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
+    DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
+    REQUIRED: z.boolean().default(false),
+    TEXT_FIELD_PATTERN: z.string(),
+  })
+  .refine((val) => val.MAXIMUM_LEN > val.MINIMUM_LEN, {
+    message: 'حداکثر باید از حداقل بیشتر باشد',
+    path: ['MAXIMUM_LEN'],
+  });
 
 export const TextFieldFormElement: FormElement = {
   questionType,

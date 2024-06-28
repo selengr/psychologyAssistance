@@ -405,6 +405,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
         <Box marginTop={3}>
           <UppyUploader sx={{}} />
+          <UppyUploader sx={{}} />
+          <UppyUploader sx={{}} />
         </Box>
 
         <FieldDialogActionBottomButtons status={isSubmitting} />
