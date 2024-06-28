@@ -8,7 +8,7 @@ import { Box, IconButton, Typography } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 import KanbanBoard from './kanban/KanbanBoard';
 import { IFormElementConstructor } from '@/@types/bulider';
-import CreateFieldDialog from './CreateFieldDialog';
+import CreateFieldDialog from './createFieldDialog';
 
 function Designer() {
   const { setSelectedElement, setOpenDialog, startPage, finishPage } = useDesigner();
@@ -75,9 +75,7 @@ function Designer() {
             <IconButton
               sx={{ position: 'relative', right: 8 }}
               onClick={() => {
-                const newElement = FormElements['TitleFieldStart'].construct(
-                  idGenerator() as IFormElementConstructor
-                );
+                const newElement = FormElements['TitleFieldStart'].construct(idGenerator() as any);
                 setOpenDialog(true);
                 setSelectedElement({ fieldElement: newElement, position: null });
               }}
@@ -172,9 +170,7 @@ function Designer() {
             <IconButton
               sx={{ position: 'relative', right: 8 }}
               onClick={() => {
-                const newElement = FormElements['TitleFieldFinish'].construct(
-                  idGenerator() as IFormElementConstructor
-                );
+                const newElement = FormElements['TitleFieldFinish'].construct(idGenerator() as any);
                 setOpenDialog(true);
                 setSelectedElement({ fieldElement: newElement, position: null });
               }}

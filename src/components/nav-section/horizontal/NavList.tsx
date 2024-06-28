@@ -23,14 +23,16 @@ export default function NavList({ data, depth, hasChild }: NavListRootProps) {
 
   const { active, isExternalLink } = useActiveLink(data.path);
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (open) {
-      handleClose();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [pathname]);
+    const fetchBusinesses = () => {
+      if (open) {
+       return handleClose();
+      }
+    };
+    fetchBusinesses();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
