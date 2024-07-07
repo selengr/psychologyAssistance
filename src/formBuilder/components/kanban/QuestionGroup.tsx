@@ -3,16 +3,18 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-
 import { CSS } from '@dnd-kit/utilities';
 import QuestionCard from './QuestionCard';
 import useDesigner from '../hooks/useDesigner';
-import { Box, IconButton, Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 import { FormElementInstance } from '../FormElements';
 
 const QuestionGroup = memo(function QuestionGroup({
   group,
   questions,
+  minimized,
 }: {
   group: number;
   questions: FormElementInstance[];
+  minimized: boolean;
 }) {
   const { questionGroups, deleteQuestionGroup } = useDesigner();
   const questionsIds = useMemo(() => {
@@ -32,67 +34,46 @@ const QuestionGroup = memo(function QuestionGroup({
     transform: CSS.Transform.toString(transform),
   };
 
-  if (isDragging) {
+  if (isDragging || minimized) {
     return (
-      <Box
-        display="flex"
-        width="100%"
-        height="75px"
-        borderRadius="5px"
-        border="1px solid #d8d8d8"
+      <div
+        className="flex w-full h-[75px] rounded-sm border border-1 border-[#d8d8d8] bg-[#433792]"
         ref={setNodeRef}
         style={style}
-      ></Box>
+      ></div>
     );
   }
 
   return (
-    <Box
-      display="flex"
-      width="100%"
-      borderRadius="5px"
-      border="1px solid #D8D8D8"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
+    <div
+      className="flex flex-col w-full rounded-sm items-center justify-center border border-1 border-[#d8d8d8]"
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
     >
-      {questions.length >= 1 && (
-        <Box
-          display="flex"
-          flexDirection="column"
-          width="100%"
-          minHeight="60px"
-          paddingX={2}
-          paddingTop={2}
-          flexGrow="1"
-          gap={2}
-        >
+      {questions?.length >= 1 && (
+        <div className="flex flex-col w-full min-h-[60px] px-2 pt-2 flex-grow gap-4">
           <SortableContext items={questionsIds} strategy={verticalListSortingStrategy}>
-            {questions?.map((question: any) => (
-              <QuestionCard key={question?.questionId} question={question} />
+            {questions?.map((question: any, index: number) => (
+              <QuestionCard key={questionsIds[index]} question={question} />
             ))}
           </SortableContext>
-        </Box>
+        </div>
       )}
 
-      <Box display="flex" flexDirection="row-reverse" alignItems="center" justifyContent="center">
-        <Typography padding={1} marginX="auto" variant="body2" component={'p'}>
-          نوع سوال را از فهرست کناری به اینجا بکشید
-        </Typography>
+      <div className="flex flex-row-reverse items-center justify-center py-2">
+        <p className="p-2 mx-auto text-center">نوع سوال را از فهرست کناری به اینجا بکشید</p>
         <IconButton
           onClick={() => {
-            if (questionGroups.length === 1) return;
+            if (questionGroups?.length === 1) return;
             deleteQuestionGroup(group);
           }}
         >
-          {questions.length >= 1 && <Iconify icon="ph:dots-three-vertical-bold" />}
+          {questions?.length >= 1 && <Iconify icon="ph:dots-three-vertical-bold" />}
         </IconButton>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 });
 

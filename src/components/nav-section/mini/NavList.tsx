@@ -1,7 +1,6 @@
-'use client';
 import { useState, useEffect, useRef } from 'react';
 // next
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 // hooks
 import useActiveLink from '../../../hooks/useActiveLink';
 //
@@ -27,13 +26,11 @@ export default function NavList({ data, depth, hasChild }: NavListRootProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const fetchBusinesses = () => {
-      if (open) {
-       return handleClose();
-      }
-    };
-    fetchBusinesses();
+    if (open) {
+      handleClose();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [pathname]);
   }, []);
 
   useEffect(() => {

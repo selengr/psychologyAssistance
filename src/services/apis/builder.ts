@@ -1,10 +1,17 @@
-import { ITest } from '@/@types/bulider';
 import { callApi } from '../config/configAxios';
 import { formSchemaType } from '@/formBuilder/schemas/form';
 
 interface ITestApi {
   data: any;
 }
+
+export type IChangeOrMovePositionApi = {
+  formBuilderId: number;
+  questionId: number;
+  questionGroupId: number;
+  targetQuestionGroupId: number | null;
+  newPosition: number;
+};
 
 export function textApi() {
   return callApi.get<ITestApi>('/test');
@@ -28,4 +35,8 @@ export function callApiQuestionUpdate(id: number, finalFieldData: any) {
 
 export function callApiQuestionNewPosition(finalFieldData: any) {
   return callApi.post<any>('/question/change-position-or-move', finalFieldData);
+}
+
+export function callApiCreateNewQuestionGroup(finalFieldData: any) {
+  return callApi.post<any>('/question-group', finalFieldData);
 }

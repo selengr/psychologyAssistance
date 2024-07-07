@@ -6,11 +6,12 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useDesigner from '../hooks/useDesigner';
-import { toast } from '../ui/use-toast';
+// import { toast } from '../ui/use-toast';
 import { Box, Stack, Typography } from '@mui/material';
 import FormProvider from '@/components/hook-form/FormProvider';
 import { RHFTextField } from '@/components/hook-form';
 import FieldDialogActionBottomButtons from '../fieldDialogActionBottomButtons';
+import { IFormElementConstructor } from '@/@types/bulider';
 
 const questionType: ElementsType = 'TitleFieldStart';
 
@@ -32,8 +33,8 @@ const propertiesSchema = z.object({
 
 export const TitleFieldStartFormElement: FormElement = {
   questionType,
-  construct: (id: string) => ({
-    id,
+  construct: ({ questionId }: IFormElementConstructor) => ({
+    questionId,
     questionType,
     questionPropertyList,
   }),
@@ -119,11 +120,10 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
   function applyChanges(values: propertiesFormSchemaType) {
     const { title } = values;
-    const { fieldElement } = selectedElement;
 
     if (!startPage) {
       addStartPage({
-        ...fieldElement,
+        ...selectedElement?.fieldElement,
         questionPropertyList: {
           label: element?.questionPropertyList?.label,
           title,
@@ -138,11 +138,6 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
         },
       });
     }
-
-    toast({
-      title: 'موفقیت آمیز بود',
-      description: 'خصوصیات بصورت موفقیت آمیز ذخیره شدند',
-    });
 
     setOpenDialog(false);
     setSelectedElement(null);

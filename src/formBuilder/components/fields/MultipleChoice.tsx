@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from '../FormElements';
-import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,7 +16,6 @@ import { IFormElementConstructor, IFormOptionList, IQPLMultipleChoice } from '@/
 import { IOSSwitch } from '@/components/hook-form/RHFSwitchIOS.styled';
 import RHFTextFieldOptionList from '@/components/hook-form/RHFTextFieldOptionList';
 import { callApiQuestionCreate, callApiQuestionUpdate } from '@/services/apis/builder';
-import { UppyUploader } from '@/components/mresalatUploader/UppyUploader';
 
 const questionType: ElementsType = 'MULTIPLE_CHOICE';
 
@@ -54,17 +52,30 @@ const optionList: IFormOptionList[] = [
 const optionsSchema = z.object({
   title: z
     .string()
-    .min(2, { message: 'حداقل 2 و حداکثر 50 کاراکتر داشته باشد' })
-    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر داشته باشد' }),
+    .transform((value) => value.replace(/\s+/g, ''))
+    .pipe(
+      z
+        .string()
+        .min(2, { message: 'حداقل 2 و حداکثر 50 کاراکتر داشته باشد' })
+        .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر داشته باشد' })
+    ),
   score: z.number(),
 });
 
 const propertiesSchema = z.object({
   title: z
     .string()
-    .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
-    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
-  DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
+    .transform((value) => value.replace(/\s+/g, ''))
+    .pipe(
+      z
+        .string()
+        .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+        .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+    ),
+  DESCRIPTION: z
+    .string()
+    .transform((value) => value.replace(/\s+/g, ''))
+    .pipe(z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' })),
   REQUIRED: z.boolean().default(false),
   RANDOMIZE_OPTIONS: z.boolean().default(false),
   MULTI_SELECT: z.boolean().default(false),
@@ -116,34 +127,16 @@ type CustomInstance = FormElementInstance & {
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
-  const designerBtnLabel = MultipleChoiceFormElement.designerBtnElement.label;
   const labelText = element.title;
-  const required = element.questionPropertyList.find(
-    (property) => property.questionPropertyEnum === 'REQUIRED' && property.value
-  );
+  const designerBtnLabel = MultipleChoiceFormElement.designerBtnElement.label;
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'flex-end',
-        width: '100%',
-        flexDirection: 'column',
-        direction: 'rtl',
-      }}
-    >
-      <Typography
-        variant="body2"
-        component={'p'}
-        sx={{ fontSize: '1rem', '& .MuiTypography-root': { direction: 'rtl' } }}
-      >
-        {required?.value === 'true' && '* '}
+    <div className="flex items-start w-full flex-col" dir="rtl">
+      <p dir="rtl" className="text-base">
         {labelText}
-      </Typography>
-      <Typography variant="body2" component={'p'} sx={{ fontSize: '0.7rem' }}>
-        {designerBtnLabel}#
-      </Typography>
-    </Box>
+      </p>
+      <p className="text-xs">{designerBtnLabel}#</p>
+    </div>
   );
 }
 
@@ -174,7 +167,7 @@ function FormComponent({
         {label}
         {required && ' *'}
       </Label>
-      <Input
+      {/* <Input
         className={cn(error && 'border-red-500')}
         placeholder={placeHolder}
         onChange={(e) => setValue(e.target.value)}
@@ -186,7 +179,7 @@ function FormComponent({
           submitValue(element?.questionId, e.target.value);
         }}
         value={value}
-      />
+      /> */}
     </div>
   );
 }
@@ -275,20 +268,28 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
     const optionListData = optionList;
 
+    const lastIndexOfGroup = elements.findLastIndex(
+      (el) => el.questionGroupId === selectedElement?.fieldElement?.questionGroupId
+    );
+
+    const group = elements.filter(
+      (el) => el.questionGroupId === selectedElement?.fieldElement?.questionGroupId
+    );
+
+    delete element.temp;
+
     const finalFieldData = {
       ...element,
       title,
-      position: selectedElement?.position ?? elements.length,
+      position: selectedElement?.position?.apiPosition ?? group.length,
       questionPropertyList: data,
       optionList: optionListData,
     };
 
-    // ! elements.length problem
-
     if (!selectedYet) {
       try {
         const response: any = await callApiQuestionCreate(finalFieldData);
-        addElement(selectedElement!.position ?? elements.length, response.data);
+        addElement(selectedElement?.position?.realPosition ?? lastIndexOfGroup + 1, response.data);
         setOpenDialog(false);
         setSelectedElement(null);
       } catch (error) {
@@ -297,10 +298,10 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     } else {
       try {
         const response: any = await callApiQuestionUpdate(
-          finalFieldData.questionId,
+          finalFieldData?.questionId,
           finalFieldData
         );
-        updateElement(element.questionId, response.data);
+        updateElement(element?.questionId, response.data);
       } catch (error) {
         console.error(error);
       }
@@ -403,11 +404,11 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           </Stack>
         )}
 
-        <Box marginTop={3}>
+        {/* <Box marginTop={3}>
           <UppyUploader sx={{}} />
           <UppyUploader sx={{}} />
           <UppyUploader sx={{}} />
-        </Box>
+        </Box> */}
 
         <FieldDialogActionBottomButtons status={isSubmitting} />
       </Box>

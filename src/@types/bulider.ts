@@ -1,11 +1,11 @@
 export type IFormElementConstructor = {
   questionId: number;
-  questionGroupId: number | null;
-  formId: number;
-  title: string;
-  position: number | null;
+  questionGroupId?: number | null;
+  formId?: number;
+  title?: string;
+  position?: number | null;
   temp?: boolean | tempObj;
-  optionList: IFormOptionList;
+  optionList?: IFormOptionList;
 };
 
 export type tempObj = {

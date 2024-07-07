@@ -48,11 +48,11 @@ const questionPropertyList: IQPLSpectral = [
   },
   {
     questionPropertyEnum: 'SPECTRAL_START',
-    value: 5,
+    value: 10,
   },
   {
     questionPropertyEnum: 'SPECTRAL_END',
-    value: 250,
+    value: 100,
   },
 ];
 
@@ -77,8 +77,13 @@ const tapTypeOptions: ISpectralQTapAndOptionsType = [{ value: 'RANGE', label: '�
 const optionsSchema = z.object({
   title: z
     .string()
-    .min(2, { message: 'حداقل 2 و حداکثر 50 کاراکتر داشته باشد' })
-    .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر داشته باشد' }),
+    .transform((value) => value.replace(/\s+/g, ''))
+    .pipe(
+      z
+        .string()
+        .min(2, { message: 'حداقل 2 و حداکثر 50 کاراکتر داشته باشد' })
+        .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر داشته باشد' })
+    ),
   score: z.number(),
 });
 
@@ -86,22 +91,34 @@ const propertiesSchema = z
   .object({
     title: z
       .string()
-      .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
-      .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' }),
+      .transform((value) => value.replace(/\s+/g, ''))
+      .pipe(
+        z
+          .string()
+          .min(2, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+          .max(50, { message: 'حداقل باید 2 و حداکثر 50 کاراکتر باشد' })
+      ),
     SELECTION_TYPE: z.string(),
     SPECTRAL_TYPE: z.string(),
-    STEP: z.number(),
-    DESCRIPTION: z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' }),
+    STEP: z
+      .number({ invalid_type_error: 'اجباری است' })
+      .min(1, { message: 'باید از صفر بزرگتر باشد' }),
+    DESCRIPTION: z
+      .string()
+      .transform((value) => value.replace(/\s+/g, ''))
+      .pipe(z.string().max(250, { message: 'حداکثر میتواند 250 کاراکتر باشد' })),
     SPECTRAL_START: z.number({ invalid_type_error: 'اجباری است' }),
-    SPECTRAL_END: z.number({ invalid_type_error: 'اجباری است' }),
+    SPECTRAL_END: z
+      .number({ invalid_type_error: 'اجباری است' })
+      .min(1, { message: 'باید از صفر بزرگتر باشد' }),
     REQUIRED: z.boolean().default(false),
     optionList: z
       .array(optionsSchema)
       .min(2, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' })
       .max(10, { message: 'حداقل باید 2 و حداکثر 10 گزینه وجود داشته باشد' }),
   })
-  .refine((val) => val.SPECTRAL_END > val.SPECTRAL_START, {
-    message: 'پایان باید بزرگتر باشد',
+  .refine((val) => val.SPECTRAL_END >= val.SPECTRAL_START, {
+    message: 'پایان باید بزرگتر یا مساوی با شروع باشد',
     path: ['SPECTRAL_END'],
   })
   .refine((val) => val.SPECTRAL_END - val.SPECTRAL_START >= val.STEP, {
@@ -151,34 +168,16 @@ type CustomInstance = FormElementInstance & {
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
   const element = elementInstance as CustomInstance;
-  const designerBtnLabel = SpectralFormElement.designerBtnElement.label;
   const labelText = element.title;
-  const required = element.questionPropertyList.find(
-    (property) => property.questionPropertyEnum === 'REQUIRED' && property.value
-  );
+  const designerBtnLabel = SpectralFormElement.designerBtnElement.label;
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'flex-end',
-        width: '100%',
-        flexDirection: 'column',
-        direction: 'rtl',
-      }}
-    >
-      <Typography
-        variant="body2"
-        component={'p'}
-        sx={{ fontSize: '1rem', '& .MuiTypography-root': { direction: 'rtl' } }}
-      >
-        {required?.value === 'true' && '* '}
+    <div className="flex items-start w-full flex-col" dir="rtl">
+      <p dir="rtl" className="text-base">
         {labelText}
-      </Typography>
-      <Typography variant="body2" component={'p'} sx={{ fontSize: '0.7rem' }}>
-        {designerBtnLabel}#
-      </Typography>
-    </Box>
+      </p>
+      <p className="text-xs">{designerBtnLabel}#</p>
+    </div>
   );
 }
 
@@ -334,10 +333,20 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
     const optionListData = optionList;
 
+    const lastIndexOfGroup = elements.findLastIndex(
+      (el) => el.questionGroupId === selectedElement?.fieldElement?.questionGroupId
+    );
+
+    const group = elements.filter(
+      (el) => el.questionGroupId === selectedElement?.fieldElement?.questionGroupId
+    );
+
+    delete element.temp;
+
     const finalFieldData = {
       ...element,
       title,
-      position: selectedElement?.position ?? elements.length,
+      position: selectedElement?.position?.apiPosition ?? group.length,
       questionPropertyList: data,
       optionList: optionListData,
     };
@@ -345,7 +354,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
     if (!selectedYet) {
       try {
         const response: any = await callApiQuestionCreate(finalFieldData);
-        addElement(selectedElement!.position ?? elements.length, response.data);
+        addElement(selectedElement?.position?.realPosition ?? lastIndexOfGroup + 1, response.data);
         setOpenDialog(false);
         setSelectedElement(null);
       } catch (error) {

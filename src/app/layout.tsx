@@ -33,7 +33,6 @@ import ThemeLocalization from '../locales';
 
 // components
 import { MotionLazyContainer } from '../components/animate';
-import { Toaster } from '@/formBuilder/components/ui/toaster';
 import { ThemeSettings, SettingsProvider } from '../components/settings';
 import { ReduxProvider } from '@/redux/provider';
 import DashboardLayout from '@/layouts/dashboard/DashboardLayout';
@@ -44,14 +43,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
-
   return (
     <html lang="fa">
       <body className={`${IranSansFont.className}`}>
         <NextTopLoader color="#DE74A3" showSpinner={false} />
         {/* <CacheProvider value={emotionCache}> */}
-        {/* <AuthProvider> */}
         <ReduxProvider>
           {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
           <SettingsProvider>
@@ -67,9 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </SettingsProvider>
           {/* </LocalizationProvider> */}
         </ReduxProvider>
-        {/* </AuthProvider> */}
         {/* </CacheProvider> */}
-        <Toaster />
       </body>
     </html>
   );

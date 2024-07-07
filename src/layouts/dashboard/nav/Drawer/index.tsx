@@ -5,16 +5,14 @@ import { Icons } from '@/components/Icons';
 import { Drawer } from '@mui/material';
 
 import i18n from 'i18next';
-import { messages } from '@/components/messages';
-import { LogOut } from '@/utils/utils';
+// import { messages } from '@/components/messages';
+// import { LogOut } from '@/utils/utils';
 import { StyledTypography } from '@/components/Typography';
 import { StyledMenu } from '../Menu';
 import { Sidebar } from '@/components/common/Sidebar';
 import { RoleSelector } from '@/components/common/RoleSelector';
 import { StyledLogo } from '@/components/common/Logo';
 import styled from '@emotion/styled';
-
-
 
 interface Props {
   roleId: number;
@@ -26,14 +24,15 @@ interface Props {
   roleType: number;
 }
 
-export const StyledWebDrawer = ({ role, scopeName, roleId, roleData, roleType, open }: Props) => {debugger
+export const StyledWebDrawer = ({ role, scopeName, roleId, roleData, roleType, open }: Props) => {
+  debugger;
   const [active, setActive] = useState<string>('');
 
   return (
     <Drawer
       hideBackdrop={true}
-      variant='permanent'
-      anchor='right'
+      variant="permanent"
+      anchor="right"
       open={open}
       sx={{
         display: { xs: 'none', sm: 'block' },
@@ -44,7 +43,8 @@ export const StyledWebDrawer = ({ role, scopeName, roleId, roleData, roleType, o
           border: 0,
         },
       }}
-      PaperProps={{ elevation: 1 }}>
+      PaperProps={{ elevation: 1 }}
+    >
       <div style={{ padding: '30px' }}>
         <div style={{ textAlign: 'center' }}>
           <StyledLogo />
@@ -70,20 +70,28 @@ export const StyledWebDrawer = ({ role, scopeName, roleId, roleData, roleType, o
           className={'web'}
           icon={<Icons name={'Exit'} active={false} size={'web'} />}
           iconOver={<Icons name={'Exit'} active={true} size={'web'} />}
-          value={`${i18n.t(messages.Input_Global_Exit())}`}
+          value={``}
           id={'0'}
           active={active === '0'}
           onClick={(e) => {
-            LogOut();
+            // LogOut();
             setActive(e.target.id);
           }}
         />
       </div>
     </Drawer>
   );
-}
+};
 
-export const StyledMobileDrawer = ({ onClose, open, role, scopeName, roleId, roleData, roleType }: Props) => {
+export const StyledMobileDrawer = ({
+  onClose,
+  open,
+  role,
+  scopeName,
+  roleId,
+  roleData,
+  roleType,
+}: Props) => {
   const [active, setActive] = useState<string>('');
   return (
     <StyledDrawer
@@ -98,7 +106,8 @@ export const StyledMobileDrawer = ({ onClose, open, role, scopeName, roleId, rol
           boxSizing: 'border-box',
           borderRadius: '12px 0 0 12px',
         },
-      }}>
+      }}
+    >
       <div style={{ padding: '20px 30px 0' }}>
         <div style={{ textAlign: 'center' }}>
           <StyledLogo />
@@ -125,18 +134,18 @@ export const StyledMobileDrawer = ({ onClose, open, role, scopeName, roleId, rol
           className={'mobile'}
           icon={<Icons name={'Exit'} active={false} size={'mobile'} />}
           iconOver={<Icons name={'Exit'} active={true} size={'mobile'} />}
-          value={`${i18n.t(messages.Input_Global_Exit())}`}
+          value={``}
           id={'0'}
           active={active === '0'}
           onClick={(e) => {
-            LogOut();
+            // LogOut();
             setActive(e.target.id);
           }}
         />
       </div>
     </StyledDrawer>
   );
-}
+};
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   overflow: 'hidden !important',

@@ -2,80 +2,35 @@
 
 import DesignerSidebar from './DesignerSidebar';
 import useDesigner from './hooks/useDesigner';
-import { FormElementInstance, FormElements } from './FormElements';
+import { ElementsType, FormElementInstance, FormElements } from './FormElements';
 import { idGenerator } from '@/formBuilder/lib/idGenerator';
-import { Box, IconButton, Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 import KanbanBoard from './kanban/KanbanBoard';
-import { IFormElementConstructor } from '@/@types/bulider';
 import CreateFieldDialog from './createFieldDialog';
 
 function Designer() {
   const { setSelectedElement, setOpenDialog, startPage, finishPage } = useDesigner();
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        paddingX: 2,
-        paddingY: 2,
-      }}
-    >
+    <div className="w-full min-h-full flex px-4 py-4 justify-center">
       <CreateFieldDialog />
-      <Box
-        sx={{
-          padding: 2,
-          width: '100%',
-          minHeight: '100%',
-          flexGrow: 1,
-          maxWidth: '920px',
-          margin: 'auto',
-          borderRadius: '10px',
-          display: 'flex',
-          overflowY: 'auto',
-          flexDirection: 'column',
-          alignItems: 'center',
-          scrollbarWidth: 'none',
-          backgroundColor: 'white',
-          userSelect: 'none',
-          boxShadow: (theme) => theme.customShadows.box,
-        }}
-        gap={2}
+      <div
+        className="p-4 w-full min-h-full flex-grow max-w-[920px] rounded-lg flex overflow-y-auto flex-col items-center bg-white shadow-[0_0_2px_0_rgba(187,187,187,0.2),0_12px_24px_-4px_rgba(187,187,187,0.12)] gap-4"
+        style={{ scrollbarWidth: 'none', userSelect: 'none' }}
       >
         {!startPage ? (
-          <Box
-            sx={{
-              direction: 'rtl',
-              display: 'flex',
-              flexDirection: 'row-reverse',
-              width: '100%',
-              position: 'relative',
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingY: 0.5,
-              borderRadius: '5px',
-              border: '1px solid #D8D8D8',
-            }}
+          <div
+            dir="rtl"
+            className="flex flex-row relative w-full items-center justify-center rounded-sm border border-1 border-[#d8d8d8]"
           >
-            <Typography
-              variant="body2"
-              component={'p'}
-              sx={{
-                fontSize: '1rem',
-                padding: 1,
-                display: 'flex',
-                justifyContent: 'center',
-                flexGrow: 1,
-              }}
-            >
-              صفحه شروع پرسشنامه
-            </Typography>
+            <p className="text-base p-4 flex justify-center flex-grow">صفحه شروع پرسشنامه</p>
             <IconButton
               sx={{ position: 'relative', right: 8 }}
               onClick={() => {
-                const newElement = FormElements['TitleFieldStart'].construct(idGenerator() as any);
+                const newElement: FormElementInstance = FormElements['TitleFieldStart'].construct({
+                  questionId: idGenerator(),
+                });
                 setOpenDialog(true);
                 setSelectedElement({ fieldElement: newElement, position: null });
               }}
@@ -90,87 +45,31 @@ function Designer() {
                 }}
               />
             </IconButton>
-          </Box>
+          </div>
         ) : (
-          <Box
-            sx={{
-              direction: 'rtl',
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              position: 'relative',
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingX: 2,
-              paddingY: 1,
-              borderRadius: '5px',
-              border: '1px solid #D8D8D8',
-            }}
-            marginY={1}
+          <div
+            dir="rtl"
+            className="flex flex-col w-full relative items-center justify-center px-4 py-2 rounded-sm border border-1 border-[#d8d8d8] my-4"
           >
-            <Typography
-              variant="body2"
-              component={'p'}
-              sx={{
-                fontSize: '1rem',
-                padding: 1,
-                display: 'flex',
-                justifyContent: 'center',
-                flexGrow: 1,
-              }}
-            >
-              صفحه شروع پرسشنامه
-            </Typography>
+            <p className="text-base p-4 flex justify-center flex-grow">صفحه شروع پرسشنامه</p>
             <DesignerElementNoDnD key={startPage?.questionId} element={startPage} />
-          </Box>
+          </div>
         )}
-        <Box
-          sx={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flex: '1 1',
-            alignItems: 'center',
-            flexDirection: 'column',
-            justifyContent: 'flex-start',
-            borderRadius: '10px',
-          }}
-          gap={2}
-        >
+        <div className="w-full h-full flex flex-grow flex-1 items-center flex-col justify-start rounded-md gap-2">
           <KanbanBoard />
-        </Box>
+        </div>
         {!finishPage ? (
-          <Box
-            sx={{
-              direction: 'rtl',
-              display: 'flex',
-              flexDirection: 'row-reverse',
-              width: '100%',
-              position: 'relative',
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingY: 0.5,
-              borderRadius: '5px',
-              border: '1px solid #D8D8D8',
-            }}
+          <div
+            dir="rtl"
+            className="flex flex-row w-full relative items-center justify-center rounded-sm border border-1 border-[#d8d8d8]"
           >
-            <Typography
-              variant="body2"
-              component={'p'}
-              sx={{
-                fontSize: '1rem',
-                padding: 1,
-                display: 'flex',
-                justifyContent: 'center',
-                flexGrow: 1,
-              }}
-            >
-              صفحه پایان پرسشنامه
-            </Typography>
+            <p className="text-base p-4 flex justify-center flex-grow">صفحه پایان پرسشنامه</p>
             <IconButton
               sx={{ position: 'relative', right: 8 }}
               onClick={() => {
-                const newElement = FormElements['TitleFieldFinish'].construct(idGenerator() as any);
+                const newElement = FormElements['TitleFieldFinish'].construct({
+                  questionId: idGenerator(),
+                });
                 setOpenDialog(true);
                 setSelectedElement({ fieldElement: newElement, position: null });
               }}
@@ -185,62 +84,30 @@ function Designer() {
                 }}
               />
             </IconButton>
-          </Box>
+          </div>
         ) : (
-          <Box
-            sx={{
-              direction: 'rtl',
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              position: 'relative',
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingX: 2,
-              paddingY: 1,
-              borderRadius: '5px',
-              border: '1px solid #D8D8D8',
-            }}
+          <div
+            dir="rtl"
+            className="flex flex-col w-full relative items-center justify-center px-4 py-2 rounded-sm border border-1 border-[#d8d8d8]"
           >
-            <Typography
-              variant="body2"
-              component={'p'}
-              sx={{
-                fontSize: '1rem',
-                padding: 1,
-                display: 'flex',
-                justifyContent: 'center',
-                flexGrow: 1,
-              }}
-            >
-              صفحه پایان پرسشنامه
-            </Typography>
+            <p className="text-base p-4 flex justify-center flex-grow">صفحه پایان پرسشنامه</p>
             <DesignerElementNoDnD key={finishPage?.questionId} element={finishPage} />
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
       <DesignerSidebar />
-    </Box>
+    </div>
   );
 }
 
 function DesignerElementNoDnD({ element }: { element: FormElementInstance }) {
   const { removeStartPage, removeFinishPage, setSelectedElement, setOpenDialog } = useDesigner();
-  const DesignerElement = FormElements[element.questionType].designerComponent;
+  const DesignerElement = FormElements[element?.questionType as ElementsType].designerComponent;
 
   return (
-    <Box
-      sx={{
-        direction: 'rtl',
-        height: '65px',
-        flexDirection: 'row-reverse',
-        display: 'flex',
-        width: '100%',
-        borderRadius: '5px',
-        border: '1px solid #D8D8D8',
-        marginY: 1,
-        paddingX: 1,
-      }}
+    <div
+      dir="rtl"
+      className="h-[65px] flex flex-row w-full rounded-sm my-4 px-4 border border-1 border-[#d8d8d8]"
       onClick={(e) => {
         e.stopPropagation();
         setSelectedElement({ fieldElement: element, position: null });
@@ -269,21 +136,12 @@ function DesignerElementNoDnD({ element }: { element: FormElementInstance }) {
         </div>
       </> */}
 
-      <Box
-        sx={{
-          display: 'flex',
-          width: '100%',
-          alignItems: 'center',
-          borderRadius: '5px',
-          paddingX: 2,
-          paddingY: 2,
-          height: '100%',
-          pointerEvents: 'none',
-          justifyContent: 'flex-end',
-        }}
+      <div
+        className="flex w-full items-center rounded-sm px-4 py-2 h-full justify-end"
+        style={{ pointerEvents: 'none' }}
       >
         <DesignerElement elementInstance={element} />
-      </Box>
+      </div>
       <IconButton
         sx={{
           position: 'relative',
@@ -292,7 +150,7 @@ function DesignerElementNoDnD({ element }: { element: FormElementInstance }) {
       >
         <Iconify icon="ph:dots-three-vertical-bold" sx={{ height: '20px', width: '20px' }} />
       </IconButton>
-    </Box>
+    </div>
   );
 }
 

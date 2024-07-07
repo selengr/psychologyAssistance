@@ -1,5 +1,4 @@
 import { IFormElementConstructor, IFormOptionList, tempObj } from '@/@types/bulider';
-import { SelectFieldFormElement } from './fields/SelectField';
 import { SpectralFormElement } from './fields/SpectralField';
 import { TextFieldFormElement } from './fields/TextField';
 import { TitleFieldFinishFormElement } from './fields/TitleFieldFinish';
@@ -9,7 +8,6 @@ import { MultipleChoiceFormElement } from './fields/MultipleChoice';
 export type ElementsType =
   | 'TEXT_FIELD'
   | 'MULTIPLE_CHOICE'
-  | 'SelectField'
   | 'TitleFieldStart'
   | 'TitleFieldFinish'
   | 'SPECTRAL';
@@ -24,6 +22,7 @@ export type FormElement = {
     questionGroupId,
     formId,
     title,
+    position,
   }: IFormElementConstructor) => FormElementInstance;
 
   designerBtnElement: {
@@ -48,11 +47,11 @@ export type FormElement = {
 
 export type FormElementInstance = {
   questionId: number;
-  questionGroupId: number | null;
-  formId: number;
-  title: string;
-  questionType: ElementsType;
-  position: number | null;
+  questionGroupId?: number | null;
+  formId?: number;
+  title?: string;
+  questionType?: ElementsType;
+  position?: number | null;
   questionPropertyList?: Record<string, any>;
   optionList?: IFormOptionList[] | [] | null | undefined;
   temp?: boolean | tempObj;
@@ -72,7 +71,6 @@ export const FormElements: FormElementsType = {
   TEXT_FIELD: TextFieldFormElement,
   MULTIPLE_CHOICE: MultipleChoiceFormElement,
   SPECTRAL: SpectralFormElement,
-  SelectField: SelectFieldFormElement,
   TitleFieldStart: TitleFieldStartFormElement,
   TitleFieldFinish: TitleFieldFinishFormElement,
 };

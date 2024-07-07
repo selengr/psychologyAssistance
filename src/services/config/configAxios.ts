@@ -47,7 +47,9 @@ api.interceptors.response.use(
     if (error.response?.status < 500) {
       handelErrorsApi(error.response.data.error ?? error.response.data.errors);
     } else {
-      toast.error('درخواست شما با خطا مواجه شده است مجددا تلاش کنید');
+      toast.error('درخواست شما با خطا مواجه شده است مجددا تلاش کنید', {
+        duration: 3500,
+      });
     }
 
     const apiError: IApiError = {

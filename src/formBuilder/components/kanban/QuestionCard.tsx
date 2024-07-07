@@ -1,13 +1,13 @@
 import { memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FormElementInstance, FormElements } from '../FormElements';
+import { ElementsType, FormElementInstance, FormElements } from '../FormElements';
 import useDesigner from '../hooks/useDesigner';
 import { Box, IconButton } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 
 const QuestionCard = memo(function QuestionCard({ question }: { question: FormElementInstance }) {
-  const { setSelectedElement, setOpenDialog, removeElement } = useDesigner();
+  const { setSelectedElement, setOpenDialog, removeElement, elements } = useDesigner();
 
   let { setNodeRef, attributes, listeners, transform, transition, isDragging, index } = useSortable(
     {
@@ -17,6 +17,7 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
         question,
         isQuestionElement: true,
       },
+      animateLayoutChanges: () => false,
     }
   );
 
@@ -24,7 +25,7 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
   // ? after one question is moved
   question.position = index;
 
-  const DesignerElement = FormElements[question.questionType].designerComponent;
+  const DesignerElement = FormElements[question.questionType as ElementsType].designerComponent;
 
   const style = {
     transition,
@@ -33,21 +34,10 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
 
   if (isDragging) {
     return (
-      <Box
+      <div
+        className="flex items-center opacity-30 h-[58px] border border-1 border-[#091A7A] rounded-sm bg-[#D6E4FF]"
         ref={setNodeRef}
         style={style}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          opacity: '0.3',
-          backgroundColor: (theme) => theme.palette.secondary.lighter,
-          height: '65px',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: (theme) => theme.palette.secondary.darker,
-          borderRadius: '5px',
-          padding: '8px',
-        }}
       />
     );
   }
@@ -55,28 +45,26 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
   if (question?.temp) {
     return (
       <Box
+        className="flex items-center opacity-30 h-[58px] border border-1 border-[#091A7A] rounded-sm bg-[#D6E4FF]"
         style={style}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          opacity: '0.3',
-          backgroundColor: (theme) => theme.palette.secondary.lighter,
-          height: '65px',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: (theme) => theme.palette.secondary.darker,
-          borderRadius: '5px',
-          padding: '8px',
-        }}
       />
     );
   }
 
   return (
-    <Box
+    <div
       onClick={(e: any) => {
         e.stopPropagation();
-        setSelectedElement({ fieldElement: question, position: index });
+        const realPositionInElements = elements.findIndex(
+          (el) => el.questionId === question.questionId
+        );
+        setSelectedElement({
+          fieldElement: question,
+          position: {
+            apiPosition: index,
+            realPosition: realPositionInElements,
+          },
+        });
         setOpenDialog(true);
       }}
       ref={setNodeRef}
@@ -84,17 +72,7 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
       {...attributes}
       {...listeners}
       dir="rtl"
-      bgcolor="white"
-      height="65px"
-      width="100%"
-      position="relative"
-      borderRadius="5px"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      flexDirection="row"
-      padding={2}
-      border="1px solid #d8d8d8"
+      className="flex items-center h-[65px w-full] relative rounded-sm justify-center flex-row p-2 border border-1 border-[#d8d8d8]"
     >
       <DesignerElement elementInstance={question} />
       <IconButton
@@ -113,7 +91,7 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
       >
         <Iconify icon="ph:dots-three-vertical-bold" />
       </IconButton>
-    </Box>
+    </div>
   );
 });
 

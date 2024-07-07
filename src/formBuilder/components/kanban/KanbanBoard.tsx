@@ -4,12 +4,13 @@ import { DragEndEvent, DragOverEvent, DragStartEvent, useDndMonitor } from '@dnd
 import { verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import useDesigner from '../hooks/useDesigner';
-import { ElementsType, FormElements } from '../FormElements';
+import { ElementsType, FormElementInstance, FormElements } from '../FormElements';
 import { idGenerator } from '../../lib/idGenerator';
-import { Box, Button, Typography } from '@mui/material';
 import Iconify from '@/components/iconify/Iconify';
 import { usePathname } from 'next/navigation';
 import { IFormElementConstructor } from '@/@types/bulider';
+import { callApiCreateNewQuestionGroup, IChangeOrMovePositionApi } from '@/services/apis/builder';
+import { LoadingButton } from '@mui/lab';
 
 function KanbanBoard() {
   const {
@@ -23,9 +24,33 @@ function KanbanBoard() {
     changeOrMovePositionApiReducer,
   } = useDesigner();
   const [oneGroupIsDragged, setOneGroupIsDragged] = useState(false);
-  const groupsId = useMemo(() => questionGroups.map((group: any) => group), [questionGroups]);
+  const [newPageIsLoading, setNewPageIsLoading] = useState<boolean>(false);
+  const groupsId = useMemo(() => questionGroups?.map((group: any) => group), [questionGroups]);
+  const itemsByGroup = useMemo(() => {
+    return elements?.reduce((acc: any, question: any) => {
+      if (!acc[question.questionGroupId]) {
+        acc[question.questionGroupId] = [];
+      }
+      acc[question.questionGroupId].push(question);
+      return acc;
+    }, {});
+  }, [elements]);
   const path = usePathname();
   const formId = Number(path.split('/')[2]);
+
+  async function handleCreateNewPage() {
+    try {
+      setNewPageIsLoading(true);
+      const res = await callApiCreateNewQuestionGroup({
+        formId: formId,
+      });
+      createNewQuestionGroup(res?.data?.questionGroupId);
+      setNewPageIsLoading(false);
+    } catch (error) {
+      console.error(error);
+      setNewPageIsLoading(false);
+    }
+  }
 
   useDndMonitor({
     onDragStart: (event: DragStartEvent) => {
@@ -46,16 +71,17 @@ function KanbanBoard() {
 
         setElements((prev) => [...prev, newElement]);
       } else if (active?.data?.current?.type === 'question') {
-        setElements((questions) => {
+        setElements((questions: any) => {
           const activeQuestionId = active?.data?.current?.question?.questionId;
-          const newOnes = questions.map((que) => {
+          const newOnes = questions.map((que: any) => {
             if (que.questionId === activeQuestionId) {
               return {
                 ...que,
                 draft: { prevGroup: que.questionGroupId, prevPosition: que.position },
               };
+            } else {
+              return que;
             }
-            return que;
           });
           return newOnes;
         });
@@ -69,7 +95,7 @@ function KanbanBoard() {
       const { active, over } = event;
 
       setElements((questions) => {
-        const isTempElementExist = questions.some((t) => t?.temp);
+        const isTempElementExist = questions?.some((t) => t?.temp);
         if (isTempElementExist && !over) {
           const tempEl = questions.find((p) => p?.temp);
           if (tempEl) {
@@ -94,30 +120,33 @@ function KanbanBoard() {
       const isOverGroup = over.data?.current?.type === 'question-group';
 
       if (isSidebarBtn && isOverMyQuestion) {
-        // startTransition(() => {
-        setElements((questions) => {
-          const activeIndex = questions.findIndex((t) => t?.temp);
-          const overIndex = questions.findIndex((t) => t.questionId === overId);
+        startTransition(() => {
+          setElements((questions) => {
+            const activeIndex = questions.findIndex((t) => t?.temp);
+            const overIndex = questions.findIndex((t) => t.questionId === overId);
 
-          // if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId)
-          questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
-          return arrayMove(questions, activeIndex, overIndex);
+            if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId) {
+              questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
+              return arrayMove(questions, activeIndex, overIndex);
+            } else {
+              return arrayMove(questions, activeIndex, overIndex);
+            }
+          });
         });
-        // });
 
         return;
       } else if (isSidebarBtn && isOverGroup) {
         const overGroup = over?.data?.current?.group;
         if (!elements?.some((el) => el.questionGroupId === overGroup)) {
-          // startTransition(() => {
-          setElements((questions) => {
-            const activeIndex = questions.findIndex((t) => t?.temp);
-            const overGroup = over?.data?.current?.group;
+          startTransition(() => {
+            setElements((questions) => {
+              const activeIndex = questions.findIndex((t) => t?.temp);
+              const overGroup = over?.data?.current?.group;
 
-            questions[activeIndex].questionGroupId = overGroup;
-            return arrayMove(questions, activeIndex, 0);
+              questions[activeIndex].questionGroupId = overGroup;
+              return arrayMove(questions, activeIndex, 0);
+            });
           });
-          // });
         }
         // else if (isOverGroup) {
         //   console.log("sdsd");
@@ -142,16 +171,18 @@ function KanbanBoard() {
 
       // Im dropping a Question over another Question
       if (isActiveQuestion && isOverQuestion) {
-        setElements((questions) => {
-          const activeIndex = questions.findIndex((t) => t.questionId === activeId);
-          const overIndex = questions.findIndex((t) => t.questionId === overId);
+        startTransition(() => {
+          setElements((questions) => {
+            const activeIndex = questions.findIndex((t) => t.questionId === activeId);
+            const overIndex = questions.findIndex((t) => t.questionId === overId);
 
-          if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId) {
-            questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
-            return arrayMove(questions, activeIndex, overIndex - 1);
-          }
-
-          return arrayMove(questions, activeIndex, overIndex);
+            if (questions[activeIndex].questionGroupId != questions[overIndex].questionGroupId) {
+              questions[activeIndex].questionGroupId = questions[overIndex].questionGroupId;
+              return arrayMove(questions, activeIndex, overIndex - 1);
+            } else {
+              return arrayMove(questions, activeIndex, overIndex);
+            }
+          });
         });
 
         return;
@@ -174,7 +205,7 @@ function KanbanBoard() {
       // if (!over) return;
 
       if (
-        elements.length &&
+        elements?.length &&
         over &&
         active?.data?.current?.type !== 'question-group' &&
         active?.data?.current?.isSidebarBtnElement
@@ -191,10 +222,20 @@ function KanbanBoard() {
             setSelectedElement({ fieldElement: elements[droppedTempElIndex], position: null });
           }
         } else if (droppedTempElIndex !== -1) {
+          const group = elements.filter(
+            (el) => el.questionGroupId === elements[droppedTempElIndex].questionGroupId
+          );
+          const index = group.findIndex(
+            (gro) => gro.questionId === elements[droppedTempElIndex].questionId
+          );
+
           setOpenDialog(true);
           setSelectedElement({
             fieldElement: elements[droppedTempElIndex],
-            position: droppedTempElIndex,
+            position: {
+              apiPosition: index,
+              realPosition: droppedTempElIndex,
+            },
           });
         }
 
@@ -212,35 +253,35 @@ function KanbanBoard() {
       if (activeEl?.type === 'question') {
         const currentQuestion = activeEl?.question;
         if (currentQuestion?.questionGroupId !== currentQuestion?.draft?.prevGroup) {
-          changeOrMovePositionApiReducer(
-            {
-              formBuilderId: formId,
-              questionId: currentQuestion?.questionId,
-              questionGroupId: currentQuestion?.draft?.prevGroup,
-              targetQuestionGroupId: currentQuestion?.questionGroupId,
-              newPosition: currentQuestion?.position,
-            },
-            activeEl
-          );
+          const data: IChangeOrMovePositionApi = {
+            formBuilderId: formId,
+            questionId: currentQuestion?.questionId,
+            questionGroupId: currentQuestion?.draft?.prevGroup,
+            targetQuestionGroupId: currentQuestion?.questionGroupId,
+            newPosition: currentQuestion?.position,
+          };
+          changeOrMovePositionApiReducer(data, activeEl?.question as FormElementInstance);
         } else if (currentQuestion?.position !== currentQuestion?.draft?.prevPosition) {
-          changeOrMovePositionApiReducer(
-            {
-              formBuilderId: formId,
-              questionId: currentQuestion?.questionId,
-              questionGroupId: currentQuestion?.questionGroupId,
-              targetQuestionGroupId: null,
-              newPosition: currentQuestion?.position,
-            },
-            activeEl
-          );
+          const data: IChangeOrMovePositionApi = {
+            formBuilderId: formId,
+            questionId: currentQuestion?.questionId,
+            questionGroupId: currentQuestion?.questionGroupId,
+            targetQuestionGroupId: null,
+            newPosition: currentQuestion?.position,
+          };
+          changeOrMovePositionApiReducer(data, activeEl?.question as FormElementInstance);
         } else {
           console.log('no change in group or position');
           return;
         }
+      } else if (activeEl?.type === 'question-group') {
+        console.log("It's a Group!!");
       }
 
       const activeId = active?.id;
       const overId = over?.id;
+
+      setOneGroupIsDragged(false);
 
       if (activeId === overId) return;
 
@@ -253,46 +294,53 @@ function KanbanBoard() {
 
         return arrayMove(groups, activeGroupIndex, overGroupIndex);
       });
+      setOneGroupIsDragged(false);
+    },
+    onDragCancel() {
+      setOneGroupIsDragged(false);
+      setElements((prev) => {
+        return prev.filter((p) => !p?.temp);
+      });
     },
   });
 
-  console.log('questionGroups', questionGroups);
-  console.log('elements', elements);
-
-  const lastQuestionGroup = questionGroups[questionGroups.length - 1];
-  const isLastQuestionGroupNotEmpty = elements.some(
+  const lastQuestionGroup = questionGroups[questionGroups?.length - 1];
+  const isLastQuestionGroupNotEmpty = elements?.some(
     (questions) => questions?.questionGroupId === lastQuestionGroup
   );
 
+  // console.log('questionGroups', questionGroups);
+  console.log('elements', elements);
+
   return (
     <>
-      <Box display="flex" flexDirection="column" height="100%" width="100%" gap={2}>
+      <div className="flex flex-col h-full w-full gap-4 box-border">
         <SortableContext items={groupsId} strategy={verticalListSortingStrategy}>
-          {questionGroups?.map((que: any) => (
+          {questionGroups?.map((group: any) => (
             <QuestionGroup
-              key={que}
-              group={que}
-              questions={elements?.filter((question) => question?.questionGroupId === Number(que))}
+              key={group}
+              minimized={oneGroupIsDragged}
+              group={group}
+              questions={itemsByGroup[group]}
             />
           ))}
         </SortableContext>
-      </Box>
+      </div>
       {isLastQuestionGroupNotEmpty && (
-        <Button
-          onClick={() => {
-            createNewQuestionGroup();
-          }}
+        <LoadingButton
+          variant="outlined"
+          onClick={handleCreateNewPage}
+          loading={newPageIsLoading}
           sx={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            padding: 1,
           }}
         >
           <Iconify icon="ic:round-plus" />
-          <Typography variant="body2" component={'span'}>
-            صفحه جدید
-          </Typography>
-        </Button>
+          <p className="font-medium">صفحه جدید</p>
+        </LoadingButton>
       )}
     </>
   );

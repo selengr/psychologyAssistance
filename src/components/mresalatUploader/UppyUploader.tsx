@@ -4,6 +4,7 @@ import Uppy from '@uppy/core';
 import Tus from '@uppy/tus';
 // import ImageEditor from '@uppy/image-editor';
 // import Compressor from '@uppy/compressor';
+// @ts-ignore
 import Persian from '@uppy/locales/lib/fa_IR';
 import CustomUppy from './CustomeUppy';
 import { fileUploaderRestrictions } from './fileUploader.config';

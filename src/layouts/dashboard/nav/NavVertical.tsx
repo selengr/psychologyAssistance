@@ -46,14 +46,11 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     >
       <Stack
         spacing={3}
-        sx={{
-          pt: isDesktop && 3,
-          pb: 2,
-          px: 2.5,
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-        }}
+        display="flex"
+        alignItems="center"
+        paddingX={2.5}
+        paddingBottom={2}
+        paddingTop={isDesktop ? 3 : 0}
       >
         {isDesktop && <Logo />}
 

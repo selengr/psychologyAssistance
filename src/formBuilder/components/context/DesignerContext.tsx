@@ -2,12 +2,16 @@
 
 import { Dispatch, ReactNode, SetStateAction, createContext, useState } from 'react';
 import { FormElementInstance } from '../FormElements';
-import { idGenerator } from '../../lib/idGenerator';
-import { callApiQuestionNewPosition } from '@/services/apis/builder';
+import { callApiQuestionNewPosition, IChangeOrMovePositionApi } from '@/services/apis/builder';
 
 type selectedElementObject = {
   fieldElement: FormElementInstance | null | undefined;
-  position: number | null;
+  position: positionObj | null;
+};
+
+type positionObj = {
+  apiPosition: number;
+  realPosition: number;
 };
 
 type DesignerContextType = {
@@ -15,6 +19,7 @@ type DesignerContextType = {
   startPage: FormElementInstance | null;
   finishPage: FormElementInstance | null;
   questionGroups: number[];
+
   setQuestionGroups: (value: SetStateAction<number[]>) => void;
   setElements: Dispatch<SetStateAction<FormElementInstance[]>>;
   updateElement: (id: number, element: FormElementInstance) => void;
@@ -28,10 +33,15 @@ type DesignerContextType = {
   removeStartPage: () => void;
   removeFinishPage: () => void;
 
+  changeOrMovePositionApiReducer(
+    payload: IChangeOrMovePositionApi,
+    activeElement: FormElementInstance
+  ): Promise<void>;
+
   selectedElement: selectedElementObject | null;
   setSelectedElement: Dispatch<SetStateAction<selectedElementObject | null>>;
 
-  createNewQuestionGroup(): void;
+  createNewQuestionGroup(id: number): void;
   deleteQuestionGroup(id: any): void;
 
   openDialog: boolean;
@@ -48,12 +58,15 @@ export default function DesignerContextProvider({ children }: { children: ReactN
   const [selectedElement, setSelectedElement] = useState<selectedElementObject | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-  async function changeOrMovePositionApiReducer(payload, activeElement) {
+  async function changeOrMovePositionApiReducer(
+    payload: IChangeOrMovePositionApi,
+    activeElement: FormElementInstance
+  ) {
     try {
       await callApiQuestionNewPosition(payload);
       setElements((allQuestions) => {
         const targetQuestion = allQuestions.find(
-          (que) => que.questionId === activeElement?.question?.questionId
+          (que) => que.questionId === activeElement?.questionId
         );
         delete targetQuestion?.draft;
 
@@ -115,11 +128,8 @@ export default function DesignerContextProvider({ children }: { children: ReactN
     });
   };
 
-  function createNewQuestionGroup() {
-    const randomId = idGenerator();
-    const groupToAdd = randomId;
-
-    setQuestionGroups((questionGroups) => [...questionGroups, groupToAdd]);
+  function createNewQuestionGroup(id: number) {
+    setQuestionGroups((questionGroups) => [...questionGroups, id]);
   }
 
   function deleteQuestionGroup(id: any) {
@@ -155,10 +165,10 @@ export default function DesignerContextProvider({ children }: { children: ReactN
         removeFinishPage,
         updateFinishPage,
 
+        changeOrMovePositionApiReducer,
+
         createNewQuestionGroup,
         deleteQuestionGroup,
-
-        changeOrMovePositionApiReducer,
 
         openDialog,
         setOpenDialog,

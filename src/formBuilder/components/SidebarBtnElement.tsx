@@ -2,7 +2,7 @@
 
 import { useDraggable } from '@dnd-kit/core';
 import { FormElement, FormElements } from './FormElements';
-import { Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import useDesigner from './hooks/useDesigner';
 import { idGenerator } from '../lib/idGenerator';
 import { IFormElementConstructor } from '@/@types/bulider';
@@ -48,9 +48,7 @@ function SidebarBtnElement({ formElement }: { formElement: FormElement }) {
       {...draggable.listeners}
       {...draggable.attributes}
     >
-      <Typography variant="body2" component={'p'} py={0.5}>
-        {label}
-      </Typography>
+      <p className="py-2 font-normal">{label}</p>
     </Button>
   );
 }
@@ -64,7 +62,6 @@ export function SidebarBtnElementDragOverlay({ formElement }: { formElement: For
       sx={{
         borderWidth: '1px',
         borderColor: indigo[100],
-        // borderColor: 'primary.main',
         borderStyle: 'solid',
         width: '100%',
         borderRadius: 1,
@@ -76,9 +73,7 @@ export function SidebarBtnElementDragOverlay({ formElement }: { formElement: For
         },
       }}
     >
-      <Typography variant="body2" component={'p'} py={0.5}>
-        {label}
-      </Typography>
+      <p className="py-2 font-normal">{label}</p>
     </Button>
   );
 }

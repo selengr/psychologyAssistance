@@ -4,7 +4,8 @@
     "target": "es5",
     "lib": [
       "es6",
-      "dom"
+      "dom",
+      "es2023"
     ],
     "strict": true,
     "noEmit": true,
@@ -42,6 +43,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "custom-build-folder/types/**/*.ts"
   ]
 }

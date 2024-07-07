@@ -1,6 +1,6 @@
 import React from 'react';
 import useDesigner from './hooks/useDesigner';
-import { FormElementInstance, FormElements } from './FormElements';
+import { ElementsType, FormElementInstance, FormElements } from './FormElements';
 import { Box, Typography } from '@mui/material';
 import Line from './line';
 
@@ -8,10 +8,11 @@ function PropertiesFormSidebar() {
   const { selectedElement } = useDesigner();
 
   const PropertiesForm =
-    FormElements[selectedElement!.fieldElement!.questionType].propertiesComponent;
+    FormElements[selectedElement!.fieldElement!.questionType as ElementsType].propertiesComponent;
 
   const fieldLabel =
-    FormElements[selectedElement!.fieldElement!.questionType].designerBtnElement.label;
+    FormElements[selectedElement!.fieldElement!.questionType as ElementsType].designerBtnElement
+      .label;
 
   const questionType = selectedElement!.fieldElement!.questionType;
 

@@ -3,7 +3,7 @@ import { m, AnimatePresence } from 'framer-motion';
 import { alpha } from '@mui/material/styles';
 import { IconButton, Stack, Typography } from '@mui/material';
 // utils
-import { fData } from '../../../utils/formatNumber';
+// import { fData } from '../../../utils/formatNumber';
 //
 import Iconify from '../../iconify';
 import { varFade } from '../../animate';
@@ -101,7 +101,7 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
               </Typography>
 
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                {isNotFormatFile ? '' : fData(size)}
+                {isNotFormatFile ? '' : ''}
               </Typography>
             </Stack>
 

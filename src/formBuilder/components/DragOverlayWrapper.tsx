@@ -7,77 +7,82 @@ import { Box } from '@mui/material';
 
 function DragOverlayWrapper() {
   const { elements } = useDesigner();
-  const [draggedItem, setDraggedItem] = useState<Active | null>(null);
+  const [draggedItem, setDraggedItem] = useState<Active | null | undefined>(null);
 
   useDndMonitor({
     onDragStart: (event) => {
       setDraggedItem(event.active);
     },
-    onDragCancel: () => {
-      setDraggedItem(null);
+    onDragCancel: (event) => {
+      const designerBtnDragEnd = event?.active?.data?.current?.isQuestionElement;
+      if (designerBtnDragEnd) {
+        setDraggedItem(undefined);
+      } else {
+        setDraggedItem(null);
+      }
     },
-    onDragEnd: () => {
-      setDraggedItem(null);
+    onDragEnd: (event) => {
+      const designerBtnDragEnd = event?.active?.data?.current?.isQuestionElement;
+      if (designerBtnDragEnd) {
+        setDraggedItem(undefined);
+      } else {
+        setDraggedItem(null);
+      }
     },
   });
 
-  if (!draggedItem) return null;
+  let node;
+  let isSidebarBtnElement;
+  let isQuestionElement;
 
-  let node = <Box>No drag overlay</Box>;
-  const isSidebarBtn = draggedItem.data?.current?.isSidebarBtnElement;
+  if (draggedItem) {
+    node = <div>No drag overlay</div>;
+    isSidebarBtnElement = draggedItem?.data?.current?.isSidebarBtnElement;
+    isQuestionElement = draggedItem?.data?.current?.isQuestionElement;
+  }
 
-  const isQuestionElement = draggedItem.data?.current?.isQuestionElement;
-
-  if (isSidebarBtn) {
-    const type = draggedItem.data?.current?.type as ElementsType;
+  if (isSidebarBtnElement) {
+    const type = draggedItem?.data?.current?.type as ElementsType;
     node = <SidebarBtnElementDragOverlay formElement={FormElements[type]} />;
   } else if (isQuestionElement) {
-    const elementId = draggedItem.data?.current?.question?.questionId;
+    const elementId = draggedItem?.data?.current?.question?.questionId;
     const element = elements.find((el) => el.questionId === elementId);
 
-    if (!element) node = <Box>فیلد یافت نشد!</Box>;
+    if (!element) node = <div>فیلد یافت نشد!</div>;
     else {
-      const DesignerElementComponent = FormElements[element.questionType].designerComponent;
+      const DesignerElementComponent =
+        FormElements[element.questionType as ElementsType].designerComponent;
 
       node = (
-        <Box
-          sx={{
-            direction: 'ltr',
-            display: 'flex',
-            justifyContent: 'center',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: (theme) => theme.palette.primary.main,
-            borderRadius: '5px',
-            backgroundColor: '#fff',
-            height: '65px',
-            width: '100%',
-            pointerEvents: 'none',
-            opacity: '0.9',
-            paddingX: 2,
-            paddingY: 1,
-          }}
+        <div
+          dir="rtl"
+          className="flex justify-center box-border items-center outline outline-1 outline-[#433792] rounded-sm bg-white h-[58px] w-full opacity-90 px-2"
+          style={{ pointerEvents: 'none' }}
         >
           <DesignerElementComponent elementInstance={element} />
-        </Box>
+        </div>
       );
     }
-  } else if (draggedItem.data?.current?.type === 'question-group') {
+  } else if (draggedItem?.data?.current?.type === 'question-group') {
     node = (
-      <Box
-        sx={{
-          display: 'flex',
-          borderRadius: '5px',
-          height: '75px',
-          width: '100%',
-          opacity: '0.5',
-          border: '1px solid #d8d8d8',
-        }}
-      ></Box>
+      <div className="flex rounded-sm h-[75px] w-full opacity-50 bg-[#F5F5F5] border border-1 border-[#d8d8d8]"></div>
     );
   }
 
-  return <DragOverlay>{node}</DragOverlay>;
+  return (
+    <DragOverlay
+      dropAnimation={
+        draggedItem === undefined
+          ? {
+              duration: 250,
+              easing: 'ease-in-out',
+            }
+          : null
+      }
+    >
+      {draggedItem ? node : null}
+    </DragOverlay>
+  );
 }
 
 export default DragOverlayWrapper;

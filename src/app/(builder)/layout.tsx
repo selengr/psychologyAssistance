@@ -1,14 +1,13 @@
 import DesignerContextProvider from '@/formBuilder/components/context/DesignerContext';
-import { Toaster } from '@/formBuilder/components/ui/toaster';
+import { Toaster } from 'sonner';
 import React, { ReactNode } from 'react';
 
 function Layout({ children }: { children: ReactNode }) {
   return (
-      <DesignerContextProvider>
-          {children}
-          <Toaster />
-          {/* <Toaster richColors /> */}
-      </DesignerContextProvider>
+    <DesignerContextProvider>
+      {children}
+      <Toaster />
+    </DesignerContextProvider>
   );
 }
 

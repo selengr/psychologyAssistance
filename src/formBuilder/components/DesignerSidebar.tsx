@@ -3,12 +3,19 @@ import { FormElements } from './FormElements';
 import SidebarBtnElement from './SidebarBtnElement';
 import { Box, Button, Typography } from '@mui/material';
 import Line from './line';
+import useResponsive from '@/hooks/useResponsive';
 
 const DesignerSidebar = memo(function DesignerSidebar() {
+  const isDesktop = useResponsive('up', 'lg');
+
   return (
     <Box
       dir="rtl"
       sx={{
+        position: 'sticky',
+        top: isDesktop ? '18px' : '80px',
+        height: isDesktop ? '95vh' : '87vh',
+        right: '0',
         width: '400px',
         maxWidth: '400px',
         display: 'flex',
@@ -17,11 +24,10 @@ const DesignerSidebar = memo(function DesignerSidebar() {
         backgroundColor: 'white',
         overflowY: 'scroll',
         borderRadius: '10px',
-        height: '100%',
         marginRight: '1rem',
         scrollbarWidth: 'none',
         userSelect: 'none',
-        boxShadow: (theme) => theme.customShadows.box,
+        boxShadow: (theme) => theme.customShadows.card,
       }}
       padding={2}
       gap={1}

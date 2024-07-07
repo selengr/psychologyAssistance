@@ -1,6 +1,7 @@
 import FormBuilderMiddleware from '@/formBuilder/components/FormBuilderMiddleware';
 import { FormElementInstance } from '@/formBuilder/components/FormElements';
 import axios from 'axios';
+import { BASE_URL_API } from 'config-global';
 
 export type formResDataTypes = {
   name: string;
@@ -22,8 +23,7 @@ async function BuilderPage({
 }) {
   const { id } = params;
 
-  // ? Temporary
-  const response = await axios.get('http://172.16.11.24:8080/psya/form/' + id);
+  const response = await axios.get(`${BASE_URL_API}form/` + id);
 
   if (!response) {
     throw new Error('form not found');
