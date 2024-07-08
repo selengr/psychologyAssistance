@@ -368,6 +368,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
         );
 
         updateElement(element.questionId, response.data);
+        setOpenDialog(false);
+        setSelectedElement(null);
       } catch (error) {
         console.error(error);
       }

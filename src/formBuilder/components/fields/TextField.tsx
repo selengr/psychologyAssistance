@@ -283,7 +283,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
     const finalFieldData = {
       ...element,
-      title,
+      title: title,
       position: selectedElement?.position?.apiPosition ?? group.length,
       questionPropertyList: data,
     };
@@ -303,8 +303,9 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           finalFieldData.questionId,
           finalFieldData
         );
-
         updateElement(element.questionId, response.data);
+        setOpenDialog(false);
+        setSelectedElement(null);
       } catch (error) {
         console.error(error);
       }

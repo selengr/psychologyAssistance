@@ -5,9 +5,16 @@ import { ElementsType, FormElementInstance, FormElements } from '../FormElements
 import useDesigner from '../hooks/useDesigner';
 import { Box } from '@mui/material';
 import { PhDotsThreeVerticalBold } from '../icons/PhDotsThreeVerticalBold';
+import QuestionMenu from '../PopUpMenu';
 
-const QuestionCard = memo(function QuestionCard({ question }: { question: FormElementInstance }) {
-  const { setSelectedElement, setOpenDialog, removeElement, elements } = useDesigner();
+const QuestionCard = memo(function QuestionCard({
+  question,
+  questionMinimized,
+}: {
+  question: FormElementInstance;
+  questionMinimized: boolean;
+}) {
+  const { setSelectedElement, setOpenDialog, elements } = useDesigner();
 
   let { setNodeRef, attributes, listeners, transform, transition, isDragging, index } = useSortable(
     {
@@ -75,15 +82,21 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
       className="flex items-center h-[65px w-full] relative rounded-sm justify-center flex-row p-2 border border-1 border-[#d8d8d8]"
     >
       <DesignerElement elementInstance={question} />
-      <button
-        className="h-full w-[35px] flex justify-center items-center rounded-md"
-        onClick={(e) => {
-          e.stopPropagation();
-          removeElement(question?.questionId);
-        }}
-      >
-        <PhDotsThreeVerticalBold />
-      </button>
+      {!questionMinimized && (
+        <button
+          className="h-full w-[35px] flex justify-center items-center rounded-md"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <QuestionMenu
+            questionID={question?.questionId}
+            position={elements.findIndex((el) => el.questionId === question.questionId)}
+          >
+            <PhDotsThreeVerticalBold />
+          </QuestionMenu>
+        </button>
+      )}
     </div>
   );
 });

@@ -8,16 +8,16 @@ import DragOverlayWrapper from './DragOverlayWrapper';
 function FormBuilder() {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      delay: 200,
-      distance: 10,
+      delay: 100,
+      distance: 50,
       tolerance: 0,
     },
   });
 
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 200,
-      tolerance: 10,
+      delay: 100,
+      tolerance: 50,
     },
   });
 

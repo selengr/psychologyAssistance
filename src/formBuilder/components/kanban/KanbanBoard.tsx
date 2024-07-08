@@ -27,6 +27,7 @@ function KanbanBoard() {
   const [newPageIsLoading, setNewPageIsLoading] = useState<boolean>(false);
   const [snapshot, setSnapshot] = useState<[] | FormElementInstance[]>([]);
   const groupsId = useMemo(() => questionGroups?.map((group: any) => group), [questionGroups]);
+  const [isQuestionDragged, setIsQuestionDragged] = useState(false);
   const itemsByGroup = useMemo(() => {
     return elements?.reduce((acc: any, question: any) => {
       if (!acc[question.questionGroupId]) {
@@ -58,6 +59,7 @@ function KanbanBoard() {
       const { active } = event;
 
       setSnapshot(elements);
+      setIsQuestionDragged(true);
 
       const isSidebarBtn = active.data?.current?.isSidebarBtnElement;
       const designerBtnType: ElementsType = active?.data?.current?.type;
@@ -215,6 +217,7 @@ function KanbanBoard() {
       ) {
         const droppedTempElIndex = elements?.findIndex((t: any) => t?.temp);
         const droppedEl = elements?.find((t: any) => t?.temp);
+        setIsQuestionDragged(false);
 
         if (droppedEl?.questionGroupId !== over?.data?.current?.group) {
           const elTemp = elements[droppedTempElIndex];
@@ -248,6 +251,8 @@ function KanbanBoard() {
           return prev.filter((p) => !p?.temp);
         });
       }
+
+      setIsQuestionDragged(false);
 
       setSnapshot([]);
 
@@ -308,6 +313,7 @@ function KanbanBoard() {
     onDragCancel() {
       setOneGroupIsDragged(false);
       setSnapshot([]);
+      setIsQuestionDragged(false);
       setElements((prev) => {
         return prev.filter((p) => !p?.temp);
       });
@@ -327,6 +333,7 @@ function KanbanBoard() {
             <QuestionGroup
               key={group}
               minimized={oneGroupIsDragged}
+              questionMinimized={isQuestionDragged}
               group={group}
               questions={itemsByGroup[group]}
             />

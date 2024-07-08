@@ -40,3 +40,11 @@ export function callApiQuestionNewPosition(finalFieldData: any) {
 export function callApiCreateNewQuestionGroup(finalFieldData: any) {
   return callApi.post<any>('/question-group', finalFieldData);
 }
+
+export function callApiDeleteQuestion(id: number) {
+  return callApi.delete<any>('/question/' + id);
+}
+
+export function callApiDuplicateQuestion(id: number) {
+  return callApi.post<any>(`/question/${id}/duplicate`);
+}

@@ -262,7 +262,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       },
       {
         questionPropertyEnum: 'DESCRIPTION',
-        value: openDescriptionSwitch && DESCRIPTION ? DESCRIPTION : null,
+        value: openDescriptionSwitch && DESCRIPTION ? DESCRIPTION.trim() : null,
       },
     ];
 
@@ -280,7 +280,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 
     const finalFieldData = {
       ...element,
-      title,
+      title: title.trim(),
       position: selectedElement?.position?.apiPosition ?? group.length,
       questionPropertyList: data,
       optionList: optionListData,
@@ -302,6 +302,8 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
           finalFieldData
         );
         updateElement(element?.questionId, response.data);
+        setOpenDialog(false);
+        setSelectedElement(null);
       } catch (error) {
         console.error(error);
       }

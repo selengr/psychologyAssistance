@@ -3,7 +3,7 @@ import { SpectralFormElement } from './fields/SpectralField';
 import { TextFieldFormElement } from './fields/TextField';
 import { TitleFieldFinishFormElement } from './fields/TitleFieldFinish';
 import { TitleFieldStartFormElement } from './fields/TitleFieldStart';
-import { MultipleChoiceFormElement } from './fields/MultipleChoice';
+import { MultipleChoiceFormElement } from './fields/MultipleChoiceField';
 
 export type ElementsType =
   | 'TEXT_FIELD'

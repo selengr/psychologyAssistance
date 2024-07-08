@@ -10,10 +10,12 @@ const QuestionGroup = memo(function QuestionGroup({
   group,
   questions,
   minimized,
+  questionMinimized,
 }: {
   group: number;
   questions: FormElementInstance[];
   minimized: boolean;
+  questionMinimized: boolean;
 }) {
   const { questionGroups, deleteQuestionGroup } = useDesigner();
   const questionsIds = useMemo(() => {
@@ -54,8 +56,13 @@ const QuestionGroup = memo(function QuestionGroup({
       {questions?.length >= 1 && (
         <div className="flex flex-col w-full min-h-[60px] px-2 pt-2 flex-grow gap-4">
           <SortableContext items={questionsIds} strategy={verticalListSortingStrategy}>
-            {questions?.map((question: any, index: number) => (
-              <QuestionCard key={questionsIds[index]} question={question} />
+            {questions?.map((question: FormElementInstance, index: number) => (
+              <QuestionCard
+                key={questionsIds[index]}
+                // @ts-ignore
+                question={question}
+                questionMinimized={questionMinimized}
+              />
             ))}
           </SortableContext>
         </div>
