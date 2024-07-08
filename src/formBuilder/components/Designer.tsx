@@ -4,10 +4,10 @@ import DesignerSidebar from './DesignerSidebar';
 import useDesigner from './hooks/useDesigner';
 import { ElementsType, FormElementInstance, FormElements } from './FormElements';
 import { idGenerator } from '@/formBuilder/lib/idGenerator';
-import { IconButton } from '@mui/material';
-import Iconify from '@/components/iconify/Iconify';
+import { UiwPlusSquare } from './icons/UiwPlusSquare';
 import KanbanBoard from './kanban/KanbanBoard';
 import CreateFieldDialog from './createFieldDialog';
+import { PhDotsThreeVerticalBold } from './icons/PhDotsThreeVerticalBold';
 
 function Designer() {
   const { setSelectedElement, setOpenDialog, startPage, finishPage } = useDesigner();
@@ -25,8 +25,7 @@ function Designer() {
             className="flex flex-row relative w-full items-center justify-center rounded-sm border border-1 border-[#d8d8d8]"
           >
             <p className="text-base p-4 flex justify-center flex-grow">صفحه شروع پرسشنامه</p>
-            <IconButton
-              sx={{ position: 'relative', right: 8 }}
+            <button
               onClick={() => {
                 const newElement: FormElementInstance = FormElements['TitleFieldStart'].construct({
                   questionId: idGenerator(),
@@ -35,16 +34,17 @@ function Designer() {
                 setSelectedElement({ fieldElement: newElement, position: null });
               }}
             >
-              <Iconify
-                icon="uiw:plus-square"
-                sx={{
-                  borderRadius: '5px',
-                  height: '35px',
-                  width: '35px',
-                  color: (theme) => theme.palette.primary.main,
+              <UiwPlusSquare
+                width="30px"
+                height="30px"
+                style={{
+                  left: '8px',
+                  position: 'relative',
+                  backgroundColor: 'white',
+                  color: '#433792',
                 }}
               />
-            </IconButton>
+            </button>
           </div>
         ) : (
           <div
@@ -64,8 +64,7 @@ function Designer() {
             className="flex flex-row w-full relative items-center justify-center rounded-sm border border-1 border-[#d8d8d8]"
           >
             <p className="text-base p-4 flex justify-center flex-grow">صفحه پایان پرسشنامه</p>
-            <IconButton
-              sx={{ position: 'relative', right: 8 }}
+            <button
               onClick={() => {
                 const newElement = FormElements['TitleFieldFinish'].construct({
                   questionId: idGenerator(),
@@ -74,16 +73,17 @@ function Designer() {
                 setSelectedElement({ fieldElement: newElement, position: null });
               }}
             >
-              <Iconify
-                icon="uiw:plus-square"
-                sx={{
-                  borderRadius: '5px',
-                  height: '35px',
-                  width: '35px',
-                  color: (theme) => theme.palette.primary.main,
+              <UiwPlusSquare
+                width="30px"
+                height="30px"
+                style={{
+                  left: '8px',
+                  position: 'relative',
+                  backgroundColor: 'white',
+                  color: '#433792',
                 }}
               />
-            </IconButton>
+            </button>
           </div>
         ) : (
           <div
@@ -107,7 +107,7 @@ function DesignerElementNoDnD({ element }: { element: FormElementInstance }) {
   return (
     <div
       dir="rtl"
-      className="h-[65px] flex flex-row w-full rounded-sm my-4 px-4 border border-1 border-[#d8d8d8]"
+      className="h-[65px] flex flex-row w-full rounded-sm my-4 px-2 border border-1 border-[#d8d8d8]"
       onClick={(e) => {
         e.stopPropagation();
         setSelectedElement({ fieldElement: element, position: null });
@@ -137,19 +137,14 @@ function DesignerElementNoDnD({ element }: { element: FormElementInstance }) {
       </> */}
 
       <div
-        className="flex w-full items-center rounded-sm px-4 py-2 h-full justify-end"
+        className="flex w-full items-center rounded-sm px-2 py-2 h-full justify-end"
         style={{ pointerEvents: 'none' }}
       >
         <DesignerElement elementInstance={element} />
       </div>
-      <IconButton
-        sx={{
-          position: 'relative',
-          right: 2,
-        }}
-      >
-        <Iconify icon="ph:dots-three-vertical-bold" sx={{ height: '20px', width: '20px' }} />
-      </IconButton>
+      <button className="relative left-1">
+        <PhDotsThreeVerticalBold />
+      </button>
     </div>
   );
 }

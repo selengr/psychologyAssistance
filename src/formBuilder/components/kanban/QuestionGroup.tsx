@@ -3,9 +3,8 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-
 import { CSS } from '@dnd-kit/utilities';
 import QuestionCard from './QuestionCard';
 import useDesigner from '../hooks/useDesigner';
-import { IconButton } from '@mui/material';
-import Iconify from '@/components/iconify/Iconify';
 import { FormElementInstance } from '../FormElements';
+import { PhDotsThreeVerticalBold } from '../icons/PhDotsThreeVerticalBold';
 
 const QuestionGroup = memo(function QuestionGroup({
   group,
@@ -64,14 +63,14 @@ const QuestionGroup = memo(function QuestionGroup({
 
       <div className="flex flex-row-reverse items-center justify-center py-2">
         <p className="p-2 mx-auto text-center">نوع سوال را از فهرست کناری به اینجا بکشید</p>
-        <IconButton
+        <button
           onClick={() => {
             if (questionGroups?.length === 1) return;
             deleteQuestionGroup(group);
           }}
         >
-          {questions?.length >= 1 && <Iconify icon="ph:dots-three-vertical-bold" />}
-        </IconButton>
+          {questions?.length >= 1 && <PhDotsThreeVerticalBold />}
+        </button>
       </div>
     </div>
   );

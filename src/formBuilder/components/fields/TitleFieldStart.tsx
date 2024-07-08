@@ -157,7 +157,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
       >
         <Stack spacing={1}>
           <Typography variant="subtitle2">توضیحات شروع:</Typography>
-          <RHFTextField multiline rows={3} name="label" />
+          <RHFTextField multiline rows={3} name="title" />
         </Stack>
 
         <FieldDialogActionBottomButtons status={isSubmitting} />

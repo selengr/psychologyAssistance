@@ -3,8 +3,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ElementsType, FormElementInstance, FormElements } from '../FormElements';
 import useDesigner from '../hooks/useDesigner';
-import { Box, IconButton } from '@mui/material';
-import Iconify from '@/components/iconify/Iconify';
+import { Box } from '@mui/material';
+import { PhDotsThreeVerticalBold } from '../icons/PhDotsThreeVerticalBold';
 
 const QuestionCard = memo(function QuestionCard({ question }: { question: FormElementInstance }) {
   const { setSelectedElement, setOpenDialog, removeElement, elements } = useDesigner();
@@ -75,22 +75,15 @@ const QuestionCard = memo(function QuestionCard({ question }: { question: FormEl
       className="flex items-center h-[65px w-full] relative rounded-sm justify-center flex-row p-2 border border-1 border-[#d8d8d8]"
     >
       <DesignerElement elementInstance={question} />
-      <IconButton
-        sx={{
-          height: '100%',
-          width: '35px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: '10px',
-        }}
+      <button
+        className="h-full w-[35px] flex justify-center items-center rounded-md"
         onClick={(e) => {
           e.stopPropagation();
           removeElement(question?.questionId);
         }}
       >
-        <Iconify icon="ph:dots-three-vertical-bold" />
-      </IconButton>
+        <PhDotsThreeVerticalBold />
+      </button>
     </div>
   );
 });

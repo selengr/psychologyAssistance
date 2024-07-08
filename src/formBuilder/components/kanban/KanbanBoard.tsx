@@ -6,7 +6,7 @@ import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import useDesigner from '../hooks/useDesigner';
 import { ElementsType, FormElementInstance, FormElements } from '../FormElements';
 import { idGenerator } from '../../lib/idGenerator';
-import Iconify from '@/components/iconify/Iconify';
+import { IcRoundPlus } from '../icons/IcRoundPlus';
 import { usePathname } from 'next/navigation';
 import { IFormElementConstructor } from '@/@types/bulider';
 import { callApiCreateNewQuestionGroup, IChangeOrMovePositionApi } from '@/services/apis/builder';
@@ -309,9 +309,6 @@ function KanbanBoard() {
     (questions) => questions?.questionGroupId === lastQuestionGroup
   );
 
-  // console.log('questionGroups', questionGroups);
-  console.log('elements', elements);
-
   return (
     <>
       <div className="flex flex-col h-full w-full gap-4 box-border">
@@ -338,7 +335,7 @@ function KanbanBoard() {
             padding: 1,
           }}
         >
-          <Iconify icon="ic:round-plus" />
+          <IcRoundPlus />
           <p className="font-medium">صفحه جدید</p>
         </LoadingButton>
       )}
