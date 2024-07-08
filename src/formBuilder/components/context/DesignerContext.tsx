@@ -35,7 +35,8 @@ type DesignerContextType = {
 
   changeOrMovePositionApiReducer(
     payload: IChangeOrMovePositionApi,
-    activeElement: FormElementInstance
+    activeElement: FormElementInstance,
+    snapshot: FormElementInstance[]
   ): Promise<void>;
 
   selectedElement: selectedElementObject | null;
@@ -60,7 +61,8 @@ export default function DesignerContextProvider({ children }: { children: ReactN
 
   async function changeOrMovePositionApiReducer(
     payload: IChangeOrMovePositionApi,
-    activeElement: FormElementInstance
+    activeElement: FormElementInstance,
+    snapshot: FormElementInstance[]
   ) {
     try {
       await callApiQuestionNewPosition(payload);
@@ -73,6 +75,7 @@ export default function DesignerContextProvider({ children }: { children: ReactN
         return allQuestions;
       });
     } catch (error) {
+      setElements(snapshot);
       console.error(error);
     }
   }

@@ -25,6 +25,7 @@ function KanbanBoard() {
   } = useDesigner();
   const [oneGroupIsDragged, setOneGroupIsDragged] = useState(false);
   const [newPageIsLoading, setNewPageIsLoading] = useState<boolean>(false);
+  const [snapshot, setSnapshot] = useState<[] | FormElementInstance[]>([]);
   const groupsId = useMemo(() => questionGroups?.map((group: any) => group), [questionGroups]);
   const itemsByGroup = useMemo(() => {
     return elements?.reduce((acc: any, question: any) => {
@@ -55,6 +56,8 @@ function KanbanBoard() {
   useDndMonitor({
     onDragStart: (event: DragStartEvent) => {
       const { active } = event;
+
+      setSnapshot(elements);
 
       const isSidebarBtn = active.data?.current?.isSidebarBtnElement;
       const designerBtnType: ElementsType = active?.data?.current?.type;
@@ -239,10 +242,14 @@ function KanbanBoard() {
           });
         }
 
+        setSnapshot([]);
+
         setElements((prev) => {
           return prev.filter((p) => !p?.temp);
         });
       }
+
+      setSnapshot([]);
 
       setElements((prev) => {
         return prev.filter((p) => !p?.temp);
@@ -260,7 +267,7 @@ function KanbanBoard() {
             targetQuestionGroupId: currentQuestion?.questionGroupId,
             newPosition: currentQuestion?.position,
           };
-          changeOrMovePositionApiReducer(data, activeEl?.question as FormElementInstance);
+          changeOrMovePositionApiReducer(data, activeEl?.question as FormElementInstance, snapshot);
         } else if (currentQuestion?.position !== currentQuestion?.draft?.prevPosition) {
           const data: IChangeOrMovePositionApi = {
             formBuilderId: formId,
@@ -269,7 +276,7 @@ function KanbanBoard() {
             targetQuestionGroupId: null,
             newPosition: currentQuestion?.position,
           };
-          changeOrMovePositionApiReducer(data, activeEl?.question as FormElementInstance);
+          changeOrMovePositionApiReducer(data, activeEl?.question as FormElementInstance, snapshot);
         } else {
           console.log('no change in group or position');
           return;
@@ -277,6 +284,8 @@ function KanbanBoard() {
       } else if (activeEl?.type === 'question-group') {
         console.log("It's a Group!!");
       }
+
+      setSnapshot([]);
 
       const activeId = active?.id;
       const overId = over?.id;
@@ -298,6 +307,7 @@ function KanbanBoard() {
     },
     onDragCancel() {
       setOneGroupIsDragged(false);
+      setSnapshot([]);
       setElements((prev) => {
         return prev.filter((p) => !p?.temp);
       });
