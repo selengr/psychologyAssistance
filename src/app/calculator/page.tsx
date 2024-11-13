@@ -88,13 +88,12 @@ const Page = () => {
     const handleFnFX = () => {
         setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, {
 
-
-            type: "OPERATOR",
-            content: "("
-        },
-        {
             type: "AVG",
             content: ""
+        },
+        {
+            type: "OPERATOR",
+            content: "("
         },
         {
             type: "OPERATOR",
