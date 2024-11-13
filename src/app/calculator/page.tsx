@@ -122,9 +122,26 @@ const Page = () => {
 
                     <Box sx={{ width: "70%", display: "flex", flexDirection: "column", alignItems: "start" }}>
                         <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>اسکریپت:</Typography>
-                        <Stack sx={{ border: '1px solid #DDE1E6', borderRadius: 2, width: "100%", height: "100%" }}>
-                            {scriptJSON.map((item: any) => {
-                                return <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>{item}</Typography>
+                        <Stack spacing={4} sx={{ border: '1px solid #DDE1E6', borderRadius: 2, padding: 1, width: "100%", height: "100%", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
+                            {scriptJSON.map((item: { content: number, type: string }) => {
+                                if (item.type === "NUMBER") {
+
+                                    return <Stack spacing={4} sx={{
+                                        width: 33,
+                                        height: 33,
+                                        color: "#2CDFC9", backgroundColor: "#EAFCFA",
+                                        fontWeight: 500,
+                                        minWidth: 33,
+                                        marginRight: "6px !important",
+                                        marginTop: "0px !important",
+                                        borderRadius: "6px",
+                                        display: "flex", justifyContent: "center", alignItems: "center",
+                                    }}
+                                    >
+                                        {item.content as number}
+                                    </Stack>
+                                }
+                                return <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>{item.content}</Typography>
                             })}
 
                         </Stack>
