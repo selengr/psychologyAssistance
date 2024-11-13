@@ -2,10 +2,10 @@ import Iconify from "@/components/iconify/Iconify";
 import { Button } from "@mui/material";
 
 interface ICalculatorClear {
-
+    handleClear: () => void
 }
 
-const CalculatorClear = ({ }: ICalculatorClear) => {
+const CalculatorClear = ({ handleClear }: ICalculatorClear) => {
     return (
         <>
 
@@ -15,10 +15,12 @@ const CalculatorClear = ({ }: ICalculatorClear) => {
                     backgroundColor: "#FA4D561A"
                 },
                 fontWeight: 500
-            }} >
+            }}
+                onClick={handleClear}
+            >
 
                 <Iconify icon="ion:arrow-back-outline" sx={{ width: 25, height: 25, color: "#FA4D56" }} />
-            </Button>
+            </Button >
 
 
         </>

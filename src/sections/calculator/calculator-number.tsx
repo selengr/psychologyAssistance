@@ -1,9 +1,9 @@
 import { Button } from "@mui/material";
 
 interface ICalculatorNumber {
-    number: number
+    number: string
     size?: number
-    handleOperator: (content: number, type: string) => void
+    handleOperator: (content: string, type: string) => void
 }
 
 const CalculatorNumber = ({ number, size, handleOperator }: ICalculatorNumber) => {
@@ -16,7 +16,7 @@ const CalculatorNumber = ({ number, size, handleOperator }: ICalculatorNumber) =
             }}
                 onClick={() => handleOperator(number, "NUMBER",)}
             >
-                {number as number}
+                {number as string}
             </Button>
 
 

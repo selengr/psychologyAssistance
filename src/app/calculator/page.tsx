@@ -11,7 +11,11 @@ import { Box, Button, Container, Grid, IconButton, MenuItem, Select, Stack, Text
 
 
 
-type OPERATOR_TYPE = "OPERATOR" | "NUMBER" | string
+type OPERATOR_TYPE = "OPERATOR" | "NUMBER" | "AVG" | string
+type CALCULATE_TYPE = {
+    type: OPERATOR_TYPE
+    content: string
+}
 
 
 
@@ -19,30 +23,89 @@ const Page = () => {
     const [scriptJSON, setScriptJSON] = useState<any>([])
 
 
-    const handleOperator = (content: number | string, type: OPERATOR_TYPE) => {
+    const handleOperator = (content: string, type: OPERATOR_TYPE) => {
         console.log('e :>> ', content, type);
 
 
-        if (type === "NUMBER" && scriptJSON[scriptJSON.length - 1]?.type === "NUMBER") {
 
 
-            setScriptJSON((prevInput: any) => [...prevInput, prevInput.content + content]);
+
+        if (type === "NUMBER") {
+            setScriptJSON((prevState: CALCULATE_TYPE[]) => {
+                const newState = [...prevState];
+
+                if (newState.length > 0 && newState[newState.length - 1]?.type === "NUMBER") {
+                    const lastIndex = newState.length - 1;
+                    newState[lastIndex] = {
+                        ...newState[lastIndex],
+                        content: newState[lastIndex].content + content
+                    };
+                } else {
+                    newState.push({ type, content });
+                }
+
+                return newState;
+            });
         } else {
-
-            setScriptJSON([...scriptJSON, {
-                type,
-                content
-            }])
+            setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, { type, content }]);
         }
 
 
+
     }
+
+    const handleClear = () => {
+        setScriptJSON((prevState: CALCULATE_TYPE[]) => {
+            if (prevState.length === 0) return prevState;
+
+            const newState = [...prevState];
+            const lastIndex = newState.length - 1;
+
+            if (newState[lastIndex].type === "NUMBER") {
+                const currentContent = newState[lastIndex].content;
+
+                if (currentContent.length > 1) {
+                    newState[lastIndex].content = currentContent.substring(0, currentContent.length - 1)
+                } else {
+                    newState.pop();
+                }
+
+            } else {
+                newState.pop();
+            }
+
+            return newState;
+        });
+    };
+
     const handleNewField = (type: "NEW_FIELD") => {
         setScriptJSON([...scriptJSON, {
             type,
             content: ""
         }])
     }
+
+    const handleFnFX = () => {
+        setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, {
+
+
+            type: "OPERATOR",
+            content: "("
+        },
+        {
+            type: "AVG",
+            content: ""
+        },
+        {
+            type: "OPERATOR",
+            content: ")"
+        },
+
+
+
+
+        ]);
+    };
 
 
     return (
@@ -110,6 +173,7 @@ const Page = () => {
                                 height: 33,
                                 fontWeight: 500,
                                 backgroundColor: "#9D2CDF1A",
+                                color: "white",
                                 borderColor: "none",
                                 '&:before, &:after': {
                                     border: 'none', // Remove the underline border
@@ -118,6 +182,7 @@ const Page = () => {
                                     border: 'none', // Remove the outlined border
                                 },
                             }}
+
                             // {...field}
                             // displayEmpty={!!placeholder}
                             // labelId={name}
@@ -128,7 +193,8 @@ const Page = () => {
                                     sx: { px: 1, maxHeight: 280, minHeight: 180 },
                                 },
                             }}
-                        // ic_fx.svg
+                            // ic_fx.svg
+                            onChange={handleFnFX}
                         // onChange={(e) => {
                         //     field.onChange(e.target.value);
                         //     if (!setProp) return;
@@ -143,8 +209,8 @@ const Page = () => {
 
                                 return (
                                     <MenuItem
-                                        key={option.value}
-                                        value={option.value}
+                                        key={option}
+                                        value={option}
                                         sx={{
                                             py: 1,
                                             px: 2,
@@ -196,13 +262,13 @@ const Page = () => {
                             </Grid>
                             <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
                                 <CalculatorOperator operator={')'} handleOperator={handleOperator} />
-                                <CalculatorClear />
-                                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => {
+                                <CalculatorClear handleClear={handleClear} />
+                                {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((item) => {
                                     return <CalculatorNumber number={item} handleOperator={handleOperator} />
                                 })
                                 }
-                                <CalculatorOperator operator={'.'} handleOperator={handleOperator} />
-                                <CalculatorNumber number={0} size={70} handleOperator={handleOperator} />
+                                <CalculatorNumber number={'.'} handleOperator={handleOperator} />
+                                <CalculatorNumber number={"0"} size={70} handleOperator={handleOperator} />
                             </Grid>
 
 
@@ -294,6 +360,62 @@ const Page = () => {
                                                             borderRadius: 1.75,
                                                             typography: 'body2',
                                                             backgroundColor: "#1758BA !important",
+                                                            color: "white",
+                                                            margin: "5px",
+
+                                                        }}
+                                                    >
+                                                        {/* {checkbox && <Checkbox disableRipple size="small" checked={selected} />} */}
+
+                                                        {option}
+                                                    </MenuItem>
+                                                );
+                                            })}
+                                        </Select>
+                                    }
+                                    if (item.type === "AVG") {
+
+                                        return <Select
+                                            sx={{
+                                                '& .MuiSelect-select': {
+                                                    padding: 1,
+                                                },
+                                                marginRight: "3px !important",
+                                                marginTop: "0px !important",
+                                                width: 145,
+                                                height: 33,
+                                                fontWeight: 500,
+                                                color: "white",
+                                                backgroundColor: "#9D2CDF",
+                                                borderColor: "none",
+                                                '&:before, &:after': {
+                                                    border: 'none',
+                                                },
+                                                '& .MuiOutlinedInput-notchedOutline': {
+                                                    border: 'none',
+                                                },
+                                            }}
+
+                                            MenuProps={{
+                                                PaperProps: {
+                                                    sx: { px: 1, maxHeight: 280, minHeight: 180 },
+                                                },
+                                            }}
+
+                                        >
+
+                                            {["میانگین   ()"].map((option: any) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={option}
+                                                        value={option}
+                                                        sx={{
+                                                            py: 1,
+                                                            px: 2,
+                                                            height: 33,
+                                                            borderRadius: 1.75,
+                                                            typography: 'body2',
+                                                            backgroundColor: "#9D2CDF !important",
                                                             color: "white",
                                                             margin: "5px",
 
