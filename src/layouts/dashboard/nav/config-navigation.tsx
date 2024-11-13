@@ -27,6 +27,7 @@ const navConfig = [
       { title: 'شرکت‌کننده‌ها', path: PATH_PAGE.participants.root, icon: ICONS.participants },
       { title: 'گروه‌ها', path: PATH_PAGE.groups.root, icon: ICONS.groups },
       { title: 'ساخت پرسشنامه', path: PATH_PAGE.builder.root, icon: ICONS.groups },
+      { title: 'محاسبه گر', path: PATH_PAGE.calculator.root, icon: ICONS.groups },
     ],
   },
 

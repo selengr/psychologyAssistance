@@ -25,6 +25,9 @@ export const PATH_PAGE = {
   groups: {
     root: '/groups',
   },
+  calculator: {
+    root: '/calculator',
+  },
   report: {
     root: '/report',
   },
