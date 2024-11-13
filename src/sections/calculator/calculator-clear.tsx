@@ -9,7 +9,13 @@ const CalculatorClear = ({ }: ICalculatorClear) => {
     return (
         <>
 
-            <Button sx={{ border: '1px solid white', width: 70, minWidth: 70, height: 33, color: "#FA4D56", backgroundColor: "#FA4D561A", margin: "2px" }} >
+            <Button sx={{
+                border: '1px solid white', width: 70, minWidth: 70, height: 33, color: "#FA4D56", backgroundColor: "#FA4D561A", margin: "2px",
+                '&.MuiButtonBase-root:hover': {
+                    backgroundColor: "#FA4D561A"
+                },
+                fontWeight: 500
+            }} >
 
                 <Iconify icon="ion:arrow-back-outline" sx={{ width: 25, height: 25, color: "#FA4D56" }} />
             </Button>

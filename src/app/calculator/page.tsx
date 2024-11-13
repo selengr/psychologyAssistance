@@ -1,7 +1,8 @@
 "use client"
 
-import { RHFSelect, RHFTextField } from "@/components/hook-form";
+import { useState } from "react";
 import Iconify from "@/components/iconify/Iconify";
+import CalculatorClear from "@/sections/calculator/calculator-clear";
 import CalculatorNumber from "@/sections/calculator/calculator-number";
 import CalculatorItem from "@/sections/calculator/calculator-number";
 import CalculatorOperator from "@/sections/calculator/calculator-operator";
@@ -11,7 +12,19 @@ import { Box, Button, Container, Grid, IconButton, MenuItem, Select, Stack, Text
 
 
 
-const page = () => {
+const Page = () => {
+    const [scriptJSON, setScriptJSON] = useState<any>([])
+
+
+    const handleOperator = (content: number, type: string) => {
+        console.log('e :>> ', content, type);
+        setScriptJSON([...scriptJSON, {
+            type,
+            content
+        }])
+    }
+
+
     return (
         <Container maxWidth="sm" sx={{ mt: "35px" }}>
 
@@ -64,29 +77,58 @@ const page = () => {
                     />
                 </Stack>
 
-                <Grid sx={{ width: "100%" }}>
-                    <Box sx={{ width: "30%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }} gap={"6px"}>
-                        <Grid gridColumn={3} sx={{ width: "20%", display: "flex", flexDirection: "column" }}>
+                <Grid sx={{ width: "100%", display: "flex", flexDirection: "row", my: 3 }}>
+                    <Box sx={{ width: "30%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
 
-                            <CalculatorOperator operator={'('} />
-                            {["+", "-", "*", "/"].map((item) => {
-                                return <CalculatorOperator operator={item} />
-                            })
-                            }
-                        </Grid>
-                        <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
-                            <CalculatorOperator operator={')'} />
-                            <CalculatorNumber number={0} size={70} />
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => {
-                                return <CalculatorNumber number={item} />
-                            })
-                            }
-                            <CalculatorOperator operator={'.'} />
-                            <CalculatorNumber number={0} size={70} />
-                        </Grid>
+
+                        <Button sx={{
+                            border: '1px solid white',
+                            width: 145,
+                            height: 33,
+                            fontWeight: 500,
+                            // borderRadius: "6px",
+                            color: "#1758BA", backgroundColor: "#1758BA1A"
+                        }} >
+                            فیلد جدید
+                        </Button>
+                        <Stack sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+
+                            <Grid gridColumn={3} sx={{ width: "20%", display: "flex", flexDirection: "column", marginRight: "4px" }} >
+
+                                <CalculatorOperator operator={'('} />
+                                {["+", "-", "*", "/"].map((item) => {
+                                    return <CalculatorOperator operator={item} />
+                                })
+                                }
+                            </Grid>
+                            <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
+                                <CalculatorOperator operator={')'} />
+                                <CalculatorClear />
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => {
+                                    return <CalculatorNumber number={item} handleOperator={handleOperator} />
+                                })
+                                }
+                                <CalculatorOperator operator={'.'} />
+                                <CalculatorNumber number={0} size={70} handleOperator={handleOperator} />
+                            </Grid>
+
+
+                        </Stack>
+
+
 
                     </Box>
-                    <Box sx={{ width: "30%" }}>
+
+
+                    <Box sx={{ width: "70%", display: "flex", flexDirection: "column", alignItems: "start" }}>
+                        <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>اسکریپت:</Typography>
+                        <Stack sx={{ border: '1px solid #DDE1E6', borderRadius: 2, width: "100%", height: "100%" }}>
+                            {scriptJSON.map((item: any) => {
+                                return <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>{item}</Typography>
+                            })}
+
+                        </Stack>
+
 
                     </Box>
 
@@ -197,4 +239,4 @@ const page = () => {
 
 }
 
-export default page;
+export default Page;
