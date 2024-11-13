@@ -7,7 +7,7 @@ import CalculatorNumber from "@/sections/calculator/calculator-number";
 import CalculatorItem from "@/sections/calculator/calculator-number";
 import CalculatorOperator from "@/sections/calculator/calculator-operator";
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, Container, Grid, IconButton, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, Grid, IconButton, Input, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 
 
 
@@ -285,20 +285,25 @@ const Page = () => {
                                 {scriptJSON.map((item: { content: number, type: string }) => {
                                     if (item.type === "NUMBER") {
 
-                                        return <Stack spacing={4} sx={{
+                                        return <Input
+                                            value={item.content}
+                                            //  spacing={4} 
 
-                                            height: 33,
-                                            color: "#2CDFC9", backgroundColor: "#EAFCFA",
-                                            fontWeight: 500,
-                                            minWidth: 33,
-                                            margin: "3px !important",
-                                            marginTop: "0px !important",
-                                            borderRadius: "6px",
-                                            display: "flex", justifyContent: "center", alignItems: "center",
-                                        }}
-                                        >
-                                            {item.content as number}
-                                        </Stack>
+                                            sx={{
+                                                height: 33,
+                                                color: "#2CDFC9", backgroundColor: "#EAFCFA",
+                                                fontWeight: 500,
+                                                minWidth: 33,
+                                                margin: "3px !important",
+                                                marginTop: "0px !important",
+                                                borderRadius: "6px",
+                                                display: "flex", justifyContent: "center", alignItems: "center",
+                                            }}
+
+
+                                        />
+                                        {/* {item.content as number}
+                                        </Stack> */}
                                     }
                                     if (item.type === "OPERATOR") {
 
@@ -400,6 +405,7 @@ const Page = () => {
                                                     sx: { px: 1, maxHeight: 280, minHeight: 180 },
                                                 },
                                             }}
+                                            value={"میانگین   ()"}
 
                                         >
 
