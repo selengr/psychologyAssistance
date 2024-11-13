@@ -23,16 +23,18 @@ const Page = () => {
         console.log('e :>> ', content, type);
 
 
-        // if (type === "NUMBER" && scriptJSON[scriptJSON.length - 1]?.type === "NUMBER") {
+        if (type === "NUMBER" && scriptJSON[scriptJSON.length - 1]?.type === "NUMBER") {
 
 
-        //     setScriptJSON((prevInput: any) => [...prevInput, prevInput.content + content]);
+            setScriptJSON((prevInput: any) => [...prevInput, prevInput.content + content]);
+        } else {
 
-        setScriptJSON([...scriptJSON, {
-            type,
-            content
-        }])
-        // }
+            setScriptJSON([...scriptJSON, {
+                type,
+                content
+            }])
+        }
+
 
     }
     const handleNewField = (type: "NEW_FIELD") => {
