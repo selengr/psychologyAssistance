@@ -8,7 +8,7 @@ import CalculatorItem from "@/sections/calculator/calculator-number";
 import CalculatorOperator from "@/sections/calculator/calculator-operator";
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, Container, Grid, IconButton, Input, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
-
+import AdvancedFormulaCalculator from "@/sections/calculator/advancedFormulaEditor";
 
 
 type OPERATOR_TYPE = "OPERATOR" | "NUMBER" | "AVG" | string
@@ -281,163 +281,10 @@ const Page = () => {
                     <Box sx={{ width: "70%", display: "flex", flexDirection: "column", alignItems: "start" }}>
                         <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>اسکریپت:</Typography>
                         <Stack spacing={4} sx={{ border: '1px solid #DDE1E6', borderRadius: 2, padding: 1, width: "100%", height: "100%", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
-                            <Stack spacing={4} sx={{ width: "100%", height: "max-content", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
-                                {scriptJSON.map((item: { content: number, type: string }) => {
-                                    if (item.type === "NUMBER") {
-
-                                        return <Input
-                                            value={item.content}
-                                            //  spacing={4} 
-
-                                            sx={{
-                                                height: 33,
-                                                color: "#2CDFC9", backgroundColor: "#EAFCFA",
-                                                fontWeight: 500,
-                                                minWidth: 33,
-                                                margin: "3px !important",
-                                                marginTop: "0px !important",
-                                                borderRadius: "6px",
-                                                display: "flex", justifyContent: "center", alignItems: "center",
-                                            }}
 
 
-                                        />
-                                        {/* {item.content as number}
-                                        </Stack> */}
-                                    }
-                                    if (item.type === "OPERATOR") {
 
-                                        return <Stack spacing={4} sx={{
-                                            width: 33,
-                                            height: 33,
-                                            color: "#1758BA", backgroundColor: "#1758BA1A",
-                                            fontWeight: 500,
-                                            minWidth: 33,
-                                            marginRight: "3px !important",
-                                            marginTop: "0px !important",
-                                            borderRadius: "6px",
-                                            display: "flex", justifyContent: "center", alignItems: "center",
-                                        }}
-                                        >
-                                            {item.content as number}
-                                        </Stack>
-                                    }
-                                    if (item.type === "NEW_FIELD") {
-
-                                        return <Select
-                                            sx={{
-                                                '& .MuiSelect-select': {
-                                                    padding: 1,
-                                                },
-                                                marginRight: "3px !important",
-                                                marginTop: "0px !important",
-                                                width: 145,
-                                                height: 33,
-                                                fontWeight: 500,
-                                                backgroundColor: "#1758BA1A",
-                                                borderColor: "none",
-                                                '&:before, &:after': {
-                                                    border: 'none',
-                                                },
-                                                '& .MuiOutlinedInput-notchedOutline': {
-                                                    border: 'none',
-                                                },
-                                            }}
-
-                                            MenuProps={{
-                                                PaperProps: {
-                                                    sx: { px: 1, maxHeight: 280, minHeight: 180 },
-                                                },
-                                            }}
-
-                                        >
-
-                                            {["میانگین   ()"].map((option: any) => {
-                                                return (
-                                                    <MenuItem
-                                                        key={option.value}
-                                                        value={option.value}
-                                                        sx={{
-                                                            py: 1,
-                                                            px: 2,
-                                                            height: 33,
-                                                            borderRadius: 1.75,
-                                                            typography: 'body2',
-                                                            backgroundColor: "#1758BA !important",
-                                                            color: "white",
-                                                            margin: "5px",
-
-                                                        }}
-                                                    >
-                                                        {/* {checkbox && <Checkbox disableRipple size="small" checked={selected} />} */}
-
-                                                        {option}
-                                                    </MenuItem>
-                                                );
-                                            })}
-                                        </Select>
-                                    }
-                                    if (item.type === "AVG") {
-
-                                        return <Select
-                                            sx={{
-                                                '& .MuiSelect-select': {
-                                                    padding: 1,
-                                                },
-                                                marginRight: "3px !important",
-                                                marginTop: "0px !important",
-                                                width: 145,
-                                                height: 33,
-                                                fontWeight: 500,
-                                                color: "white",
-                                                backgroundColor: "#9D2CDF",
-                                                borderColor: "none",
-                                                '&:before, &:after': {
-                                                    border: 'none',
-                                                },
-                                                '& .MuiOutlinedInput-notchedOutline': {
-                                                    border: 'none',
-                                                },
-                                            }}
-
-                                            MenuProps={{
-                                                PaperProps: {
-                                                    sx: { px: 1, maxHeight: 280, minHeight: 180 },
-                                                },
-                                            }}
-                                            value={"میانگین   ()"}
-
-                                        >
-
-                                            {["میانگین   ()"].map((option: any) => {
-                                                return (
-                                                    <MenuItem
-                                                        key={option}
-                                                        value={option}
-                                                        sx={{
-                                                            py: 1,
-                                                            px: 2,
-                                                            height: 33,
-                                                            borderRadius: 1.75,
-                                                            typography: 'body2',
-                                                            backgroundColor: "#9D2CDF !important",
-                                                            color: "white",
-                                                            margin: "5px",
-
-                                                        }}
-                                                    >
-                                                        {/* {checkbox && <Checkbox disableRipple size="small" checked={selected} />} */}
-
-                                                        {option}
-                                                    </MenuItem>
-                                                );
-                                            })}
-                                        </Select>
-                                    }
-                                    return <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>{item.content}</Typography>
-                                })}
-
-                            </Stack>
+                            <AdvancedFormulaCalculator scriptJSON={scriptJSON} setScriptJSON={setScriptJSON} />
                         </Stack>
 
 
@@ -487,6 +334,8 @@ const Page = () => {
                     </Button>
                 </Box>
             </Box>
+
+
 
 
         </Container>
