@@ -107,6 +107,133 @@ const Page = () => {
     };
 
 
+    const renderKeypad = () => {
+        const numbers = [ '0', '.',  '7', '8', '9', '4', '5', '6', '1', '2', '3'];
+        const operators = ['+', '-', '*', '/'];
+
+        return (
+            <>
+                <Box sx={{ width: "30%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
+
+                    <Select
+                        sx={{
+                            '& .MuiSelect-select': {
+                                padding: 1,
+                            },
+                            width: 145,
+                            height: 33,
+                            fontWeight: 500,
+                            backgroundColor: "#9D2CDF1A",
+                            color: "white",
+                            borderColor: "none",
+                            '&:before, &:after': {
+                                border: 'none', // Remove the underline border
+                            },
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none', // Remove the outlined border
+                            },
+                        }}
+
+                        // {...field}
+                        // displayEmpty={!!placeholder}
+                        // labelId={name}
+                        // input={<OutlinedInput fullWidth label={label} error={!!error} />}
+                        // renderValue={renderValues}
+                        MenuProps={{
+                            PaperProps: {
+                                sx: { px: 1, maxHeight: 280, minHeight: 180 },
+                            },
+                        }}
+                        // ic_fx.svg
+                        onChange={handleFnFX}
+                    // onChange={(e) => {
+                    //     field.onChange(e.target.value);
+                    //     if (!setProp) return;
+
+                    //     e.target.value === 'SHORT_TEXT' ? setProp(true) : setProp(false);
+                    // }}
+                    // {...other}
+                    >
+
+                        {["میانگین   ()"].map((option: any) => {
+                            // const selected = field?.value?.includes(option?.value);
+
+                            return (
+                                <MenuItem
+                                    key={option}
+                                    value={option}
+                                    sx={{
+                                        py: 1,
+                                        px: 2,
+                                        height: 33,
+                                        borderRadius: 1.75,
+                                        typography: 'body2',
+                                        backgroundColor: "#9D2CDF !important",
+                                        color: "white",
+                                        margin: "5px",
+                                        // ...(selected && {
+                                        //     fontWeight: 'fontWeightMedium',
+                                        // }),
+                                        // ...(checkbox && {
+                                        //     p: 0.25,
+                                        // }),
+                                    }}
+                                >
+                                    {/* {checkbox && <Checkbox disableRipple size="small" checked={selected} />} */}
+
+                                    {option}
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+
+
+
+                    <Button sx={{
+                        border: '1px solid white',
+                        width: 145,
+                        height: 33,
+                        fontWeight: 500,
+                        // borderRadius: "6px",
+                        color: "#1758BA", backgroundColor: "#1758BA1A"
+                    }}
+                        onClick={() => handleNewField("NEW_FIELD")}
+                    >
+                        فیلد جدید
+                    </Button>
+                    <Stack sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+
+                        <Grid gridColumn={3} sx={{ width: "20%", display: "flex", flexDirection: "column", marginRight: "4px" }} >
+
+                            <CalculatorOperator operator={'('} handleOperator={handleOperator} />
+                            {operators.map((op) => {
+                                return <CalculatorOperator operator={op} handleOperator={handleOperator} />
+                            })
+                            }
+                        </Grid>
+                        <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
+                            <CalculatorOperator operator={')'} handleOperator={handleOperator} />
+                            <CalculatorClear handleClear={handleClear} />
+                            {numbers.reverse().map((num) => {
+                                return <CalculatorNumber number={num} handleOperator={handleOperator} />
+                            })
+                            }
+                            {/* <CalculatorNumber number={'.'} handleOperator={handleOperator} /> */}
+                            {/* <CalculatorNumber number={"0"} size={70} handleOperator={handleOperator} /> */}
+                        </Grid>
+
+
+                    </Stack>
+
+
+
+                </Box>
+            </>
+        );
+    };
+
+
+
     return (
         <Container maxWidth="sm" sx={{ mt: "35px" }}>
 
@@ -159,123 +286,11 @@ const Page = () => {
                     />
                 </Stack>
 
+
+
                 <Grid sx={{ width: "100%", display: "flex", flexDirection: "row", my: 3 }}>
-                    <Box sx={{ width: "30%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
 
-
-                        <Select
-                            sx={{
-                                '& .MuiSelect-select': {
-                                    padding: 1,
-                                },
-                                width: 145,
-                                height: 33,
-                                fontWeight: 500,
-                                backgroundColor: "#9D2CDF1A",
-                                color: "white",
-                                borderColor: "none",
-                                '&:before, &:after': {
-                                    border: 'none', // Remove the underline border
-                                },
-                                '& .MuiOutlinedInput-notchedOutline': {
-                                    border: 'none', // Remove the outlined border
-                                },
-                            }}
-
-                            // {...field}
-                            // displayEmpty={!!placeholder}
-                            // labelId={name}
-                            // input={<OutlinedInput fullWidth label={label} error={!!error} />}
-                            // renderValue={renderValues}
-                            MenuProps={{
-                                PaperProps: {
-                                    sx: { px: 1, maxHeight: 280, minHeight: 180 },
-                                },
-                            }}
-                            // ic_fx.svg
-                            onChange={handleFnFX}
-                        // onChange={(e) => {
-                        //     field.onChange(e.target.value);
-                        //     if (!setProp) return;
-
-                        //     e.target.value === 'SHORT_TEXT' ? setProp(true) : setProp(false);
-                        // }}
-                        // {...other}
-                        >
-
-                            {["میانگین   ()"].map((option: any) => {
-                                // const selected = field?.value?.includes(option?.value);
-
-                                return (
-                                    <MenuItem
-                                        key={option}
-                                        value={option}
-                                        sx={{
-                                            py: 1,
-                                            px: 2,
-                                            height: 33,
-                                            borderRadius: 1.75,
-                                            typography: 'body2',
-                                            backgroundColor: "#9D2CDF !important",
-                                            color: "white",
-                                            margin: "5px",
-                                            // ...(selected && {
-                                            //     fontWeight: 'fontWeightMedium',
-                                            // }),
-                                            // ...(checkbox && {
-                                            //     p: 0.25,
-                                            // }),
-                                        }}
-                                    >
-                                        {/* {checkbox && <Checkbox disableRipple size="small" checked={selected} />} */}
-
-                                        {option}
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-
-
-
-                        <Button sx={{
-                            border: '1px solid white',
-                            width: 145,
-                            height: 33,
-                            fontWeight: 500,
-                            // borderRadius: "6px",
-                            color: "#1758BA", backgroundColor: "#1758BA1A"
-                        }}
-                            onClick={() => handleNewField("NEW_FIELD")}
-                        >
-                            فیلد جدید
-                        </Button>
-                        <Stack sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-
-                            <Grid gridColumn={3} sx={{ width: "20%", display: "flex", flexDirection: "column", marginRight: "4px" }} >
-
-                                <CalculatorOperator operator={'('} handleOperator={handleOperator} />
-                                {["+", "-", "*", "/"].map((item) => {
-                                    return <CalculatorOperator operator={item} handleOperator={handleOperator} />
-                                })
-                                }
-                            </Grid>
-                            <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
-                                <CalculatorOperator operator={')'} handleOperator={handleOperator} />
-                                <CalculatorClear handleClear={handleClear} />
-                                {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((item) => {
-                                    return <CalculatorNumber number={item} handleOperator={handleOperator} />
-                                })
-                                }
-                                <CalculatorNumber number={'.'} handleOperator={handleOperator} />
-                                <CalculatorNumber number={"0"} size={70} handleOperator={handleOperator} />
-                            </Grid>
-
-
-                        </Stack>
-
-
-
-                    </Box>
+                    {renderKeypad()}
 
 
                     <Box sx={{ width: "70%", display: "flex", flexDirection: "column", alignItems: "start" }}>
