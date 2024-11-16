@@ -108,12 +108,13 @@ const Page = () => {
 
 
     const renderKeypad = () => {
-        const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
+        const numbers = [ '0', '.',  '7', '8', '9', '4', '5', '6', '1', '2', '3'];
         const operators = ['+', '-', '*', '/'];
 
         return (
             <>
                 <Box sx={{ width: "30%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
+
 
                     <Select
                         sx={{
