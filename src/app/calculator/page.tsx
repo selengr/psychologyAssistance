@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
-import ContentEditable from "react-contenteditable";
+// import ContentEditable from "react-contenteditable";
+
+import ReactDOMServer from "react-dom/server";
+// import ReactHtmlParser from "react-html-parser";
 
 import Iconify from "@/components/iconify/Iconify";
 import CalculatorClear from "@/sections/calculator/calculator-clear";
@@ -12,6 +15,9 @@ import CalculatorOperator from "@/sections/calculator/calculator-operator";
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, Container, Grid, IconButton, Input, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import AdvancedFormulaCalculator from "@/sections/calculator/advancedFormulaEditor";
+import ContentEditable from 'react-contenteditable'
+import styles from '../../sections/calculator/advancedFormulaEditor.module.css'
+import { AnyAaaaRecord } from "dns";
 
 
 type OPERATOR_TYPE = "OPERATOR" | "NUMBER" | "AVG" | string
@@ -22,11 +28,15 @@ type CALCULATE_TYPE = {
 
 
 
+
+
+
 const Page = () => {
     const [scriptJSON, setScriptJSON] = useState<any>([])
+    const [html, setHtml] = useState<any>([])
 
 
-    
+
 
     const handleClear = () => {
         setScriptJSON((prevState: CALCULATE_TYPE[]) => {
@@ -81,9 +91,35 @@ const Page = () => {
     };
 
 
+    const handleChange = (evt: any) => {
+        console.log('evt.target.value :>> ', evt.target.value);
+        setHtml(evt.target.value)
+    };
+
+
     const handleOperator = (content: string, type: OPERATOR_TYPE) => {
         console.log('e :>> ', content, type);
+        var currenHTML = html;
 
+
+        const text = content;
+        const renderToString = ReactDOMServer.renderToString(
+            <div
+                className={`${styles.dynamicbtn} ${styles[type]}`}
+
+                // counter={this.state.counter}
+                contentEditable={"false"}
+            >
+                {text}
+
+            </div>
+        );
+
+
+        currenHTML += renderToString;
+        // currenHTML += "&nbsp;";
+
+        setHtml(currenHTML)
 
 
 
@@ -112,10 +148,10 @@ const Page = () => {
 
     }
 
-  const handleAdd = (num:any) => {
-     
-      };
 
+
+
+    console.log('html :>> ', html);
 
     const renderKeypad = () => {
         const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
@@ -125,16 +161,7 @@ const Page = () => {
             <>
                 <Box sx={{ width: "30%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
 
-                    <ContentEditable
-                        ref={this.textInput}
-                        onKeyDown={this.handleKeyDown}
-                        className="ContentEditable"
-                        innerRef={this.contentEditable}
-                        html={this.state.html} // innerHTML of the editable div
-                        disabled={false} // use true to disable editing
-                        onChange={this.handleChange} // handle innerHTML change
-                        tagName="article" // Use a custom HTML tag (uses a div by default)
-                    />
+
 
                     <Select
                         sx={{
@@ -320,7 +347,7 @@ const Page = () => {
 
 
 
-                            <AdvancedFormulaCalculator scriptJSON={scriptJSON} setScriptJSON={setScriptJSON} />
+                            <AdvancedFormulaCalculator scriptJSON={scriptJSON} setScriptJSON={setScriptJSON} html={html} handleChange={handleChange} />
                         </Stack>
 
 
