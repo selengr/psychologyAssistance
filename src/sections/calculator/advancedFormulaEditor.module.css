@@ -80,15 +80,17 @@
 .ContentEditable {
   height: 100%;
   width: 100%;
-  border: none;
+  outline: none;
 }
 .ContentEditable article {
   height: '100%';
   width: '100%';
+  border: none;
 }
 .ContentEditable :first-child :first-child {
   height: '100%';
   width: '100%';
+  border: none;
 }
 
 .dynamicbtn {

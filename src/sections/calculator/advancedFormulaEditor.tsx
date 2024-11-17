@@ -214,13 +214,7 @@ export default function AdvancedFormulaEditor({ scriptJSON, setScriptJSON, html,
         }
     };
 
-    const handleAdd = (num: any) => {
-
-    }
-    // const handleChange = evt => {
-    //     setContent(evt.target.value);
-    // };
-
+ 
     const handleKeyDown = (event: any) => {
         if (event.key === "Enter") {
             event.preventDefault();

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 // import ContentEditable from "react-contenteditable";
 
@@ -34,33 +34,44 @@ type CALCULATE_TYPE = {
 const Page = () => {
     const [scriptJSON, setScriptJSON] = useState<any>([])
     const [html, setHtml] = useState<any>([])
+    const contentEditable2 = useRef<any>();
 
 
 
+    const handleUndo = useCallback(() => {
+        const editableDiv = contentEditable2.current;
+        if (!editableDiv) return;
 
-    const handleClear = () => {
-        setScriptJSON((prevState: CALCULATE_TYPE[]) => {
-            if (prevState.length === 0) return prevState;
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
 
-            const newState = [...prevState];
-            const lastIndex = newState.length - 1;
+        let elementToRemove: Element | null = null;
 
-            if (newState[lastIndex].type === "NUMBER") {
-                const currentContent = newState[lastIndex].content;
-
-                if (currentContent.length > 1) {
-                    newState[lastIndex].content = currentContent.substring(0, currentContent.length - 1)
-                } else {
-                    newState.pop();
+        if (range && editableDiv.contains(range.startContainer)) {
+            // If there's a selection, remove the element at the cursor
+            let node :any = range.startContainer;
+            while (node && node !== editableDiv) {
+                if (node.nodeType === Node.ELEMENT_NODE && (node as Element).classList.contains('dynamicbtn')) {
+                    elementToRemove = node as Element;
+                    break;
                 }
-
-            } else {
-                newState.pop();
+                node = node.parentNode;
             }
+        }
 
-            return newState;
-        });
-    };
+        if (!elementToRemove) {
+            // If no element is selected, remove the last element
+            elementToRemove = editableDiv.lastElementChild;
+        }
+
+        if (elementToRemove) {
+            elementToRemove.remove();
+            setHtml(editableDiv.innerHTML);
+        }
+
+        editableDiv.focus();
+    }, []);
+
 
     const handleNewField = (type: "NEW_FIELD") => {
         setScriptJSON([...scriptJSON, {
@@ -97,65 +108,115 @@ const Page = () => {
     };
 
 
+
+    // const handleOperator = (content: string, type: OPERATOR_TYPE) => {
+    //     console.log('e :>> ', content, type);
+    //     var currenHTML = html;
+
+    //     const newField = ReactDOMServer.renderToString(
+    //         <div className={`${styles.dynamicbtn} ${styles[type]}`} contentEditable={"false"}>
+    //             {content}
+    //         </div>
+    //     );
+
+
+    //     const text = content;
+    //     const renderToString = ReactDOMServer.renderToString(
+    //         <div
+    //             className={`${styles.dynamicbtn} ${styles[type]}`}
+
+    //             // counter={this.state.counter}
+    //             contentEditable={"false"}
+    //         >
+    //             {text}
+
+    //         </div>
+    //     );
+
+
+    //     currenHTML += renderToString;
+    //     // currenHTML += "&nbsp;";
+
+    //     setHtml(currenHTML)
+
+
+
+
+    //     if (type === "NUMBER") {
+    //         setScriptJSON((prevState: CALCULATE_TYPE[]) => {
+    //             const newState = [...prevState];
+
+    //             if (newState.length > 0 && newState[newState.length - 1]?.type === "NUMBER") {
+    //                 const lastIndex = newState.length - 1;
+    //                 newState[lastIndex] = {
+    //                     ...newState[lastIndex],
+    //                     content: newState[lastIndex].content + content
+    //                 };
+    //             } else {
+    //                 newState.push({ type, content });
+    //             }
+
+    //             return newState;
+    //         });
+    //     } else {
+    //         setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, { type, content }]);
+    //     }
+
+
+
+    // }
+
     const handleOperator = (content: string, type: OPERATOR_TYPE) => {
-        console.log('e :>> ', content, type);
-        var currenHTML = html;
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+        const editableDiv = contentEditable2.current;
 
+        if (!editableDiv) return;
 
-        const text = content;
-        const renderToString = ReactDOMServer.renderToString(
-            <div
-                className={`${styles.dynamicbtn} ${styles[type]}`}
+        const newElement = document.createElement('div');
+        newElement.className = `${styles.dynamicbtn} ${styles[type]}`;
+        newElement.contentEditable = 'false';
+        newElement.textContent = content;
 
-                // counter={this.state.counter}
-                contentEditable={"false"}
-            >
-                {text}
-
-            </div>
-        );
-
-
-        currenHTML += renderToString;
-        // currenHTML += "&nbsp;";
-
-        setHtml(currenHTML)
-
-
-
-
-        if (type === "NUMBER") {
-            setScriptJSON((prevState: CALCULATE_TYPE[]) => {
-                const newState = [...prevState];
-
-                if (newState.length > 0 && newState[newState.length - 1]?.type === "NUMBER") {
-                    const lastIndex = newState.length - 1;
-                    newState[lastIndex] = {
-                        ...newState[lastIndex],
-                        content: newState[lastIndex].content + content
-                    };
-                } else {
-                    newState.push({ type, content });
-                }
-
-                return newState;
-            });
+        if (range && editableDiv.contains(range.startContainer)) {
+            // this  line will ==> Insert at cursor position
+            range.insertNode(newElement);
+            range.setStartAfter(newElement);
         } else {
-            setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, { type, content }]);
+            //but this line will ==> append to the end
+            editableDiv.appendChild(newElement);
         }
 
 
+        setHtml(editableDiv.innerHTML);
 
-    }
+        editableDiv.focus();
+    };
 
 
 
+
+
+
+
+
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (!/^[0-9+\-*/().()]$/.test(event.key) &&
+            !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
+            event.preventDefault();
+        }
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    };
+
+    const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
+    const operators = ['+', '-', '*', '/'];
 
     console.log('html :>> ', html);
 
     const renderKeypad = () => {
-        const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
-        const operators = ['+', '-', '*', '/'];
+
 
         return (
             <>
@@ -261,7 +322,7 @@ const Page = () => {
                         </Grid>
                         <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
                             <CalculatorOperator operator={')'} handleOperator={handleOperator} />
-                            <CalculatorClear handleClear={handleClear} />
+                            <CalculatorClear handleClear={handleUndo} />
                             {numbers.reverse().map((num) => {
                                 return <CalculatorNumber number={num} handleOperator={handleOperator} />
                             })
@@ -339,15 +400,48 @@ const Page = () => {
                 <Grid sx={{ width: "100%", display: "flex", flexDirection: "row", my: 3 }}>
 
                     {renderKeypad()}
-
+                    {/* <Stack sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={3}>
+                                <Button onClick={() => handleOperator('(', 'OPERATOR')}>{'('}</Button>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Button onClick={() => handleOperator(')', 'OPERATOR')}>{')'}</Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button onClick={() => setHtml('')}>Clear</Button>
+                            </Grid>
+                            {numbers.reverse().map((num) => (
+                                <Grid item xs={4} key={num}>
+                                    <Button onClick={() => handleOperator(num, 'NUMBER')}>{num}</Button>
+                                </Grid>
+                            ))}
+                            {operators.map((op) => (
+                                <Grid item xs={3} key={op}>
+                                    <Button onClick={() => handleOperator(op, 'OPERATOR')}>{op}</Button>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Stack> */}
 
                     <Box sx={{ width: "70%", display: "flex", flexDirection: "column", alignItems: "start" }}>
                         <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>اسکریپت:</Typography>
                         <Stack spacing={4} sx={{ border: '1px solid #DDE1E6', borderRadius: 2, padding: 1, width: "100%", height: "100%", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
 
 
-
-                            <AdvancedFormulaCalculator scriptJSON={scriptJSON} setScriptJSON={setScriptJSON} html={html} handleChange={handleChange} />
+                            <ContentEditable
+                                // ref={this.textInput}
+                                onKeyDown={handleKeyDown}
+                                className={styles.ContentEditable}
+                                innerRef={contentEditable2}
+                                html={html}
+                                autoFocus={true}
+                                disabled={false}
+                                onChange={handleChange} // handle innerHTML change
+                                // tagName="article" // Use a custom HTML tag (uses a div by default)
+                                contentEditable={"true"}
+                            />
+                            {/* <AdvancedFormulaCalculator scriptJSON={scriptJSON} setScriptJSON={setScriptJSON} html={html} handleChange={handleChange} /> */}
                         </Stack>
 
 
