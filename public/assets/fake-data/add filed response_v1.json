@@ -1,0 +1,48 @@
+{
+  "dataList": [
+    {
+      "value": "1",
+      "caption": "سن - سوالی که روی آن شرط است",
+      "elementStr": "QUESTION",
+      "extMap": {
+        "QUESTION_TYPE": "TEXT_FIELD",
+        "DESCRIPTION": "",
+        "MAXIMUM_LEN": "",
+        "REQUIRED": "true",
+        "MINIMUM_LEN": "",
+        "TEXT_FIELD_PATTERN": "NUMBER"
+      }
+    },
+    {
+      "value": "41",
+      "caption": "سوال چند گزینه شرطی",
+      "elementStr": "QUESTION",
+      "extMap": {
+        "RANDOMIZE_OPTIONS": "true",
+        "QUESTION_TYPE": "MULTIPLE_CHOICE",
+        "DESCRIPTION": "عععععععععععععععع",
+        "REQUIRED": "false",
+        "MULTI_SELECT": "false"
+      }
+    },
+    {
+      "value": "2",
+      "caption": "c2",
+      "elementStr": "CALCULATION",
+      "extMap": {
+        "FORMULA": "#avg({#q_1,#q_21,5,8})"
+      }
+    },
+    {
+      "value": "1",
+      "caption": "c1",
+      "elementStr": "CALCULATION",
+      "extMap": {
+        "FORMULA": "#q_1+#q_21+{calc_2}"
+      }
+    }
+  ],
+  "totalCount": 5,
+  "page": 0,
+  "rows": 10000
+}

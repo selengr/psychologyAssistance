@@ -354,6 +354,7 @@ export default function AdvancedFormulaEditor({ scriptJSON, setScriptJSON }: any
                                     </MenuItem>
                                 ))}
                             </Select>
+
                         );
                     }
                     if (item.type === "AVG") {

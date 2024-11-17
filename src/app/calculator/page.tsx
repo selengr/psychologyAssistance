@@ -1,6 +1,9 @@
 "use client"
 
 import { useState } from "react";
+
+import ContentEditable from "react-contenteditable";
+
 import Iconify from "@/components/iconify/Iconify";
 import CalculatorClear from "@/sections/calculator/calculator-clear";
 import CalculatorNumber from "@/sections/calculator/calculator-number";
@@ -23,36 +26,7 @@ const Page = () => {
     const [scriptJSON, setScriptJSON] = useState<any>([])
 
 
-    const handleOperator = (content: string, type: OPERATOR_TYPE) => {
-        console.log('e :>> ', content, type);
-
-
-
-
-
-        if (type === "NUMBER") {
-            setScriptJSON((prevState: CALCULATE_TYPE[]) => {
-                const newState = [...prevState];
-
-                if (newState.length > 0 && newState[newState.length - 1]?.type === "NUMBER") {
-                    const lastIndex = newState.length - 1;
-                    newState[lastIndex] = {
-                        ...newState[lastIndex],
-                        content: newState[lastIndex].content + content
-                    };
-                } else {
-                    newState.push({ type, content });
-                }
-
-                return newState;
-            });
-        } else {
-            setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, { type, content }]);
-        }
-
-
-
-    }
+    
 
     const handleClear = () => {
         setScriptJSON((prevState: CALCULATE_TYPE[]) => {
@@ -107,14 +81,60 @@ const Page = () => {
     };
 
 
+    const handleOperator = (content: string, type: OPERATOR_TYPE) => {
+        console.log('e :>> ', content, type);
+
+
+
+
+
+        if (type === "NUMBER") {
+            setScriptJSON((prevState: CALCULATE_TYPE[]) => {
+                const newState = [...prevState];
+
+                if (newState.length > 0 && newState[newState.length - 1]?.type === "NUMBER") {
+                    const lastIndex = newState.length - 1;
+                    newState[lastIndex] = {
+                        ...newState[lastIndex],
+                        content: newState[lastIndex].content + content
+                    };
+                } else {
+                    newState.push({ type, content });
+                }
+
+                return newState;
+            });
+        } else {
+            setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, { type, content }]);
+        }
+
+
+
+    }
+
+  const handleAdd = (num:any) => {
+     
+      };
+
+
     const renderKeypad = () => {
-        const numbers = [ '0', '.',  '7', '8', '9', '4', '5', '6', '1', '2', '3'];
+        const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
         const operators = ['+', '-', '*', '/'];
 
         return (
             <>
                 <Box sx={{ width: "30%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
 
+                    <ContentEditable
+                        ref={this.textInput}
+                        onKeyDown={this.handleKeyDown}
+                        className="ContentEditable"
+                        innerRef={this.contentEditable}
+                        html={this.state.html} // innerHTML of the editable div
+                        disabled={false} // use true to disable editing
+                        onChange={this.handleChange} // handle innerHTML change
+                        tagName="article" // Use a custom HTML tag (uses a div by default)
+                    />
 
                     <Select
                         sx={{
