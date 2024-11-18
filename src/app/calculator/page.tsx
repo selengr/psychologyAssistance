@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // import ContentEditable from "react-contenteditable";
 
@@ -75,26 +75,26 @@ const Page = () => {
 
 
 
-    const handleFnFX = () => {
-        setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, {
+    // const handleFnFX = () => {
+    //     setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, {
 
-            type: "AVG",
-            content: ""
-        },
-        {
-            type: "OPERATOR",
-            content: "("
-        },
-        {
-            type: "OPERATOR",
-            content: ")"
-        },
-
-
+    //         type: "AVG",
+    //         content: ""
+    //     },
+    //     {
+    //         type: "OPERATOR",
+    //         content: "("
+    //     },
+    //     {
+    //         type: "OPERATOR",
+    //         content: ")"
+    //     },
 
 
-        ]);
-    };
+
+
+    //     ]);
+    // };
 
 
     const handleChange = (evt: any) => {
@@ -207,17 +207,71 @@ const Page = () => {
         newOptionElement.textContent = "content";
         newOptionElement2.textContent = "reza";
 
-        // if (range && editableDiv.contains(range.startContainer)) {
-        //     // this  line will ==> Insert at cursor position
-        //     range.insertNode(newElement);
-        //     range.setStartAfter(newElement);
-        // } else {
-        //but this line will ==> append to the end
-        // newElement.appendChild(newSelectElement);
-        // newSelectElement.appendChild(newOptionElement);
-        // newSelectElement.appendChild(newOptionElement2);
-        editableDiv.appendChild(newElement);
-        // }
+        if (range && editableDiv.contains(range.startContainer)) {
+            // this  line will ==> Insert at cursor position
+            newElement.appendChild(newSelectElement);
+            newSelectElement.appendChild(newOptionElement);
+            newSelectElement.appendChild(newOptionElement2);
+            range.insertNode(newElement);
+            range.setStartAfter(newElement);
+        } else {
+            //but this line will ==> append to the end
+            newElement.appendChild(newSelectElement);
+            newSelectElement.appendChild(newOptionElement);
+            editableDiv.appendChild(newElement);
+        }
+
+
+        setHtml(editableDiv.innerHTML);
+
+        editableDiv.focus();
+    };
+
+    useEffect(() => {
+        const editableDiv = contentEditable2.current;
+        editableDiv.focus();
+    }, [])
+
+
+    const handleFnFX = () => {
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+        const editableDiv = contentEditable2.current;
+
+        if (!editableDiv) return;
+
+        const newElement = document.createElement('div');
+        const newElement2 = document.createElement('div');
+        const newElement3 = document.createElement('div');
+        const newSelectElement = document.createElement('select');
+        const newOptionElement = document.createElement('option');
+        const newOptionElement2 = document.createElement('option');
+        newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
+        newElement.contentEditable = 'false';
+        // newElement2.contentEditable = 'false';
+        // newElement3.contentEditable = 'false';
+        newOptionElement.textContent = "content";
+        // newElement2.textContent = "(";
+        // newElement3.textContent = ")";
+        // newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
+        // newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
+        newOptionElement2.textContent = "reza";
+
+        if (range && editableDiv.contains(range.startContainer)) {
+            // this  line will ==> Insert at cursor position
+            newElement.appendChild(newSelectElement);
+            newSelectElement.appendChild(newOptionElement);
+            newSelectElement.appendChild(newOptionElement2);
+            // range.insertNode(newElement3);
+            // range.insertNode(newElement2);
+            range.insertNode(newElement);
+            range.setStartAfter(newElement);
+        } else {
+            //but this line will ==> append to the end
+            newElement.appendChild(newSelectElement);
+            newSelectElement.appendChild(newOptionElement);
+            editableDiv.appendChild(newElement);
+        }
 
 
         setHtml(editableDiv.innerHTML);
@@ -256,6 +310,27 @@ const Page = () => {
 
 
 
+                    <Stack
+                        sx={{
+                            '& .MuiSelect-select': {
+                                padding: 1,
+                            },
+                            width: 145,
+                            height: 33,
+                            fontWeight: 500,
+                            backgroundColor: "#9D2CDF1A",
+                            color: "white",
+                            borderColor: "none",
+
+                        }}
+
+                        onClick={handleFnFX}
+
+
+                    >
+
+                        میانگین
+                    </Stack>
                     <Select
                         sx={{
                             '& .MuiSelect-select': {
@@ -287,6 +362,10 @@ const Page = () => {
                         }}
                         // ic_fx.svg
                         onChange={handleFnFX}
+                        onOpen={() => {
+                            const editableDiv = contentEditable2.current;
+                            editableDiv.focus();
+                        }}
                     // onChange={(e) => {
                     //     field.onChange(e.target.value);
                     //     if (!setProp) return;
@@ -301,6 +380,7 @@ const Page = () => {
 
                             return (
                                 <MenuItem
+                                    onChange={() => { debugger }}
                                     key={option}
                                     value={option}
                                     sx={{

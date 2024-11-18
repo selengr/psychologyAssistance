@@ -62,6 +62,22 @@
   align-items: center;
 }
 
+.NEW_FnFx {
+  height: 33px;
+  width: 145px;
+  border-color: none;
+  background-color: #9D2CDF;
+  /* font-weight: bold; */
+  /* min-width: 33px; */
+  /* max-width: max-content; */
+  margin: 3px !important;
+  margin-top: 0px !important;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .OPERATOR {
   height: 33px;
   color: #1758ba;
