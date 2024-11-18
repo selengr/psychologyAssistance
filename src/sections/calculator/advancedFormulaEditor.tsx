@@ -214,7 +214,7 @@ export default function AdvancedFormulaEditor({ scriptJSON, setScriptJSON, html,
         }
     };
 
- 
+
     const handleKeyDown = (event: any) => {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -228,7 +228,7 @@ export default function AdvancedFormulaEditor({ scriptJSON, setScriptJSON, html,
             <Stack spacing={4} sx={{ width: "100%", height: "max-content", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
 
 
-                <Box component={"ul"} className={styles.field}  sx={{ width: "100%", height: "400px", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
+                <Box component={"ul"} className={styles.field} sx={{ width: "100%", height: "400px", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
 
                     {/* <ul style={{ width: "100%", height: "400px", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
                         <li style={{

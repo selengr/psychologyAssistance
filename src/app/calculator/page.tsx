@@ -49,7 +49,7 @@ const Page = () => {
 
         if (range && editableDiv.contains(range.startContainer)) {
             // If there's a selection, remove the element at the cursor
-            let node :any = range.startContainer;
+            let node: any = range.startContainer;
             while (node && node !== editableDiv) {
                 if (node.nodeType === Node.ELEMENT_NODE && (node as Element).classList.contains('dynamicbtn')) {
                     elementToRemove = node as Element;
@@ -73,12 +73,7 @@ const Page = () => {
     }, []);
 
 
-    const handleNewField = (type: "NEW_FIELD") => {
-        setScriptJSON([...scriptJSON, {
-            type,
-            content: ""
-        }])
-    }
+
 
     const handleFnFX = () => {
         setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, {
@@ -186,6 +181,43 @@ const Page = () => {
             //but this line will ==> append to the end
             editableDiv.appendChild(newElement);
         }
+
+
+        setHtml(editableDiv.innerHTML);
+
+        editableDiv.focus();
+    };
+
+
+
+
+    const handleNewField = () => {
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+        const editableDiv = contentEditable2.current;
+
+        if (!editableDiv) return;
+
+        const newElement = document.createElement('div');
+        const newSelectElement = document.createElement('select');
+        const newOptionElement = document.createElement('option');
+        const newOptionElement2 = document.createElement('option');
+        newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
+        newElement.contentEditable = 'false';
+        newOptionElement.textContent = "content";
+        newOptionElement2.textContent = "reza";
+
+        // if (range && editableDiv.contains(range.startContainer)) {
+        //     // this  line will ==> Insert at cursor position
+        //     range.insertNode(newElement);
+        //     range.setStartAfter(newElement);
+        // } else {
+        //but this line will ==> append to the end
+        // newElement.appendChild(newSelectElement);
+        // newSelectElement.appendChild(newOptionElement);
+        // newSelectElement.appendChild(newOptionElement2);
+        editableDiv.appendChild(newElement);
+        // }
 
 
         setHtml(editableDiv.innerHTML);
@@ -306,7 +338,7 @@ const Page = () => {
                         // borderRadius: "6px",
                         color: "#1758BA", backgroundColor: "#1758BA1A"
                     }}
-                        onClick={() => handleNewField("NEW_FIELD")}
+                        onClick={() => handleNewField()}
                     >
                         فیلد جدید
                     </Button>

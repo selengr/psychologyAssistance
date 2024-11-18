@@ -46,6 +46,22 @@
   align-items: center;
 }
 
+.NEW_FIELD {
+  height: 33px;
+  width: 145px;
+  border-color: none;
+  background-color: #1758ba1a;
+  /* font-weight: bold; */
+  /* min-width: 33px; */
+  /* max-width: max-content; */
+  margin: 3px !important;
+  margin-top: 0px !important;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .OPERATOR {
   height: 33px;
   color: #1758ba;
