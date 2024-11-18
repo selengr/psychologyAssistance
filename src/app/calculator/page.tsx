@@ -248,13 +248,13 @@ const Page = () => {
         const newOptionElement2 = document.createElement('option');
         newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
         newElement.contentEditable = 'false';
-        // newElement2.contentEditable = 'false';
-        // newElement3.contentEditable = 'false';
+        newElement2.contentEditable = 'false';
+        newElement3.contentEditable = 'false';
         newOptionElement.textContent = "content";
-        // newElement2.textContent = "(";
-        // newElement3.textContent = ")";
-        // newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
-        // newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
+        newElement2.textContent = "(";
+        newElement3.textContent = ")";
+        newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
+        newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
         newOptionElement2.textContent = "reza";
 
         if (range && editableDiv.contains(range.startContainer)) {
@@ -262,8 +262,8 @@ const Page = () => {
             newElement.appendChild(newSelectElement);
             newSelectElement.appendChild(newOptionElement);
             newSelectElement.appendChild(newOptionElement2);
-            // range.insertNode(newElement3);
-            // range.insertNode(newElement2);
+            range.insertNode(newElement3);
+            range.insertNode(newElement2);
             range.insertNode(newElement);
             range.setStartAfter(newElement);
         } else {
@@ -310,27 +310,21 @@ const Page = () => {
 
 
 
-                    <Stack
-                        sx={{
-                            '& .MuiSelect-select': {
-                                padding: 1,
-                            },
-                            width: 145,
-                            height: 33,
-                            fontWeight: 500,
-                            backgroundColor: "#9D2CDF1A",
-                            color: "white",
-                            borderColor: "none",
 
-                        }}
-
-                        onClick={handleFnFX}
-
-
+                    <Button sx={{
+                        border: '1px solid white',
+                        width: 145,
+                        height: 33,
+                        fontWeight: 500,
+                        // borderRadius: "6px",
+                        color: "#1758BA", backgroundColor: "#1758BA1A"
+                    }}
+                        onClick={() => handleFnFX()}
                     >
-
                         میانگین
-                    </Stack>
+                    </Button>
+
+
                     <Select
                         sx={{
                             '& .MuiSelect-select': {
