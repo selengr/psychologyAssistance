@@ -36,6 +36,7 @@ const Page = () => {
     const [scriptJSON, setScriptJSON] = useState<any>([])
     const [html, setHtml] = useState<any>([])
     const contentEditable2 = useRef<any>();
+    const [formula, setFormula] = useState<string>("")
 
 
 
@@ -98,10 +99,6 @@ const Page = () => {
     // };
 
 
-    const handleChange = (evt: any) => {
-        console.log('evt.target.value :>> ', evt.target.value);
-        setHtml(evt.target.value)
-    };
 
 
 
@@ -223,6 +220,7 @@ const Page = () => {
         }
 
 
+        console.log('editableDiv.innerHTML :>> ', editableDiv.innerHTML);
         setHtml(editableDiv.innerHTML);
 
         editableDiv.focus();
@@ -232,6 +230,179 @@ const Page = () => {
         const editableDiv = contentEditable2.current;
         editableDiv.focus();
     }, [])
+
+
+
+    const parseFormula = (input: string): string => {
+        // const parts = input.match(/#q_\d+|#avg$${[^}]+}$$|\+|\-|\*|\/|$$|$$|\d+|{[^}]+}/g) || []
+        const parts = input.match(/#q_\d+|#avg$${[^}]+}$$|\+|\-|\*|\/|$$|$$|\d+|{[^}]+}/g) || []
+
+
+        return parts.map((part) => {
+
+            console.log('part :>> ', part);
+            if (part.startsWith('#q_')) {
+                const id = part.slice(2)
+                return `<span class="${styles.dynamicbtn} ${styles.NEW_FIELD}" data-id="${id}" data-type="NEW_FIELD" contentEditable={false}>  
+                  <select>
+                        <option>test</option>
+                        <option>reza</option>
+                    </select>
+            </span>`
+            } else if (['+', '-', '*', '/', '(', ')'].includes(part)) {
+                return `<span class="${styles.dynamicbtn} ${styles.OPERATOR}" data-type="OPERATOR" contentEditable={false}>${part}</span>`
+            } else if (part.startsWith('#avg')) {
+                // const content = part.match(/{([^}]+)}/)?.[1] || ''
+                const content = part.match(/$${([^}]+)}$$/)?.[1] || ''
+                return `<div class="${styles.dynamicbtn} ${styles.NEW_FnFx}" data-type="NEW_FnFx" data-content="${content}" contentEditable={false}>
+                   <select>
+                        <option>you</option>
+                        <option>rezaaaa</option>
+                    </select>
+                  
+                </div>`
+            } else if (/^\d+$/.test(part)) {
+                return `<span class="${styles.dynamicbtn} ${styles.NUMBER}" data-type="NUMBER" contentEditable={false}>${part}</span>`
+            } else if (part.startsWith('{') && part.endsWith('}')) {
+                return `<span class="${styles.dynamicbtn} ${styles.VARIABLE}" data-type="VARIABLE">${part}</span>`
+            }
+            return part
+        }).join('')
+    }
+
+    useEffect(() => {
+        let initialFormula = "#avg({#q_1,#q_21,5})#q_1+#q_21-1+"
+        // setHtml(parseFormula(initialFormula))
+    }, [])
+
+
+    const handleChange = (evt: any) => {
+        console.log('evt.target.value :>> ', evt.target.value);
+        const newHtml = evt.currentTarget
+        // setHtml(newHtml)
+        const newFormula = htmlToFormula(evt.target.value)
+        // console.log('newFormula :>> ', newFormula);
+        // setHtml(evt.target.value)
+        setFormula(newFormula)
+    };
+
+    function htmlToFormula(html: string): string {
+        const parser = new DOMParser()
+        const doc = parser.parseFromString(html, 'text/html')
+        const elements = doc.body.children
+
+        let formula = ''
+
+        for (let element of elements) {
+            if (element.classList.contains('advancedFormulaEditor-module__uTdVNG__NUMBER')) {
+                formula += element.textContent
+            } else if (element.classList.contains('advancedFormulaEditor-module__uTdVNG__OPERATOR')) {
+                formula += element.textContent
+            } else if (element.classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
+                formula += '#q_' + (element.querySelector('select')?.value || 'undefined')
+            } else if (element.classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
+                const select = element.querySelector('select')
+                if (select) {
+                    formula += '#fx_' + select.value
+                }
+            }
+        }
+
+        return formula
+    }
+
+    // const htmlToFormula = (html: string): string => {debugger
+    //     const tempDiv = document.createElement('div')
+    //     tempDiv.innerHTML = html
+
+    //     const formula = Array.from(tempDiv.childNodes).map((node) => {
+    //         if (node.nodeType === Node.TEXT_NODE) {
+    //             return node.textContent
+    //         }
+    //         if (node.nodeType === Node.ELEMENT_NODE) {
+    //             const element = node as HTMLElement
+    //             const type = element.getAttribute('data-type')
+    //             switch (type) {
+    //                 case 'NEW_FIELD':
+    //                     return `#q_${element.getAttribute('data-id')}`
+    //                 case 'OPERATOR':
+    //                     return element.textContent
+    //                 case 'AVG':
+    //                     const content = element.getAttribute('data-content')
+    //                     return `#avg({${content}})`
+    //                 case 'NUMBER':
+    //                     return element.textContent
+    //                 case 'VARIABLE':
+    //                     return element.textContent
+    //                 default:
+    //                     return ''
+    //             }
+    //         }
+    //         return ''
+    //     }).join('')
+
+    //     return formula
+    // }
+
+
+
+    // useEffect(() => {
+    //     let theFormula = "#q_1+#q_21+{calc_2}"
+    //     let formula = "#q_1+#q_21+{calc_2}"
+
+    //     const parseFormula = (input: string) => {
+    //         const parts = input.match(/#q_\d+|#avg$${[^}]+}$$|\+|\-|\*|\/|$$|$$|\d+|{[^}]+}/g) || []
+    //         // debugger
+    //         return parts.map((part, index) => {
+    //             if (part.startsWith('#q_')) {
+    //                 const id = part.slice(2)
+    //                 return (
+    //                     <div key={index} class="NEW_FIELD" contentEditable={false} id={id} >
+    //                         <select value="content">
+    //                             <option>content</option>
+    //                             <option>reza</option>
+    //                         </select>
+    //                     </div>
+    //                 )
+    //             } else if (['+', '-', '*', '/', '(', ')'].includes(part)) {
+    //                 return (
+    //                     <div key={index} className="OPERATOR" contentEditable={false}>
+    //                         {part}
+    //                     </div>
+    //                 )
+    //             } else if (part.startsWith('#avg')) {
+    //                 const content = part.match(/{([^}]+)}/)?.[1] || ''
+    //                 return (
+    //                     <div key={index} className="NEW_FIELD" contentEditable={false} id="avg" >
+    //                         <select value={content}>
+    //                             <option>content</option>
+    //                             <option>reza</option>
+    //                         </select>
+    //                         <div contentEditable={false} className="OPERATOR">(</div>
+    //                         {parseFormula(content)}
+    //                         <div contentEditable={false} className="OPERATOR">)</div>
+    //                     </div>
+    //                 )
+    //             } else if (/^\d+$/.test(part)) {
+    //                 return (
+    //                     <div key={index} contentEditable={false} className="NUMBER">
+    //                         {part}
+    //                     </div>
+    //                 )
+    //             } else if (part.startsWith('{') && part.endsWith('}')) {
+    //                 return (
+    //                     <span key={index} className="VARIABLE">
+    //                         {part}
+    //                     </span>
+    //                 )
+    //             }
+    //             return part
+    //         })
+    //     }
+
+    //     parseFormula(theFormula)
+    //     setHtml(parseFormula(theFormula))
+    // }, [])
 
 
     const handleFnFX = () => {
@@ -310,7 +481,7 @@ const Page = () => {
     const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
     const operators = ['+', '-', '*', '/'];
 
-    console.log('html=== :>> ', JSONData.dataList);
+    console.log('html=== :>> ', html);
 
     const renderKeypad = () => {
 
@@ -473,6 +644,7 @@ const Page = () => {
             >
                 <Stack spacing={1}>
                     <Typography variant="subtitle2" color="#161616">نام:</Typography>
+                    <Typography variant="subtitle2" color="#161616">{formula}</Typography>
 
                     <TextField
                         sx={{
@@ -494,6 +666,7 @@ const Page = () => {
                         }}
                         name="name"
                     />
+
                 </Stack>
 
 

@@ -10,7 +10,8 @@
         "MAXIMUM_LEN": "",
         "REQUIRED": "true",
         "MINIMUM_LEN": "",
-        "TEXT_FIELD_PATTERN": "NUMBER"
+        "TEXT_FIELD_PATTERN": "NUMBER",
+        "UNIQUE_NAME":"q_1"
       }
     },
     {
@@ -22,7 +23,8 @@
         "QUESTION_TYPE": "MULTIPLE_CHOICE",
         "DESCRIPTION": "عععععععععععععععع",
         "REQUIRED": "false",
-        "MULTI_SELECT": "false"
+        "MULTI_SELECT": "false",
+        "UNIQUE_NAME":"q_41"
       }
     },
     {
@@ -30,15 +32,18 @@
       "caption": "c2",
       "elementStr": "CALCULATION",
       "extMap": {
-        "FORMULA": "#avg({#q_1,#q_21,5,8})"
+        "FORMULA": "#avg({#q_1,#q_21,5,8})",
+        "UNIQUE_NAME":"calc_2"
       }
     },
     {
       "value": "1",
       "caption": "c1",
+      "u" : "",
       "elementStr": "CALCULATION",
       "extMap": {
-        "FORMULA": "#q_1+#q_21+{calc_2}"
+        "FORMULA": "#q_1+#q_21+{calc_2}",
+        "UNIQUE_NAME":"calc_2"
       }
     }
   ],
