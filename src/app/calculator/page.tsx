@@ -280,17 +280,17 @@ const Page = () => {
         console.log('evt.target.value :>> ', evt.target.value);
         const newHtml = evt.currentTarget
         // setHtml(newHtml)
-        const newFormula = htmlToFormula(evt.target.value)
+        // const newFormula = htmlToFormula(evt.target.value)
         // console.log('newFormula :>> ', newFormula);
         // setHtml(evt.target.value)
-        setFormula(newFormula)
+        // setFormula(newFormula)
     };
 
     function htmlToFormula(html: string): string {
         const parser = new DOMParser()
         const doc = parser.parseFromString(html, 'text/html')
         const elements = doc.body.children
-
+        // debugger
         let formula = ''
 
         for (let element of elements) {
@@ -726,9 +726,14 @@ const Page = () => {
 
                 <Box display="flex" gap={3} width="100%" marginTop={5} marginBottom={2} sx={{ display: "flex", justifyContent: "center" }}>
                     <LoadingButton
-                        type="submit"
+                        type="button"
                         // disableRipple
-
+                        onClick={() => {
+                            const newFormula = htmlToFormula(html)
+                            // console.log('newFormula :>> ', newFormula);
+                            // setHtml(evt.target.value)
+                            setFormula(newFormula)
+                        }}
                         // fullWidth
                         variant="contained"
                         // variant="outlined"
