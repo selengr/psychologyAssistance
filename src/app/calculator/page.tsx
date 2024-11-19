@@ -169,7 +169,11 @@ const Page = () => {
         const newElement = document.createElement('div');
         newElement.className = `${styles.dynamicbtn} ${styles[type]}`;
         newElement.contentEditable = 'false';
-        newElement.textContent = content;
+        newElement.textContent = content
+        console.log("type", type)
+        newElement.setAttribute('data-type', type)
+        // newElement.setAttribute('data-id', Date.now().toString())
+
 
         if (range && editableDiv.contains(range.startContainer)) {
             // this  line will ==> Insert at cursor position
@@ -201,6 +205,7 @@ const Page = () => {
         const newOptionElement = document.createElement('option');
         const newOptionElement2 = document.createElement('option');
         newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
+        newElement.setAttribute('data-type', "NEW_FIELD")
         newElement.contentEditable = 'false';
         newOptionElement.textContent = "content";
         newOptionElement2.textContent = "reza";
@@ -277,7 +282,7 @@ const Page = () => {
 
 
     const handleChange = (evt: any) => {
-        console.log('evt.target.value :>> ', evt.target.value);
+        // console.log('evt.target.value :>> ', evt.target.value);
         const newHtml = evt.currentTarget
         // setHtml(newHtml)
         // const newFormula = htmlToFormula(evt.target.value)
@@ -289,24 +294,31 @@ const Page = () => {
     function htmlToFormula(html: string): string {
         const parser = new DOMParser()
         const doc = parser.parseFromString(html, 'text/html')
-        const elements = doc.body.children
-        // debugger
+        const elements: HTMLCollection = doc.body.children
+
+        console.log('elements :>> ', elements);
+
         let formula = ''
 
-        for (let element of elements) {
-            if (element.classList.contains('advancedFormulaEditor-module__uTdVNG__NUMBER')) {
-                formula += element.textContent
-            } else if (element.classList.contains('advancedFormulaEditor-module__uTdVNG__OPERATOR')) {
-                formula += element.textContent
-            } else if (element.classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
-                formula += '#q_' + (element.querySelector('select')?.value || 'undefined')
-            } else if (element.classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
-                const select = element.querySelector('select')
-                if (select) {
-                    formula += '#fx_' + select.value
+        for (const element of Array.from(elements)) {
+            if (element instanceof HTMLDivElement) {
+                const classList = element.classList;
+
+                if (classList.contains('advancedFormulaEditor-module__uTdVNG__NUMBER')) {
+                    formula += element.textContent
+                } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__OPERATOR')) {
+                    formula += element.textContent
+                } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
+                    formula += '#q_' + (element.querySelector('select')?.value || 'undefined')
+                } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
+                    const select = element.querySelector('select')
+                    if (select) {
+                        formula += '#avg(' + select.value + ")"
+                    }
                 }
             }
         }
+
 
         return formula
     }
@@ -429,6 +441,7 @@ const Page = () => {
         // const newOptionElement = document.createElement('option');
         // const newOptionElement2 = document.createElement('option');
         newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
+        newElement.setAttribute('data-type', "NEW_FnFx")
         newElement.contentEditable = 'false';
         newElement2.contentEditable = 'false';
         newElement3.contentEditable = 'false';

@@ -46,12 +46,12 @@
   align-items: center;
 }
 
-.NEW_FIELD select{
+.NEW_FIELD select {
   height: 33px;
   width: 145px;
   border-color: none;
   color: #fff;
-  background-color: #1753AF;
+  background-color: #1753af;
   /* font-weight: bold; */
   /* min-width: 33px; */
   /* max-width: max-content; */
@@ -137,6 +137,7 @@
   height: 100%;
   width: 100%;
   outline: none;
+  /* direction: ltr !important; */
 }
 .ContentEditable article {
   height: '100%';
