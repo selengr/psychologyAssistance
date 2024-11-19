@@ -17,7 +17,8 @@ import { Box, Button, Container, Grid, IconButton, Input, MenuItem, Select, Stac
 import AdvancedFormulaCalculator from "@/sections/calculator/advancedFormulaEditor";
 import ContentEditable from 'react-contenteditable'
 import styles from '../../sections/calculator/advancedFormulaEditor.module.css'
-import { AnyAaaaRecord } from "dns";
+import JSONData from '../../../public/assets/fake-data/add filed response_v1.json'
+
 
 
 type OPERATOR_TYPE = "OPERATOR" | "NUMBER" | "AVG" | string
@@ -244,32 +245,42 @@ const Page = () => {
         const newElement2 = document.createElement('div');
         const newElement3 = document.createElement('div');
         const newSelectElement = document.createElement('select');
-        const newOptionElement = document.createElement('option');
-        const newOptionElement2 = document.createElement('option');
+
+        JSONData.dataList.forEach(item => {
+            const newOptionElement = document.createElement('option');
+            newOptionElement.value = item.value; // Set the value attribute
+            newOptionElement.textContent = item.caption; // Set the display text
+            newSelectElement.appendChild(newOptionElement); // Append to the select element
+        });
+
+
+
+        // const newOptionElement = document.createElement('option');
+        // const newOptionElement2 = document.createElement('option');
         newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
         newElement.contentEditable = 'false';
         newElement2.contentEditable = 'false';
         newElement3.contentEditable = 'false';
-        newOptionElement.textContent = "content";
+        // newOptionElement.textContent = "content";
         newElement2.textContent = "(";
         newElement3.textContent = ")";
         newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
         newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
-        newOptionElement2.textContent = "reza";
+        // newOptionElement2.textContent = "reza";
 
         if (range && editableDiv.contains(range.startContainer)) {
             // this  line will ==> Insert at cursor position
             newElement.appendChild(newSelectElement);
-            newSelectElement.appendChild(newOptionElement);
-            newSelectElement.appendChild(newOptionElement2);
+            // newSelectElement.appendChild(newOptionElement);
+            // newSelectElement.appendChild(newOptionElement2);
             range.insertNode(newElement3);
             range.insertNode(newElement2);
             range.insertNode(newElement);
-            range.setStartAfter(newElement);
+            range.setStartAfter(newElement3);
         } else {
             //but this line will ==> append to the end
             newElement.appendChild(newSelectElement);
-            newSelectElement.appendChild(newOptionElement);
+            // newSelectElement.appendChild(newOptionElement);
             editableDiv.appendChild(newElement);
         }
 
@@ -299,7 +310,7 @@ const Page = () => {
     const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
     const operators = ['+', '-', '*', '/'];
 
-    console.log('html :>> ', html);
+    console.log('html=== :>> ', JSONData.dataList);
 
     const renderKeypad = () => {
 
@@ -307,22 +318,6 @@ const Page = () => {
         return (
             <>
                 <Box sx={{ width: "30%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
-
-
-
-
-                    <Button sx={{
-                        border: '1px solid white',
-                        width: 145,
-                        height: 33,
-                        fontWeight: 500,
-                        // borderRadius: "6px",
-                        color: "#1758BA", backgroundColor: "#1758BA1A"
-                    }}
-                        onClick={() => handleFnFX()}
-                    >
-                        میانگین
-                    </Button>
 
 
                     <Select
@@ -355,7 +350,7 @@ const Page = () => {
                             },
                         }}
                         // ic_fx.svg
-                        onChange={handleFnFX}
+                        onClick={handleFnFX}
                         onOpen={() => {
                             const editableDiv = contentEditable2.current;
                             editableDiv.focus();

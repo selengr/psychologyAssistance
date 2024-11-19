@@ -46,11 +46,12 @@
   align-items: center;
 }
 
-.NEW_FIELD {
+.NEW_FIELD select{
   height: 33px;
   width: 145px;
   border-color: none;
-  background-color: #1758ba1a;
+  color: #fff;
+  background-color: #1753AF;
   /* font-weight: bold; */
   /* min-width: 33px; */
   /* max-width: max-content; */
@@ -60,23 +61,46 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 4px;
+}
+.NEW_FIELD {
+  padding: 0px !important;
 }
 
+.NEW_FnFx select {
+  height: 33px;
+  width: 145px;
+  border-color: none;
+  color: #fff;
+  background-color: #9d2cdf;
+  /* font-weight: bold; */
+  /* min-width: 33px; */
+  /* max-width: max-content; */
+  margin: 3px !important;
+  margin-top: 0px !important;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  padding: 0;
+}
 .NEW_FnFx {
+  padding: 0px !important;
+}
+.NEW_FnFx select:focus {
+  border: none;
+}
+.NEW_FnFx select:active {
+  border: none;
+}
+/* .NEW_FnFx select {
   height: 33px;
   width: 145px;
   border-color: none;
   background-color: #9D2CDF;
-  /* font-weight: bold; */
-  /* min-width: 33px; */
-  /* max-width: max-content; */
-  margin: 3px !important;
-  margin-top: 0px !important;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  min-width: 145px;
+} */
 
 .OPERATOR {
   height: 33px;
