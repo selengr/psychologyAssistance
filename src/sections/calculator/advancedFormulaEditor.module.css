@@ -52,9 +52,6 @@
   border-color: none;
   color: #fff;
   background-color: #1753af;
-  /* font-weight: bold; */
-  /* min-width: 33px; */
-  /* max-width: max-content; */
   margin: 3px !important;
   margin-top: 0px !important;
   border-radius: 6px;
@@ -62,7 +59,26 @@
   justify-content: center;
   align-items: center;
   padding: 0 4px;
+
+  position: relative;
+
 }
+
+.NEW_FIELD select::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Adjust position as needed */
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-image: url('/public/assets/icons/svg/ic_fx.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .NEW_FIELD {
   padding: 0px !important;
 }
@@ -70,6 +86,7 @@
 .NEW_FnFx select {
   height: 33px;
   width: 145px;
+  position: relative;
   border-color: none;
   color: #fff;
   background-color: #9d2cdf;
@@ -85,6 +102,18 @@
   border: none;
   padding: 0;
 }
+
+.NEW_FnFx select::after {
+  content: '';
+  background: url('/public/assets/icons/svg/ic_fx.svg');
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 133px;
+  width: 145px;
+  z-index: 999999;
+}
+
 .NEW_FnFx {
   padding: 0px !important;
 }

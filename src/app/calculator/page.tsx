@@ -105,44 +105,6 @@ const Page = () => {
 
 
 
-    const handleNewField = () => {
-        const selection = window.getSelection();
-        const range = selection?.getRangeAt(0);
-        const editableDiv = contentEditable.current;
-
-        if (!editableDiv) return;
-
-        const newElement = document.createElement('div');
-        const newSelectElement = document.createElement('select');
-        const newOptionElement = document.createElement('option');
-        const newOptionElement2 = document.createElement('option');
-        newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
-        newElement.setAttribute('data-type', "NEW_FIELD")
-        newElement.contentEditable = 'false';
-        newOptionElement.textContent = "content";
-        newOptionElement2.textContent = "reza";
-
-        if (range && editableDiv.contains(range.startContainer)) {
-            // this  line will ==> Insert at cursor position
-            newElement.appendChild(newSelectElement);
-            newSelectElement.appendChild(newOptionElement);
-            newSelectElement.appendChild(newOptionElement2);
-            range.insertNode(newElement);
-            range.setStartAfter(newElement);
-        } else {
-            //but this line will ==> append to the end
-            newElement.appendChild(newSelectElement);
-            newSelectElement.appendChild(newOptionElement);
-            editableDiv.appendChild(newElement);
-        }
-
-
-        console.log('editableDiv.innerHTML :>> ', editableDiv.innerHTML);
-        setHtml(editableDiv.innerHTML);
-
-        editableDiv.focus();
-    };
-
     useEffect(() => {
         const editableDiv = contentEditable.current;
         editableDiv.focus();
@@ -307,6 +269,49 @@ const Page = () => {
     // }, [])
 
 
+
+    const handleNewField = () => {
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+        const editableDiv = contentEditable.current;
+
+        if (!editableDiv) return;
+
+        const newElement = document.createElement('div');
+        const newSelectElement = document.createElement('select');
+
+
+        JSONData.dataList.forEach(item => {
+            const newOptionElement = document.createElement('option');
+            newOptionElement.value = item.value;
+            newOptionElement.textContent = item.caption;
+            newSelectElement.appendChild(newOptionElement);
+        });
+
+
+
+        newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
+        newElement.setAttribute('data-type', "NEW_FIELD")
+        newElement.contentEditable = 'false';
+
+        if (range && editableDiv.contains(range.startContainer)) {
+            // this  line will ==> Insert at cursor position
+            newElement.appendChild(newSelectElement);
+            range.insertNode(newElement);
+            range.setStartAfter(newElement);
+        } else {
+            //but this line will ==> append to the end
+            newElement.appendChild(newSelectElement);
+            editableDiv.appendChild(newElement);
+        }
+
+        setHtml(editableDiv.innerHTML);
+
+        editableDiv.focus();
+    };
+
+
+
     const handleFnFX = () => {
         const selection = window.getSelection();
         const range = selection?.getRangeAt(0);
@@ -319,7 +324,7 @@ const Page = () => {
         const newElement3 = document.createElement('div');
         const newSelectElement = document.createElement('select');
 
-        [{ fnValue: "avg", fnCaption: ""میانگین()""}].forEach(item => {
+        [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach(item => {
             const newOptionElement = document.createElement('option');
             newOptionElement.value = item.fnValue;
             newOptionElement.textContent = item.fnCaption;
@@ -350,7 +355,7 @@ const Page = () => {
             // newSelectElement.appendChild(newOptionElement);
             editableDiv.appendChild(newElement);
         }
-        
+
         setHtml(editableDiv.innerHTML);
 
         editableDiv.focus();
@@ -405,7 +410,7 @@ const Page = () => {
                             height: 33,
                             fontWeight: 500,
                             backgroundColor: "#9D2CDF1A",
-                            color: "white",
+                            color: "#9D2CDF",
                             borderColor: "none",
                             '&:before, &:after': {
                                 border: 'none',
