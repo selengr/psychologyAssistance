@@ -2,10 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// import ContentEditable from "react-contenteditable";
+import ContentEditable from 'react-contenteditable'
 
 import ReactDOMServer from "react-dom/server";
-// import ReactHtmlParser from "react-html-parser";
 
 import Iconify from "@/components/iconify/Iconify";
 import CalculatorClear from "@/sections/calculator/calculator-clear";
@@ -15,7 +14,7 @@ import CalculatorOperator from "@/sections/calculator/calculator-operator";
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, Container, Grid, IconButton, Input, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import AdvancedFormulaCalculator from "@/sections/calculator/advancedFormulaEditor";
-import ContentEditable from 'react-contenteditable'
+
 import styles from '../../sections/calculator/advancedFormulaEditor.module.css'
 import JSONData from '../../../public/assets/fake-data/add filed response_v1.json'
 
@@ -28,20 +27,16 @@ type CALCULATE_TYPE = {
 }
 
 
-
-
-
-
 const Page = () => {
     const [scriptJSON, setScriptJSON] = useState<any>([])
     const [html, setHtml] = useState<any>([])
-    const contentEditable2 = useRef<any>();
+    const contentEditable = useRef<any>();
     const [formula, setFormula] = useState<string>("")
 
 
 
     const handleUndo = useCallback(() => {
-        const editableDiv = contentEditable2.current;
+        const editableDiv = contentEditable.current;
         if (!editableDiv) return;
 
         const selection = window.getSelection();
@@ -162,7 +157,7 @@ const Page = () => {
     const handleOperator = (content: string, type: OPERATOR_TYPE) => {
         const selection = window.getSelection();
         const range = selection?.getRangeAt(0);
-        const editableDiv = contentEditable2.current;
+        const editableDiv = contentEditable.current;
 
         if (!editableDiv) return;
 
@@ -170,7 +165,6 @@ const Page = () => {
         newElement.className = `${styles.dynamicbtn} ${styles[type]}`;
         newElement.contentEditable = 'false';
         newElement.textContent = content
-        console.log("type", type)
         newElement.setAttribute('data-type', type)
         // newElement.setAttribute('data-id', Date.now().toString())
 
@@ -196,7 +190,7 @@ const Page = () => {
     const handleNewField = () => {
         const selection = window.getSelection();
         const range = selection?.getRangeAt(0);
-        const editableDiv = contentEditable2.current;
+        const editableDiv = contentEditable.current;
 
         if (!editableDiv) return;
 
@@ -232,7 +226,7 @@ const Page = () => {
     };
 
     useEffect(() => {
-        const editableDiv = contentEditable2.current;
+        const editableDiv = contentEditable.current;
         editableDiv.focus();
     }, [])
 
@@ -244,7 +238,7 @@ const Page = () => {
 
 
         return parts.map((part) => {
-
+            console.log(part)
             console.log('part :>> ', part);
             if (part.startsWith('#q_')) {
                 const id = part.slice(2)
@@ -300,26 +294,41 @@ const Page = () => {
 
         let formula = ''
 
+
         for (const element of Array.from(elements)) {
             if (element instanceof HTMLDivElement) {
                 const classList = element.classList;
 
                 if (classList.contains('advancedFormulaEditor-module__uTdVNG__NUMBER')) {
-                    formula += element.textContent
+                    formula += element.textContent || '';
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__OPERATOR')) {
-                    formula += element.textContent
+                    if (element.textContent == "+") {
+                        formula += "+";
+                    } else if (element.textContent == "-") {
+
+                        formula += "-";
+                    } else if (element.textContent == "*") {
+
+                        formula += "*";
+                    } else if (element.textContent == "/") {
+                        formula += "/";
+                    } else {
+                        formula += element.textContent + "" || '';
+                    }
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
-                    formula += '#q_' + (element.querySelector('select')?.value || 'undefined')
+                    const select = element.querySelector('select');
+                    formula += '#q_' + (select?.value || '');
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
-                    const select = element.querySelector('select')
+                    const select = element.querySelector('select');
                     if (select) {
-                        formula += '#avg(' + select.value + ")"
+                        formula += '#avg' + select.value;
                     }
                 }
             }
         }
 
 
+        console.log("formulaformula", formula)
         return formula
     }
 
@@ -420,7 +429,7 @@ const Page = () => {
     const handleFnFX = () => {
         const selection = window.getSelection();
         const range = selection?.getRangeAt(0);
-        const editableDiv = contentEditable2.current;
+        const editableDiv = contentEditable.current;
 
         if (!editableDiv) return;
 
@@ -536,7 +545,7 @@ const Page = () => {
                         // ic_fx.svg
                         onClick={handleFnFX}
                         onOpen={() => {
-                            const editableDiv = contentEditable2.current;
+                            const editableDiv = contentEditable.current;
                             editableDiv.focus();
                         }}
                     // onChange={(e) => {
@@ -720,7 +729,7 @@ const Page = () => {
                                 // ref={this.textInput}
                                 onKeyDown={handleKeyDown}
                                 className={styles.ContentEditable}
-                                innerRef={contentEditable2}
+                                innerRef={contentEditable}
                                 html={html}
                                 autoFocus={true}
                                 disabled={false}
