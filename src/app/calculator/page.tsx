@@ -1,19 +1,23 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import SvgIcon from "@mui/material/SvgIcon";
+import Image from 'next/image';
 
 import ContentEditable from 'react-contenteditable'
 
-import ReactDOMServer from "react-dom/server";
+//mui
+import { LoadingButton } from "@mui/lab";
+import { Box, Button, Container, Grid, IconButton, Input, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+
 
 import Iconify from "@/components/iconify/Iconify";
 import CalculatorClear from "@/sections/calculator/calculator-clear";
 import CalculatorNumber from "@/sections/calculator/calculator-number";
 import CalculatorItem from "@/sections/calculator/calculator-number";
 import CalculatorOperator from "@/sections/calculator/calculator-operator";
-import { LoadingButton } from "@mui/lab";
-import { Box, Button, Container, Grid, IconButton, Input, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
-import AdvancedFormulaCalculator from "@/sections/calculator/advancedFormulaEditor";
+
 
 import styles from '../../sections/calculator/advancedFormulaEditor.module.css'
 import JSONData from '../../../public/assets/fake-data/add filed response_v1.json'
@@ -28,131 +32,48 @@ type CALCULATE_TYPE = {
 
 
 const Page = () => {
-    const [scriptJSON, setScriptJSON] = useState<any>([])
-    const [html, setHtml] = useState<any>([])
     const contentEditable = useRef<any>();
+    const [html, setHtml] = useState<any>([])
     const [formula, setFormula] = useState<string>("")
 
 
 
     const handleUndo = useCallback(() => {
-        const editableDiv = contentEditable.current;
-        if (!editableDiv) return;
+        const editableDiv = contentEditable.current
+        if (!editableDiv) return
 
-        const selection = window.getSelection();
-        const range = selection?.getRangeAt(0);
+        const selection = window.getSelection()
+        const range = selection?.getRangeAt(0)
 
-        let elementToRemove: Element | null = null;
+        let elementToRemove
 
-        if (range && editableDiv.contains(range.startContainer)) {
-            // If there's a selection, remove the element at the cursor
-            let node: any = range.startContainer;
-            while (node && node !== editableDiv) {
-                if (node.nodeType === Node.ELEMENT_NODE && (node as Element).classList.contains('dynamicbtn')) {
-                    elementToRemove = node as Element;
-                    break;
-                }
-                node = node.parentNode;
+        if (range && !range.collapsed && editableDiv.contains(range.commonAncestorContainer)) {
+            // If there's a selection, remove the selected content
+            range.deleteContents()
+        } else {
+            // If there's no selection, remove the last element
+            const children = Array.from(editableDiv.childNodes)
+            elementToRemove = children[children.length - 1]
+
+            if (elementToRemove) {
+                editableDiv.removeChild(elementToRemove)
             }
         }
 
-        if (!elementToRemove) {
-            // If no element is selected, remove the last element
-            elementToRemove = editableDiv.lastElementChild;
-        }
+        // Update the HTML state
+        setHtml(editableDiv.innerHTML)
 
-        if (elementToRemove) {
-            elementToRemove.remove();
-            setHtml(editableDiv.innerHTML);
-        }
+        // Move the cursor to the end
+        // const newRange = document.createRange()
+        // newRange.selectNodeContents(editableDiv)
+        // newRange.collapse(false)
+        // selection?.removeAllRanges()
+        // selection?.addRange(newRange)
 
-        editableDiv.focus();
-    }, []);
+        // Focus on the contentEditable div
+        editableDiv.focus()
+    }, [])
 
-
-
-
-    // const handleFnFX = () => {
-    //     setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, {
-
-    //         type: "AVG",
-    //         content: ""
-    //     },
-    //     {
-    //         type: "OPERATOR",
-    //         content: "("
-    //     },
-    //     {
-    //         type: "OPERATOR",
-    //         content: ")"
-    //     },
-
-
-
-
-    //     ]);
-    // };
-
-
-
-
-
-    // const handleOperator = (content: string, type: OPERATOR_TYPE) => {
-    //     console.log('e :>> ', content, type);
-    //     var currenHTML = html;
-
-    //     const newField = ReactDOMServer.renderToString(
-    //         <div className={`${styles.dynamicbtn} ${styles[type]}`} contentEditable={"false"}>
-    //             {content}
-    //         </div>
-    //     );
-
-
-    //     const text = content;
-    //     const renderToString = ReactDOMServer.renderToString(
-    //         <div
-    //             className={`${styles.dynamicbtn} ${styles[type]}`}
-
-    //             // counter={this.state.counter}
-    //             contentEditable={"false"}
-    //         >
-    //             {text}
-
-    //         </div>
-    //     );
-
-
-    //     currenHTML += renderToString;
-    //     // currenHTML += "&nbsp;";
-
-    //     setHtml(currenHTML)
-
-
-
-
-    //     if (type === "NUMBER") {
-    //         setScriptJSON((prevState: CALCULATE_TYPE[]) => {
-    //             const newState = [...prevState];
-
-    //             if (newState.length > 0 && newState[newState.length - 1]?.type === "NUMBER") {
-    //                 const lastIndex = newState.length - 1;
-    //                 newState[lastIndex] = {
-    //                     ...newState[lastIndex],
-    //                     content: newState[lastIndex].content + content
-    //                 };
-    //             } else {
-    //                 newState.push({ type, content });
-    //             }
-
-    //             return newState;
-    //         });
-    //     } else {
-    //         setScriptJSON((prevState: CALCULATE_TYPE[]) => [...prevState, { type, content }]);
-    //     }
-
-
-
-    // }
 
     const handleOperator = (content: string, type: OPERATOR_TYPE) => {
         const selection = window.getSelection();
@@ -161,23 +82,20 @@ const Page = () => {
 
         if (!editableDiv) return;
 
-        const newElement = document.createElement('div');
+        const newElement = document.createElement('div')
         newElement.className = `${styles.dynamicbtn} ${styles[type]}`;
-        newElement.contentEditable = 'false';
         newElement.textContent = content
+        newElement.contentEditable = 'false';
         newElement.setAttribute('data-type', type)
         // newElement.setAttribute('data-id', Date.now().toString())
 
 
         if (range && editableDiv.contains(range.startContainer)) {
-            // this  line will ==> Insert at cursor position
             range.insertNode(newElement);
             range.setStartAfter(newElement);
         } else {
-            //but this line will ==> append to the end
             editableDiv.appendChild(newElement);
         }
-
 
         setHtml(editableDiv.innerHTML);
 
@@ -231,43 +149,6 @@ const Page = () => {
     }, [])
 
 
-
-    const parseFormula = (input: string): string => {
-        // const parts = input.match(/#q_\d+|#avg$${[^}]+}$$|\+|\-|\*|\/|$$|$$|\d+|{[^}]+}/g) || []
-        const parts = input.match(/#q_\d+|#avg$${[^}]+}$$|\+|\-|\*|\/|$$|$$|\d+|{[^}]+}/g) || []
-
-
-        return parts.map((part) => {
-            console.log(part)
-            console.log('part :>> ', part);
-            if (part.startsWith('#q_')) {
-                const id = part.slice(2)
-                return `<span class="${styles.dynamicbtn} ${styles.NEW_FIELD}" data-id="${id}" data-type="NEW_FIELD" contentEditable={false}>  
-                  <select>
-                        <option>test</option>
-                        <option>reza</option>
-                    </select>
-            </span>`
-            } else if (['+', '-', '*', '/', '(', ')'].includes(part)) {
-                return `<span class="${styles.dynamicbtn} ${styles.OPERATOR}" data-type="OPERATOR" contentEditable={false}>${part}</span>`
-            } else if (part.startsWith('#avg')) {
-                // const content = part.match(/{([^}]+)}/)?.[1] || ''
-                const content = part.match(/$${([^}]+)}$$/)?.[1] || ''
-                return `<div class="${styles.dynamicbtn} ${styles.NEW_FnFx}" data-type="NEW_FnFx" data-content="${content}" contentEditable={false}>
-                   <select>
-                        <option>you</option>
-                        <option>rezaaaa</option>
-                    </select>
-                  
-                </div>`
-            } else if (/^\d+$/.test(part)) {
-                return `<span class="${styles.dynamicbtn} ${styles.NUMBER}" data-type="NUMBER" contentEditable={false}>${part}</span>`
-            } else if (part.startsWith('{') && part.endsWith('}')) {
-                return `<span class="${styles.dynamicbtn} ${styles.VARIABLE}" data-type="VARIABLE">${part}</span>`
-            }
-            return part
-        }).join('')
-    }
 
     useEffect(() => {
         let initialFormula = "#avg({#q_1,#q_21,5})#q_1+#q_21-1+"
@@ -438,34 +319,27 @@ const Page = () => {
         const newElement3 = document.createElement('div');
         const newSelectElement = document.createElement('select');
 
-        JSONData.dataList.forEach(item => {
+        [{ fnValue: "avg", fnCaption: ""میانگین()""}].forEach(item => {
             const newOptionElement = document.createElement('option');
-            newOptionElement.value = item.value; // Set the value attribute
-            newOptionElement.textContent = item.caption; // Set the display text
-            newSelectElement.appendChild(newOptionElement); // Append to the select element
+            newOptionElement.value = item.fnValue;
+            newOptionElement.textContent = item.fnCaption;
+            newSelectElement.appendChild(newOptionElement);
         });
 
 
 
-        // const newOptionElement = document.createElement('option');
-        // const newOptionElement2 = document.createElement('option');
         newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
         newElement.setAttribute('data-type', "NEW_FnFx")
         newElement.contentEditable = 'false';
         newElement2.contentEditable = 'false';
         newElement3.contentEditable = 'false';
-        // newOptionElement.textContent = "content";
         newElement2.textContent = "(";
         newElement3.textContent = ")";
         newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
         newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
-        // newOptionElement2.textContent = "reza";
 
         if (range && editableDiv.contains(range.startContainer)) {
-            // this  line will ==> Insert at cursor position
             newElement.appendChild(newSelectElement);
-            // newSelectElement.appendChild(newOptionElement);
-            // newSelectElement.appendChild(newOptionElement2);
             range.insertNode(newElement3);
             range.insertNode(newElement2);
             range.insertNode(newElement);
@@ -476,8 +350,7 @@ const Page = () => {
             // newSelectElement.appendChild(newOptionElement);
             editableDiv.appendChild(newElement);
         }
-
-
+        
         setHtml(editableDiv.innerHTML);
 
         editableDiv.focus();
@@ -505,6 +378,16 @@ const Page = () => {
 
     console.log('html=== :>> ', html);
 
+    const renderValue = (selected: any) => {
+        debugger
+        return (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: "#fff" }}>
+                {/* <Image src="/assets/icons/svg/ic_fx.svg" alt="icon" style={{ width: 20, height: 20 }} /> */}
+                rrrr  {selected}
+            </Box>
+        );
+    };
+
     const renderKeypad = () => {
 
 
@@ -525,44 +408,47 @@ const Page = () => {
                             color: "white",
                             borderColor: "none",
                             '&:before, &:after': {
-                                border: 'none', // Remove the underline border
+                                border: 'none',
                             },
                             '& .MuiOutlinedInput-notchedOutline': {
-                                border: 'none', // Remove the outlined border
+                                border: 'none',
+                            },
+                            '& .MuiSvgIcon-root': {
+                                color: "#9D2CDF",
                             },
                         }}
-
-                        // {...field}
-                        // displayEmpty={!!placeholder}
-                        // labelId={name}
-                        // input={<OutlinedInput fullWidth label={label} error={!!error} />}
-                        // renderValue={renderValues}
+                        displayEmpty
+                        defaultValue=""
+                        renderValue={(value: any) => {
+                            console.log(value);
+                            return (
+                                <Box sx={{ display: "flex", gap: 1 }}>
+                                    <Image
+                                        alt="file preview"
+                                        src={"/assets/icons/svg/ic_fx.svg"}
+                                        height={30}
+                                        width={30}
+                                    />
+                                    {value}
+                                </Box>
+                            );
+                        }}
                         MenuProps={{
                             PaperProps: {
                                 sx: { px: 1, maxHeight: 280, minHeight: 180 },
                             },
                         }}
-                        // ic_fx.svg
                         onClick={handleFnFX}
                         onOpen={() => {
                             const editableDiv = contentEditable.current;
                             editableDiv.focus();
                         }}
-                    // onChange={(e) => {
-                    //     field.onChange(e.target.value);
-                    //     if (!setProp) return;
-
-                    //     e.target.value === 'SHORT_TEXT' ? setProp(true) : setProp(false);
-                    // }}
-                    // {...other}
                     >
 
-                        {["میانگین   ()"].map((option: any) => {
-                            // const selected = field?.value?.includes(option?.value);
+                        {["میانگین  ()"].map((option: any) => {
 
                             return (
                                 <MenuItem
-                                    onChange={() => { debugger }}
                                     key={option}
                                     value={option}
                                     sx={{
@@ -582,7 +468,6 @@ const Page = () => {
                                         // }),
                                     }}
                                 >
-                                    {/* {checkbox && <Checkbox disableRipple size="small" checked={selected} />} */}
 
                                     {option}
                                 </MenuItem>
