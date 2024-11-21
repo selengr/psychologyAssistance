@@ -33,6 +33,7 @@ type CALCULATE_TYPE = {
 
 const Page = () => {
     const contentEditable = useRef<any>();
+    const newFieldRef = useRef<any>();
     const [html, setHtml] = useState<any>([])
     const [formula, setFormula] = useState<string>("")
 
@@ -119,14 +120,16 @@ const Page = () => {
 
 
     const handleChange = (evt: any) => {
-        console.log('evt.target :>> ', evt.target);
-        console.log('evt.target.value :>> ', evt.target.value);
+        console.log('evt.target.value .reeeeeeeeza :>> ', evt.target.value);
         const newHtml = evt.currentTarget
-        // setHtml(newHtml)
-        // const newFormula = htmlToFormula(evt.target.value)
-        // console.log('newFormula :>> ', newFormula);
-        // setHtml(evt.target.value)
-        // setFormula(newFormula)
+
+
+        // if (elements.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
+        //     const select = elements.querySelector('select');
+        //     console.log('select reeeeeeeeza:>> ', select);
+        //     // formula += '#q_' + (select?.id || '');
+        // }
+
     };
 
     function htmlToFormula(html: string): string {
@@ -134,9 +137,8 @@ const Page = () => {
         const doc = parser.parseFromString(html, 'text/html')
         const elements: HTMLCollection = doc.body.children
 
-        console.log('elements :>> ', elements);
-
         let formula = ''
+
 
 
         for (const element of Array.from(elements)) {
@@ -160,8 +162,9 @@ const Page = () => {
                         formula += element.textContent + "" || '';
                     }
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
-                    // debugger
                     const select = element.querySelector('select');
+                    console.log('select :>> ', select);
+                    console.log('newFieldRef.current :>> ', newFieldRef.current);
                     formula += '#q_' + (select?.value || '');
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
                     // debugger
@@ -193,7 +196,10 @@ const Page = () => {
         newElement.contentEditable = 'false';
 
         const newSelectElement = document.createElement('select');
+        newSelectElement.setAttribute('ref', 'newFieldRef');
         newSelectElement.contentEditable = 'false';
+
+
 
         JSONData.dataList.forEach(item => {
             const newOptionElement = document.createElement('option');
@@ -205,16 +211,10 @@ const Page = () => {
 
         // Create a change handler for the select element
         newSelectElement.onchange = (e: any) => {
-            console.log('Selected value: ', e.target.value);
-            newSelectElement.value = e.target.value
-            // You can also update the inner HTML or do other actions here
-            // For example, to set the selected caption as text:
-            // newElement.textContent = e.target.options[e.target.selectedIndex].text;
+            newFieldRef.current = evt.target.value
         };
 
 
-
-        newSelectElement.contentEditable = 'false';
 
         if (range && editableDiv.contains(range.startContainer)) {
             // this  line will ==> Insert at cursor position
@@ -303,7 +303,7 @@ const Page = () => {
     const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
     const operators = ['+', '-', '*', '/'];
 
-    console.log('html=== :>> ', html);
+
 
     const renderValue = (selected: any) => {
         debugger
@@ -347,7 +347,7 @@ const Page = () => {
                         displayEmpty
                         defaultValue=""
                         renderValue={(value: any) => {
-                            console.log(value);
+
                             return (
                                 <Box sx={{ display: "flex", gap: 1 }}>
                                     <Image

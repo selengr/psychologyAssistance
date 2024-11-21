@@ -48,21 +48,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${IranSansFont.className}`}>
         <NextTopLoader color="#DE74A3" showSpinner={false} />
         {/* <CacheProvider value={emotionCache}> */}
-        <ReduxProvider>
-          {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
-          <SettingsProvider>
-            <MotionLazyContainer>
-              <ThemeProvider>
-                <ThemeSettings>
-                  <ThemeLocalization>
-                    <DashboardLayout>{children}</DashboardLayout>
-                  </ThemeLocalization>
-                </ThemeSettings>
-              </ThemeProvider>
-            </MotionLazyContainer>
-          </SettingsProvider>
-          {/* </LocalizationProvider> */}
-        </ReduxProvider>
+        {/* <ReduxProvider> */}
+        {/* <LocalizationProvider dateAdapter={AdapterDateFns}> */}
+        <SettingsProvider>
+          {/* <MotionLazyContainer> */}
+          <ThemeProvider>
+            <ThemeSettings>
+              {/* <ThemeLocalization> */}
+              {/* <DashboardLayout> */}
+              {children}
+              {/* </DashboardLayout> */}
+              {/* </ThemeLocalization> */}
+            </ThemeSettings>
+          </ThemeProvider>
+          {/* </MotionLazyContainer> */}
+        </SettingsProvider>
+        {/* </LocalizationProvider> */}
+        {/* </ReduxProvider> */}
         {/* </CacheProvider> */}
       </body>
     </html>

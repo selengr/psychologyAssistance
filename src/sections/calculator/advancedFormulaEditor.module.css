@@ -61,14 +61,20 @@
   padding: 0 4px;
 
   position: relative;
-
 }
 
+.NEW_FIELD select::after {
+  content: 'reeeeeezaaa';
+  background-color: #eafcfa;
+  color: #000;
+}
 .NEW_FIELD select::before {
-  content: '';
-  position: absolute;
+  content: 'reeeeeezaaa';
+  background-color: #eafcfa;
+  color: #000;
+  /* position: absolute;
   top: 50%;
-  right: 10px; /* Adjust position as needed */
+  right: 10px;
   transform: translateY(-50%);
   width: 20px;
   height: 20px;
@@ -76,7 +82,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   pointer-events: none;
-  z-index: 1;
+  z-index: 10000; */
 }
 
 .NEW_FIELD {
