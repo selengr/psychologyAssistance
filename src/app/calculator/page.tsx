@@ -119,7 +119,8 @@ const Page = () => {
 
 
     const handleChange = (evt: any) => {
-        // console.log('evt.target.value :>> ', evt.target.value);
+        console.log('evt.target :>> ', evt.target);
+        console.log('evt.target.value :>> ', evt.target.value);
         const newHtml = evt.currentTarget
         // setHtml(newHtml)
         // const newFormula = htmlToFormula(evt.target.value)
@@ -159,9 +160,11 @@ const Page = () => {
                         formula += element.textContent + "" || '';
                     }
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
+                    // debugger
                     const select = element.querySelector('select');
                     formula += '#q_' + (select?.value || '');
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
+                    // debugger
                     const select = element.querySelector('select');
                     if (select) {
                         formula += '#avg' + select.value;
@@ -175,99 +178,6 @@ const Page = () => {
         return formula
     }
 
-    // const htmlToFormula = (html: string): string => {debugger
-    //     const tempDiv = document.createElement('div')
-    //     tempDiv.innerHTML = html
-
-    //     const formula = Array.from(tempDiv.childNodes).map((node) => {
-    //         if (node.nodeType === Node.TEXT_NODE) {
-    //             return node.textContent
-    //         }
-    //         if (node.nodeType === Node.ELEMENT_NODE) {
-    //             const element = node as HTMLElement
-    //             const type = element.getAttribute('data-type')
-    //             switch (type) {
-    //                 case 'NEW_FIELD':
-    //                     return `#q_${element.getAttribute('data-id')}`
-    //                 case 'OPERATOR':
-    //                     return element.textContent
-    //                 case 'AVG':
-    //                     const content = element.getAttribute('data-content')
-    //                     return `#avg({${content}})`
-    //                 case 'NUMBER':
-    //                     return element.textContent
-    //                 case 'VARIABLE':
-    //                     return element.textContent
-    //                 default:
-    //                     return ''
-    //             }
-    //         }
-    //         return ''
-    //     }).join('')
-
-    //     return formula
-    // }
-
-
-
-    // useEffect(() => {
-    //     let theFormula = "#q_1+#q_21+{calc_2}"
-    //     let formula = "#q_1+#q_21+{calc_2}"
-
-    //     const parseFormula = (input: string) => {
-    //         const parts = input.match(/#q_\d+|#avg$${[^}]+}$$|\+|\-|\*|\/|$$|$$|\d+|{[^}]+}/g) || []
-    //         // debugger
-    //         return parts.map((part, index) => {
-    //             if (part.startsWith('#q_')) {
-    //                 const id = part.slice(2)
-    //                 return (
-    //                     <div key={index} class="NEW_FIELD" contentEditable={false} id={id} >
-    //                         <select value="content">
-    //                             <option>content</option>
-    //                             <option>reza</option>
-    //                         </select>
-    //                     </div>
-    //                 )
-    //             } else if (['+', '-', '*', '/', '(', ')'].includes(part)) {
-    //                 return (
-    //                     <div key={index} className="OPERATOR" contentEditable={false}>
-    //                         {part}
-    //                     </div>
-    //                 )
-    //             } else if (part.startsWith('#avg')) {
-    //                 const content = part.match(/{([^}]+)}/)?.[1] || ''
-    //                 return (
-    //                     <div key={index} className="NEW_FIELD" contentEditable={false} id="avg" >
-    //                         <select value={content}>
-    //                             <option>content</option>
-    //                             <option>reza</option>
-    //                         </select>
-    //                         <div contentEditable={false} className="OPERATOR">(</div>
-    //                         {parseFormula(content)}
-    //                         <div contentEditable={false} className="OPERATOR">)</div>
-    //                     </div>
-    //                 )
-    //             } else if (/^\d+$/.test(part)) {
-    //                 return (
-    //                     <div key={index} contentEditable={false} className="NUMBER">
-    //                         {part}
-    //                     </div>
-    //                 )
-    //             } else if (part.startsWith('{') && part.endsWith('}')) {
-    //                 return (
-    //                     <span key={index} className="VARIABLE">
-    //                         {part}
-    //                     </span>
-    //                 )
-    //             }
-    //             return part
-    //         })
-    //     }
-
-    //     parseFormula(theFormula)
-    //     setHtml(parseFormula(theFormula))
-    // }, [])
-
 
 
     const handleNewField = () => {
@@ -278,8 +188,12 @@ const Page = () => {
         if (!editableDiv) return;
 
         const newElement = document.createElement('div');
-        const newSelectElement = document.createElement('select');
+        newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
+        newElement.setAttribute('data-type', "NEW_FIELD");
+        newElement.contentEditable = 'false';
 
+        const newSelectElement = document.createElement('select');
+        newSelectElement.contentEditable = 'false';
 
         JSONData.dataList.forEach(item => {
             const newOptionElement = document.createElement('option');
@@ -289,10 +203,18 @@ const Page = () => {
         });
 
 
+        // Create a change handler for the select element
+        newSelectElement.onchange = (e: any) => {
+            console.log('Selected value: ', e.target.value);
+            newSelectElement.value = e.target.value
+            // You can also update the inner HTML or do other actions here
+            // For example, to set the selected caption as text:
+            // newElement.textContent = e.target.options[e.target.selectedIndex].text;
+        };
 
-        newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
-        newElement.setAttribute('data-type', "NEW_FIELD")
-        newElement.contentEditable = 'false';
+
+
+        newSelectElement.contentEditable = 'false';
 
         if (range && editableDiv.contains(range.startContainer)) {
             // this  line will ==> Insert at cursor position

@@ -1,7 +1,7 @@
 {
   "dataList": [
     {
-      "value": "1",
+      "value": "19",
       "caption": "سن - سوالی که روی آن شرط است",
       "elementStr": "QUESTION",
       "extMap": {
@@ -28,7 +28,7 @@
       }
     },
     {
-      "value": "2",
+      "value": "80",
       "caption": "c2",
       "elementStr": "CALCULATION",
       "extMap": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "value": "1",
+      "value": "90",
       "caption": "c1",
       "u" : "",
       "elementStr": "CALCULATION",
