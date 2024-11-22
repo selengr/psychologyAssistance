@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { createRef, useCallback, useEffect, useRef, useState } from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SvgIcon from "@mui/material/SvgIcon";
 import Image from 'next/image';
@@ -21,6 +21,7 @@ import CalculatorOperator from "@/sections/calculator/calculator-operator";
 
 import styles from '../../sections/calculator/advancedFormulaEditor.module.css'
 import JSONData from '../../../public/assets/fake-data/add filed response_v1.json'
+import { string } from "zod";
 
 
 
@@ -33,9 +34,13 @@ type CALCULATE_TYPE = {
 
 const Page = () => {
     const contentEditable = useRef<any>();
-    const newFieldRef = useRef<any>();
+    const newRef = useRef<any>();
+    const newFieldRefs = useRef<any[]>([]);
     const [html, setHtml] = useState<any>([])
     const [formula, setFormula] = useState<string>("")
+    const [selectValues, setSelectValues] = useState<{ [key: string]: string }>({})
+    const selectFieldRef = useRef<{ [key: string]: string }>({})
+    const selectAvgRef = useRef<{ [key: string]: string }>({})
 
 
 
@@ -120,16 +125,11 @@ const Page = () => {
 
 
     const handleChange = (evt: any) => {
-        console.log('evt.target.value .reeeeeeeeza :>> ', evt.target.value);
-        const newHtml = evt.currentTarget
-
-
-        // if (elements.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
-        //     const select = elements.querySelector('select');
-        //     console.log('select reeeeeeeeza:>> ', select);
-        //     // formula += '#q_' + (select?.id || '');
-        // }
-
+        // const targetSelect = evt.target.closest('select'); // Find the closest select element
+        // debugger
+        // if (!targetSelect) return; // Handle potential errors
+        // const newFieldRef = targetSelect.ref; // Access the ref object using targetSelect.ref
+        // newFieldRef.current.value = evt.target.value; // Update the value of the specific select
     };
 
     function htmlToFormula(html: string): string {
@@ -163,14 +163,14 @@ const Page = () => {
                     }
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
                     const select = element.querySelector('select');
-                    console.log('select :>> ', select);
-                    console.log('newFieldRef.current :>> ', newFieldRef.current);
-                    formula += '#q_' + (select?.value || '');
+                    if (select) {
+                        // formula += '#q_' + (selectValues[select.id] || '')
+                        formula += '#q_' + (selectFieldRef.current[select.id] || '')
+                    }
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
-                    // debugger
                     const select = element.querySelector('select');
                     if (select) {
-                        formula += '#avg' + select.value;
+                        formula += '#avg' + (selectAvgRef.current[select.id] || '')
                     }
                 }
             }
@@ -196,12 +196,11 @@ const Page = () => {
         newElement.contentEditable = 'false';
 
         const newSelectElement = document.createElement('select');
-        newSelectElement.setAttribute('ref', 'newFieldRef');
-        newSelectElement.contentEditable = 'false';
+        const selectId = `select_${Date.now()}`
+        newSelectElement.id = selectId
 
 
-
-        JSONData.dataList.forEach(item => {
+        JSONData.dataList.forEach((item, index) => {
             const newOptionElement = document.createElement('option');
             newOptionElement.value = item.value;
             newOptionElement.textContent = item.caption;
@@ -209,10 +208,14 @@ const Page = () => {
         });
 
 
-        // Create a change handler for the select element
-        newSelectElement.onchange = (e: any) => {
-            newFieldRef.current = evt.target.value
-        };
+        // newSelectElement.onchange = (evt: Event) => {
+        //     const target = evt.target as HTMLSelectElement
+        //     setSelectValues(prev => ({ ...prev, [selectId]: target.value }))
+        // }
+        newSelectElement.onchange = (evt: Event) => {
+            const target = evt.target as HTMLSelectElement
+            selectFieldRef.current[selectId] = target.value
+        }
 
 
 
@@ -244,15 +247,6 @@ const Page = () => {
         const newElement = document.createElement('div');
         const newElement2 = document.createElement('div');
         const newElement3 = document.createElement('div');
-        const newSelectElement = document.createElement('select');
-
-        [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach(item => {
-            const newOptionElement = document.createElement('option');
-            newOptionElement.value = item.fnValue;
-            newOptionElement.textContent = item.fnCaption;
-            newSelectElement.appendChild(newOptionElement);
-        });
-
 
 
         newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
@@ -264,6 +258,23 @@ const Page = () => {
         newElement3.textContent = ")";
         newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
         newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
+
+        const newSelectElement = document.createElement('select');
+        const selectId = `select_${Date.now()}`
+        newSelectElement.id = selectId;
+
+        [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item: { fnValue: string, fnCaption: string }) => {
+            const newOptionElement = document.createElement('option');
+            newOptionElement.value = item.fnValue;
+            newOptionElement.textContent = item.fnCaption;
+            newSelectElement.appendChild(newOptionElement);
+        });
+
+        newSelectElement.onchange = (evt: Event) => {
+            const target = evt.target as HTMLSelectElement
+            selectAvgRef.current[selectId] = target.value
+        }
+
 
         if (range && editableDiv.contains(range.startContainer)) {
             newElement.appendChild(newSelectElement);
