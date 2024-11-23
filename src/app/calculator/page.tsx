@@ -34,11 +34,8 @@ type CALCULATE_TYPE = {
 
 const Page = () => {
     const contentEditable = useRef<any>();
-    const newRef = useRef<any>();
-    const newFieldRefs = useRef<any[]>([]);
     const [html, setHtml] = useState<any>([])
     const [formula, setFormula] = useState<string>("")
-    const [selectValues, setSelectValues] = useState<{ [key: string]: string }>({})
     const selectFieldRef = useRef<{ [key: string]: string }>({})
     const selectAvgRef = useRef<{ [key: string]: string }>({})
 
@@ -139,8 +136,6 @@ const Page = () => {
 
         let formula = ''
 
-
-
         for (const element of Array.from(elements)) {
             if (element instanceof HTMLDivElement) {
                 const classList = element.classList;
@@ -162,7 +157,7 @@ const Page = () => {
                         formula += element.textContent + "" || '';
                     }
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FIELD')) {
-                    const select = element.querySelector('select');
+                    const select = element.querySelector('div');
                     if (select) {
                         // formula += '#q_' + (selectValues[select.id] || '')
                         formula += '#q_' + (selectFieldRef.current[select.id] || '')
@@ -195,38 +190,45 @@ const Page = () => {
         newElement.setAttribute('data-type', "NEW_FIELD");
         newElement.contentEditable = 'false';
 
-        const newSelectElement = document.createElement('select');
-        const selectId = `select_${Date.now()}`
-        newSelectElement.id = selectId
+
+        // Create custom dropdown
+        const customDropdown = document.createElement('div');
+        customDropdown.className = styles.customDropdown; // Add your custom styles here
+        customDropdown.setAttribute('data-type', "down");
+        customDropdown.textContent = "انتخاب سوال"; // Default text
 
 
-        JSONData.dataList.forEach((item, index) => {
-            const newOptionElement = document.createElement('option');
-            newOptionElement.value = item.value;
-            newOptionElement.textContent = item.caption;
-            newSelectElement.appendChild(newOptionElement);
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = styles.optionsContainer; // Style for options container
+        optionsContainer.style.display = 'none'; // Hide options initially
+
+        JSONData.dataList.forEach((item) => {
+            const optionElement = document.createElement('div');
+            optionElement.className = styles.option; // Style for individual option
+            optionElement.textContent = item.caption;
+            optionElement.onclick = () => {
+                customDropdown.textContent = item.caption; // Update displayed text
+                selectFieldRef.current[customDropdown.id] = item.value; // Store selected value
+                optionsContainer.style.display = 'none'; // Hide options after selection
+            };
+            optionsContainer.appendChild(optionElement);
         });
 
+        customDropdown.onclick = () => {
+            optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
+            customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "up" : "down"}`);
+        };
 
-        // newSelectElement.onchange = (evt: Event) => {
-        //     const target = evt.target as HTMLSelectElement
-        //     setSelectValues(prev => ({ ...prev, [selectId]: target.value }))
-        // }
-        newSelectElement.onchange = (evt: Event) => {
-            const target = evt.target as HTMLSelectElement
-            selectFieldRef.current[selectId] = target.value
-        }
+        const selectId = `select_${Date.now()}`;
+        customDropdown.id = selectId;
 
-
+        newElement.appendChild(customDropdown);
+        newElement.appendChild(optionsContainer);
 
         if (range && editableDiv.contains(range.startContainer)) {
-            // this  line will ==> Insert at cursor position
-            newElement.appendChild(newSelectElement);
             range.insertNode(newElement);
             range.setStartAfter(newElement);
         } else {
-            //but this line will ==> append to the end
-            newElement.appendChild(newSelectElement);
             editableDiv.appendChild(newElement);
         }
 
@@ -234,6 +236,65 @@ const Page = () => {
 
         editableDiv.focus();
     };
+
+
+
+    // const handleFnFX = () => {
+    //     const selection = window.getSelection();
+    //     const range = selection?.getRangeAt(0);
+    //     const editableDiv = contentEditable.current;
+
+    //     if (!editableDiv) return;
+
+    //     const newElement = document.createElement('div');
+    //     const newElement2 = document.createElement('div');
+    //     const newElement3 = document.createElement('div');
+
+
+    //     newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
+    //     newElement.setAttribute('data-type', "NEW_FnFx")
+    //     newElement.contentEditable = 'false';
+    //     newElement2.contentEditable = 'false';
+    //     newElement3.contentEditable = 'false';
+    //     newElement2.textContent = "(";
+    //     newElement3.textContent = ")";
+    //     newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
+    //     newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
+
+    //     const newSelectElement = document.createElement('select');
+    //     const selectId = `select_${Date.now()}`
+    //     newSelectElement.id = selectId;
+
+    //     [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item: { fnValue: string, fnCaption: string }) => {
+    //         const newOptionElement = document.createElement('option');
+    //         newOptionElement.value = item.fnValue;
+    //         newOptionElement.textContent = item.fnCaption;
+    //         newSelectElement.appendChild(newOptionElement);
+    //     });
+
+    //     newSelectElement.onchange = (evt: Event) => {
+    //         const target = evt.target as HTMLSelectElement
+    //         selectAvgRef.current[selectId] = target.value
+    //     }
+
+
+    //     if (range && editableDiv.contains(range.startContainer)) {
+    //         newElement.appendChild(newSelectElement);
+    //         range.insertNode(newElement3);
+    //         range.insertNode(newElement2);
+    //         range.insertNode(newElement);
+    //         range.setStartAfter(newElement3);
+    //     } else {
+    //         //but this line will ==> append to the end
+    //         newElement.appendChild(newSelectElement);
+    //         // newSelectElement.appendChild(newOptionElement);
+    //         editableDiv.appendChild(newElement);
+    //     }
+
+    //     setHtml(editableDiv.innerHTML);
+
+    //     editableDiv.focus();
+    // };
 
 
 
@@ -248,9 +309,8 @@ const Page = () => {
         const newElement2 = document.createElement('div');
         const newElement3 = document.createElement('div');
 
-
         newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
-        newElement.setAttribute('data-type', "NEW_FnFx")
+        newElement.setAttribute('data-type', "NEW_FnFx");
         newElement.contentEditable = 'false';
         newElement2.contentEditable = 'false';
         newElement3.contentEditable = 'false';
@@ -259,33 +319,48 @@ const Page = () => {
         newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
         newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
 
-        const newSelectElement = document.createElement('select');
-        const selectId = `select_${Date.now()}`
-        newSelectElement.id = selectId;
+        // Create custom dropdown
+        const customDropdown = document.createElement('div');
+        customDropdown.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]} ${styles.customDropdown}`; // Combine classes
+        customDropdown.setAttribute('data-type', "down");
+        customDropdown.textContent = "میانگین()"; // Default text
 
-        [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item: { fnValue: string, fnCaption: string }) => {
-            const newOptionElement = document.createElement('option');
-            newOptionElement.value = item.fnValue;
-            newOptionElement.textContent = item.fnCaption;
-            newSelectElement.appendChild(newOptionElement);
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = styles.optionsContainer; // Style for options container
+        optionsContainer.style.display = 'none'; // Hide options initially
+
+        // Define your function options
+        [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item) => {
+            const optionElement = document.createElement('div');
+            optionElement.className = styles.option; // Style for individual option
+            optionElement.textContent = item.fnCaption;
+            optionElement.onclick = () => {
+                customDropdown.textContent = item.fnCaption; // Update displayed text
+                selectAvgRef.current[customDropdown.id] = item.fnValue; // Store selected value
+                optionsContainer.style.display = 'none'; // Hide options after selection
+            };
+            optionsContainer.appendChild(optionElement);
         });
 
-        newSelectElement.onchange = (evt: Event) => {
-            const target = evt.target as HTMLSelectElement
-            selectAvgRef.current[selectId] = target.value
-        }
+        customDropdown.onclick = () => {
+            optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
+            customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "up" : "down"}`);
+        };
 
+        const selectId = `select_${Date.now()}`;
+        customDropdown.id = selectId;
 
+        // Insert the elements into the editable div
         if (range && editableDiv.contains(range.startContainer)) {
-            newElement.appendChild(newSelectElement);
             range.insertNode(newElement3);
             range.insertNode(newElement2);
             range.insertNode(newElement);
+            newElement.appendChild(customDropdown);
+            newElement.appendChild(optionsContainer);
             range.setStartAfter(newElement3);
         } else {
-            //but this line will ==> append to the end
-            newElement.appendChild(newSelectElement);
-            // newSelectElement.appendChild(newOptionElement);
+            newElement.appendChild(customDropdown);
+            newElement.appendChild(optionsContainer);
             editableDiv.appendChild(newElement);
         }
 
@@ -293,8 +368,6 @@ const Page = () => {
 
         editableDiv.focus();
     };
-
-
 
 
 
@@ -575,9 +648,9 @@ const Page = () => {
                         // disableRipple
                         onClick={() => {
                             const newFormula = htmlToFormula(html)
-                            // console.log('newFormula :>> ', newFormula);
+                            console.log('newFormula :>> ', newFormula);
                             // setHtml(evt.target.value)
-                            setFormula(newFormula)
+                            // setFormula(newFormula)
                         }}
                         // fullWidth
                         variant="contained"
