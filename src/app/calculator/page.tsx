@@ -222,14 +222,30 @@ const Page = () => {
         const selectId = `select_${Date.now()}`;
         customDropdown.id = selectId;
 
-        newElement.appendChild(customDropdown);
-        newElement.appendChild(optionsContainer);
+        const closeOptions = (event: any) => {
+            editableDiv.focus(); debugger
+            if (!newElement.contains(event.target)) {
+                optionsContainer.style.display = 'none';
+                customDropdown.setAttribute('data-type', "down");
+            }
+        };
 
-        if (range && editableDiv.contains(range.startContainer)) {
-            range.insertNode(newElement);
-            range.setStartAfter(newElement);
-        } else {
-            editableDiv.appendChild(newElement);
+        document.addEventListener('click', closeOptions);
+
+
+
+        if (optionsContainer.style.display = 'none') {
+            if (range && editableDiv.contains(range.startContainer)) {
+                newElement.appendChild(customDropdown);
+                newElement.appendChild(optionsContainer);
+
+                range.insertNode(newElement);
+                range.setStartAfter(newElement);
+            } else {
+                newElement.appendChild(customDropdown);
+                newElement.appendChild(optionsContainer);
+                editableDiv.appendChild(newElement);
+            }
         }
 
         setHtml(editableDiv.innerHTML);
@@ -316,18 +332,18 @@ const Page = () => {
         newElement3.contentEditable = 'false';
         newElement2.textContent = "(";
         newElement3.textContent = ")";
-        newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
-        newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
+        newElement2.className = `${styles.dynamicbtn}  ${styles["OPERATOR"]}`;
+        newElement3.className = `${styles.dynamicbtn}  ${styles["OPERATOR"]}`;
 
         // Create custom dropdown
         const customDropdown = document.createElement('div');
-        customDropdown.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]} ${styles.customDropdown}`; // Combine classes
+        customDropdown.className = `${styles.customDropdown}`;
         customDropdown.setAttribute('data-type', "down");
-        customDropdown.textContent = "میانگین()"; // Default text
+        customDropdown.textContent = "میانگین()";
 
         const optionsContainer = document.createElement('div');
-        optionsContainer.className = styles.optionsContainer; // Style for options container
-        optionsContainer.style.display = 'none'; // Hide options initially
+        optionsContainer.className = styles.optionsContainer;
+        optionsContainer.style.display = 'none';
 
         // Define your function options
         [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item) => {
@@ -342,29 +358,44 @@ const Page = () => {
             optionsContainer.appendChild(optionElement);
         });
 
-        customDropdown.onclick = () => {
+        customDropdown.onclick = (event) => {
+            event.stopPropagation();
             optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
             customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "up" : "down"}`);
         };
+
+        // Close optionsContainer when clicking outside
+        const closeOptions = (event: any) => {
+            editableDiv.focus(); debugger
+            if (!newElement.contains(event.target)) {
+                optionsContainer.style.display = 'none'; // Hide options
+                customDropdown.setAttribute('data-type', "down"); // Reset dropdown type
+            }
+        };
+
+        document.addEventListener('click', closeOptions);
 
         const selectId = `select_${Date.now()}`;
         customDropdown.id = selectId;
 
         // Insert the elements into the editable div
-        if (range && editableDiv.contains(range.startContainer)) {
-            range.insertNode(newElement3);
-            range.insertNode(newElement2);
-            range.insertNode(newElement);
-            newElement.appendChild(customDropdown);
-            newElement.appendChild(optionsContainer);
-            range.setStartAfter(newElement3);
-        } else {
-            newElement.appendChild(customDropdown);
-            newElement.appendChild(optionsContainer);
-            editableDiv.appendChild(newElement);
-        }
+        if (optionsContainer.style.display = 'none') {
+            if (range && editableDiv.contains(range.startContainer)) {
+                range.insertNode(newElement3);
+                range.insertNode(newElement2);
+                range.insertNode(newElement);
+                newElement.appendChild(customDropdown);
+                newElement.appendChild(optionsContainer);
+                range.setStartAfter(newElement3);
+            } else {
+                newElement.appendChild(customDropdown);
+                newElement.appendChild(optionsContainer);
+                editableDiv.appendChild(newElement);
+            }
 
-        setHtml(editableDiv.innerHTML);
+            setHtml(editableDiv.innerHTML);
+
+        }
 
         editableDiv.focus();
     };
@@ -446,10 +477,16 @@ const Page = () => {
                         }}
                         MenuProps={{
                             PaperProps: {
-                                sx: { px: 1, maxHeight: 280, minHeight: 180 },
+                                sx: { px: 1, maxHeight: 280, minHeight: 180, mt: "3px" },
                             },
                         }}
-                        onClick={handleFnFX}
+                        onClick={(e: any) => {
+                            if (e.target.tagName === "LI") {
+                                handleFnFX()
+                            } else {
+                                e.preventDefault()
+                            }
+                        }}
                         onOpen={() => {
                             const editableDiv = contentEditable.current;
                             editableDiv.focus();
