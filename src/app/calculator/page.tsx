@@ -15,13 +15,12 @@ import { Box, Button, Container, Grid, IconButton, Input, MenuItem, Select, Stac
 import Iconify from "@/components/iconify/Iconify";
 import CalculatorClear from "@/sections/calculator/calculator-clear";
 import CalculatorNumber from "@/sections/calculator/calculator-number";
-import CalculatorItem from "@/sections/calculator/calculator-number";
 import CalculatorOperator from "@/sections/calculator/calculator-operator";
 
 
 import styles from '../../sections/calculator/advancedFormulaEditor.module.css'
 import JSONData from '../../../public/assets/fake-data/add filed response_v1.json'
-import { string } from "zod";
+
 
 
 
@@ -41,41 +40,32 @@ const Page = () => {
 
 
 
+
     const handleUndo = useCallback(() => {
-        const editableDiv = contentEditable.current
-        if (!editableDiv) return
+        const editableDiv = contentEditable.current;
+        if (!editableDiv) return;
 
-        const selection = window.getSelection()
-        const range = selection?.getRangeAt(0)
+        const selection = window.getSelection();
 
-        let elementToRemove
-
-        if (range && !range.collapsed && editableDiv.contains(range.commonAncestorContainer)) {
-            // If there's a selection, remove the selected content
-            range.deleteContents()
-        } else {
-            // If there's no selection, remove the last element
-            const children = Array.from(editableDiv.childNodes)
-            elementToRemove = children[children.length - 1]
-
-            if (elementToRemove) {
-                editableDiv.removeChild(elementToRemove)
+        try {
+            if (!selection.isCollapsed) {
+                // Remove selected content
+                selection.deleteFromDocument();
+            } else {
+                // Remove the last child element
+                const lastChild = editableDiv.lastChild;
+                if (lastChild) {
+                    editableDiv.removeChild(lastChild);
+                }
             }
+
+            // Update the HTML state
+            setHtml(editableDiv.innerHTML);
+            editableDiv.focus();
+        } catch (error) {
+            console.error('Error removing element:', error);
         }
-
-        // Update the HTML state
-        setHtml(editableDiv.innerHTML)
-
-        // Move the cursor to the end
-        // const newRange = document.createRange()
-        // newRange.selectNodeContents(editableDiv)
-        // newRange.collapse(false)
-        // selection?.removeAllRanges()
-        // selection?.addRange(newRange)
-
-        // Focus on the contentEditable div
-        editableDiv.focus()
-    }, [])
+    }, []);
 
 
     const handleOperator = (content: string, type: OPERATOR_TYPE) => {
@@ -123,7 +113,7 @@ const Page = () => {
 
     const handleChange = (evt: any) => {
         // const targetSelect = evt.target.closest('select'); // Find the closest select element
-        // debugger
+        // 
         // if (!targetSelect) return; // Handle potential errors
         // const newFieldRef = targetSelect.ref; // Access the ref object using targetSelect.ref
         // newFieldRef.current.value = evt.target.value; // Update the value of the specific select
@@ -153,6 +143,18 @@ const Page = () => {
                         formula += "*";
                     } else if (element.textContent == "/") {
                         formula += "/";
+                    } else if (element.textContent == "(") {
+                        if (element.getAttribute("data-type") === "avg") {
+                            formula += "({";
+                        } else {
+                            formula += "(";
+                        }
+                    } else if (element.textContent == ")") {
+                        if (element.getAttribute("data-type") === "avg") {
+                            formula += "})";
+                        } else {
+                            formula += ")";
+                        }
                     } else {
                         formula += element.textContent + "" || '';
                     }
@@ -163,7 +165,7 @@ const Page = () => {
                         formula += '#q_' + (selectFieldRef.current[select.id] || '')
                     }
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
-                    const select = element.querySelector('select');
+                    const select = element.querySelector('div');
                     if (select) {
                         formula += '#avg' + (selectAvgRef.current[select.id] || '')
                     }
@@ -223,7 +225,7 @@ const Page = () => {
         customDropdown.id = selectId;
 
         const closeOptions = (event: any) => {
-            editableDiv.focus(); debugger
+            editableDiv.focus();
             if (!newElement.contains(event.target)) {
                 optionsContainer.style.display = 'none';
                 customDropdown.setAttribute('data-type', "down");
@@ -332,6 +334,8 @@ const Page = () => {
         newElement3.contentEditable = 'false';
         newElement2.textContent = "(";
         newElement3.textContent = ")";
+        newElement2.setAttribute('data-type', "avg");
+        newElement3.setAttribute('data-type', "avg");
         newElement2.className = `${styles.dynamicbtn}  ${styles["OPERATOR"]}`;
         newElement3.className = `${styles.dynamicbtn}  ${styles["OPERATOR"]}`;
 
@@ -366,7 +370,7 @@ const Page = () => {
 
         // Close optionsContainer when clicking outside
         const closeOptions = (event: any) => {
-            editableDiv.focus(); debugger
+            editableDiv.focus();
             if (!newElement.contains(event.target)) {
                 optionsContainer.style.display = 'none'; // Hide options
                 customDropdown.setAttribute('data-type', "down"); // Reset dropdown type
@@ -421,7 +425,7 @@ const Page = () => {
 
 
     const renderValue = (selected: any) => {
-        debugger
+
         return (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: "#fff" }}>
                 {/* <Image src="/assets/icons/svg/ic_fx.svg" alt="icon" style={{ width: 20, height: 20 }} /> */}
@@ -687,7 +691,7 @@ const Page = () => {
                             const newFormula = htmlToFormula(html)
                             console.log('newFormula :>> ', newFormula);
                             // setHtml(evt.target.value)
-                            // setFormula(newFormula)
+                            setFormula(newFormula)
                         }}
                         // fullWidth
                         variant="contained"
