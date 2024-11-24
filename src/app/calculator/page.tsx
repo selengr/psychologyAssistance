@@ -42,29 +42,24 @@ const Page = () => {
 
 
     const handleUndo = useCallback(() => {
+        const selection = window.getSelection();
         const editableDiv = contentEditable.current;
+
         if (!editableDiv) return;
 
-        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        const startContainer = range?.startContainer;
+        if (startContainer?.childNodes?.length > 0) {
+            if (range.endOffset > 0) {
+                startContainer.childNodes[range.endOffset - 1].remove();
+            } else editableDiv.focus()
 
-        try {
-            if (!selection?.isCollapsed) {
-                // Remove selected content
-                selection?.deleteFromDocument();
-            } else {
-                // Remove the last child element
-                const lastChild = editableDiv.lastChild;
-                if (lastChild) {
-                    editableDiv.removeChild(lastChild);
-                }
-            }
-
-            // Update the HTML state
-            setHtml(editableDiv.innerHTML);
+        } else {
             editableDiv.focus();
-        } catch (error) {
-            console.error('Error removing element:', error);
         }
+
+        setHtml(editableDiv.innerHTML);
+        editableDiv.focus();
     }, []);
 
 
@@ -546,16 +541,16 @@ const Page = () => {
                         <Grid gridColumn={3} sx={{ width: "20%", display: "flex", flexDirection: "column", marginRight: "4px" }} >
 
                             <CalculatorOperator operator={'('} handleOperator={handleOperator} />
-                            {operators.map((op,key) => {
-                                return <CalculatorOperator operator={op} handleOperator={handleOperator} key={key}/>
+                            {operators.map((op, key) => {
+                                return <CalculatorOperator operator={op} handleOperator={handleOperator} key={key} />
                             })
                             }
                         </Grid>
                         <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
                             <CalculatorOperator operator={')'} handleOperator={handleOperator} />
                             <CalculatorClear handleClear={handleUndo} />
-                            {numbers.reverse().map((num,key) => {
-                                return <CalculatorNumber number={num} handleOperator={handleOperator} key={key}/>
+                            {numbers.reverse().map((num, key) => {
+                                return <CalculatorNumber number={num} handleOperator={handleOperator} key={key} />
                             })
                             }
                             {/* <CalculatorNumber number={'.'} handleOperator={handleOperator} /> */}

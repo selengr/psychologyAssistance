@@ -86,7 +86,7 @@
     "numeral": "^2.0.6",
     "postcss": "8.4.29",
     "prettier": "^3.0.3",
-    "react": "^18",
+    "react": "^19.0.0-rc-91061073-20241121",
     "react-confetti": "^6.1.0",
     "react-contenteditable": "^3.3.7",
     "react-day-picker": "^8.8.2",
