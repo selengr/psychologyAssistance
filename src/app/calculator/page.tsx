@@ -70,24 +70,28 @@ const Page = () => {
 
         if (!editableDiv) return;
 
-        const newElement = document.createElement('div')
-        newElement.className = `${styles.dynamicbtn} ${styles[type]}`;
-        newElement.textContent = content
-        newElement.contentEditable = 'false';
-        newElement.setAttribute('data-type', type)
-        // newElement.setAttribute('data-id', Date.now().toString())
+        if (range?.endContainer.nodeName !== "#text") {
+
+            const newElement = document.createElement('div')
+            newElement.className = `${styles.dynamicbtn} ${styles[type]}`;
+            newElement.textContent = content
+            newElement.contentEditable = 'false';
+            newElement.setAttribute('data-type', type)
 
 
-        if (range && editableDiv.contains(range.startContainer)) {
-            range.insertNode(newElement);
-            range.setStartAfter(newElement);
+            if (range && editableDiv.contains(range.startContainer)) {
+                range.insertNode(newElement);
+                range.setStartAfter(newElement);
+            } else {
+                editableDiv.appendChild(newElement);
+            }
+
+            setHtml(editableDiv.innerHTML);
+
+            editableDiv.focus();
         } else {
-            editableDiv.appendChild(newElement);
+            editableDiv.focus();
         }
-
-        setHtml(editableDiv.innerHTML);
-
-        editableDiv.focus();
     };
 
 
@@ -182,73 +186,82 @@ const Page = () => {
 
         if (!editableDiv) return;
 
-        // editableDiv.focus();
+        if (range?.endContainer.nodeName !== "#text") {
 
 
-        const newElement = document.createElement('div');
-        newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
-        newElement.setAttribute('data-type', "NEW_FIELD");
-        newElement.contentEditable = 'false';
+            const newElement = document.createElement('div');
+            newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
+            newElement.setAttribute('data-type', "NEW_FIELD");
+            newElement.contentEditable = 'false';
 
 
-        // Create custom dropdown
-        const customDropdown = document.createElement('div');
-        customDropdown.className = styles.customDropdown; // Add your custom styles here
-        customDropdown.setAttribute('data-type', "down");
-        customDropdown.textContent = "انتخاب سوال"; // Default text
+            // Create custom dropdown
+            const customDropdown = document.createElement('div');
+            customDropdown.className = styles.customDropdown; // Add your custom styles here
+            customDropdown.setAttribute('data-type', "down");
+            customDropdown.textContent = "انتخاب سوال"; // Default text
 
 
-        const optionsContainer = document.createElement('div');
-        optionsContainer.className = styles.optionsContainer; // Style for options container
-        optionsContainer.style.display = 'none'; // Hide options initially
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = styles.optionsContainer; // Style for options container
+            optionsContainer.style.display = 'none'; // Hide options initially
 
-        JSONData.dataList.forEach((item) => {
-            const optionElement = document.createElement('div');
-            optionElement.className = styles.option; // Style for individual option
-            optionElement.textContent = item.caption;
-            optionElement.onclick = () => {
-                customDropdown.textContent = item.caption; // Update displayed text
-                selectFieldRef.current[customDropdown.id] = item.value; // Store selected value
-                optionsContainer.style.display = 'none'; // Hide options after selection
+            JSONData.dataList.forEach((item) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = styles.option; // Style for individual option
+                optionElement.textContent = item.caption;
+                optionElement.onclick = () => {
+                    editableDiv.focus();
+                    customDropdown.textContent = item.caption; // Update displayed text
+                    selectFieldRef.current[customDropdown.id] = item.value; // Store selected value
+                    optionsContainer.style.display = 'none'; // Hide options after selection
+                };
+                optionsContainer.appendChild(optionElement);
+            });
+
+
+            customDropdown.onclick = () => {
+                // editableDiv.focus();
+                optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
+                customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "down" : "up"}`);
             };
-            optionsContainer.appendChild(optionElement);
-        });
 
-        customDropdown.onclick = () => {
-            optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
-            customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "down" : "up"}`);
-        };
+            const selectId = `select_${Date.now()}`;
+            customDropdown.id = selectId;
 
-        const selectId = `select_${Date.now()}`;
-        customDropdown.id = selectId;
+            const closeOptions = (event: any) => {
+                editableDiv.focus();
+                if (!newElement.contains(event.target)) {
+                    optionsContainer.style.display = 'none';
+                    customDropdown.setAttribute('data-type', "down");
+                }
+            };
 
-        const closeOptions = (event: any) => {
+            document.addEventListener('click', closeOptions);
+
+            if (optionsContainer.style.display = 'none') {
+                if (range && editableDiv.contains(range.startContainer)) {
+
+
+                    newElement.appendChild(customDropdown);
+                    newElement.appendChild(optionsContainer);
+
+                    range.insertNode(newElement);
+                    range.setStartAfter(newElement);
+                } else {
+                    newElement.appendChild(customDropdown);
+                    newElement.appendChild(optionsContainer);
+                    editableDiv.appendChild(newElement);
+                }
+            }
+
+            setHtml(editableDiv.innerHTML);
+
             editableDiv.focus();
-            if (!newElement.contains(event.target)) {
-                optionsContainer.style.display = 'none';
-                customDropdown.setAttribute('data-type', "down");
-            }
-        };
+        } else {
+            editableDiv.focus();
 
-        document.addEventListener('click', closeOptions);
-
-        if (optionsContainer.style.display = 'none') {
-            if (range && editableDiv.contains(range.startContainer)) {
-                newElement.appendChild(customDropdown);
-                newElement.appendChild(optionsContainer);
-
-                range.insertNode(newElement);
-                range.setStartAfter(newElement);
-            } else {
-                newElement.appendChild(customDropdown);
-                newElement.appendChild(optionsContainer);
-                editableDiv.appendChild(newElement);
-            }
         }
-
-        setHtml(editableDiv.innerHTML);
-
-        editableDiv.focus();
     };
 
 
@@ -319,85 +332,88 @@ const Page = () => {
 
         if (!editableDiv) return;
 
-        const newElement = document.createElement('div');
-        const newElement2 = document.createElement('div');
-        const newElement3 = document.createElement('div');
+        if (range?.endContainer.nodeName !== "#text") {
 
-        newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
-        newElement.setAttribute('data-type', "NEW_FnFx");
-        newElement.contentEditable = 'false';
-        newElement2.contentEditable = 'false';
-        newElement3.contentEditable = 'false';
-        newElement2.textContent = "(";
-        newElement3.textContent = ")";
-        newElement2.setAttribute('data-type', "avg");
-        newElement3.setAttribute('data-type', "avg");
-        newElement2.className = `${styles.dynamicbtn}  ${styles["OPERATOR"]}`;
-        newElement3.className = `${styles.dynamicbtn}  ${styles["OPERATOR"]}`;
+            const newElement = document.createElement('div');
+            const newElement2 = document.createElement('div');
+            const newElement3 = document.createElement('div');
 
-        // Create custom dropdown
-        const customDropdown = document.createElement('div');
-        customDropdown.className = `${styles.customDropdown}`;
-        customDropdown.setAttribute('data-type', "down");
-        customDropdown.textContent = "میانگین()";
+            newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
+            newElement.setAttribute('data-type', "NEW_FnFx");
+            newElement.contentEditable = 'false';
+            newElement2.contentEditable = 'false';
+            newElement3.contentEditable = 'false';
+            newElement2.textContent = "(";
+            newElement3.textContent = ")";
+            newElement2.setAttribute('data-type', "avg");
+            newElement3.setAttribute('data-type', "avg");
+            newElement2.className = `${styles.dynamicbtn}  ${styles["OPERATOR"]}`;
+            newElement3.className = `${styles.dynamicbtn}  ${styles["OPERATOR"]}`;
 
-        const optionsContainer = document.createElement('div');
-        optionsContainer.className = styles.optionsContainer;
-        optionsContainer.style.display = 'none';
+            // Create custom dropdown
+            const customDropdown = document.createElement('div');
+            customDropdown.className = `${styles.customDropdown}`;
+            customDropdown.setAttribute('data-type', "down");
+            customDropdown.textContent = "میانگین()";
 
-        // Define your function options
-        [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item) => {
-            const optionElement = document.createElement('div');
-            optionElement.className = styles.option; // Style for individual option
-            optionElement.textContent = item.fnCaption;
-            optionElement.onclick = () => {
-                customDropdown.textContent = item.fnCaption; // Update displayed text
-                selectAvgRef.current[customDropdown.id] = item.fnValue; // Store selected value
-                optionsContainer.style.display = 'none'; // Hide options after selection
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = styles.optionsContainer;
+            optionsContainer.style.display = 'none';
+
+            // Define your function options
+            [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = styles.option; // Style for individual option
+                optionElement.textContent = item.fnCaption;
+                optionElement.onclick = () => {
+                    customDropdown.textContent = item.fnCaption; // Update displayed text
+                    selectAvgRef.current[customDropdown.id] = item.fnValue; // Store selected value
+                    optionsContainer.style.display = 'none'; // Hide options after selection
+                };
+                optionsContainer.appendChild(optionElement);
+            });
+
+            customDropdown.onclick = (event) => {
+                event.stopPropagation();
+                optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
+                customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "down" : "up"}`);
             };
-            optionsContainer.appendChild(optionElement);
-        });
 
-        customDropdown.onclick = (event) => {
-            event.stopPropagation();
-            optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
-            customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "down" : "up"}`);
-        };
+            // Close optionsContainer when clicking outside
+            const closeOptions = (event: any) => {
+                editableDiv.focus();
+                if (!newElement.contains(event.target)) {
+                    optionsContainer.style.display = 'none'; // Hide options
+                    customDropdown.setAttribute('data-type', "down"); // Reset dropdown type
+                }
+            };
 
-        // Close optionsContainer when clicking outside
-        const closeOptions = (event: any) => {
+            document.addEventListener('click', closeOptions);
+
+            const selectId = `select_${Date.now()}`;
+            customDropdown.id = selectId;
+
+            // Insert the elements into the editable div
+            if (optionsContainer.style.display = 'none') {
+                if (range && editableDiv.contains(range.startContainer)) {
+                    range.insertNode(newElement3);
+                    range.insertNode(newElement2);
+                    range.insertNode(newElement);
+                    newElement.appendChild(customDropdown);
+                    newElement.appendChild(optionsContainer);
+                    range.setStartAfter(newElement3);
+                } else {
+                    newElement.appendChild(customDropdown);
+                    newElement.appendChild(optionsContainer);
+                    editableDiv.appendChild(newElement);
+                }
+
+                setHtml(editableDiv.innerHTML);
+
+            }
+        } else {
             editableDiv.focus();
-            if (!newElement.contains(event.target)) {
-                optionsContainer.style.display = 'none'; // Hide options
-                customDropdown.setAttribute('data-type', "down"); // Reset dropdown type
-            }
-        };
-
-        document.addEventListener('click', closeOptions);
-
-        const selectId = `select_${Date.now()}`;
-        customDropdown.id = selectId;
-
-        // Insert the elements into the editable div
-        if (optionsContainer.style.display = 'none') {
-            if (range && editableDiv.contains(range.startContainer)) {
-                range.insertNode(newElement3);
-                range.insertNode(newElement2);
-                range.insertNode(newElement);
-                newElement.appendChild(customDropdown);
-                newElement.appendChild(optionsContainer);
-                range.setStartAfter(newElement3);
-            } else {
-                newElement.appendChild(customDropdown);
-                newElement.appendChild(optionsContainer);
-                editableDiv.appendChild(newElement);
-            }
-
-            setHtml(editableDiv.innerHTML);
-
         }
-
-        editableDiv.focus();
     };
 
 
