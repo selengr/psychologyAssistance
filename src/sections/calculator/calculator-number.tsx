@@ -7,6 +7,8 @@ interface ICalculatorNumber {
     handleOperator: (content: string, type: string) => void
 }
 
+
+
 const CalculatorNumber = ({ number, size, handleOperator, key }: ICalculatorNumber) => {
     return (
         <>

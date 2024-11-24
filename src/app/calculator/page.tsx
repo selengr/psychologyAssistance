@@ -96,27 +96,7 @@ const Page = () => {
 
 
 
-
-    useEffect(() => {
-        const editableDiv = contentEditable.current;
-        // editableDiv.focus();
-    }, [])
-
-
-
-    useEffect(() => {
-        let initialFormula = "#avg({#q_1,#q_21,5})#q_1+#q_21-1+"
-        // setHtml(parseFormula(initialFormula))
-    }, [])
-
-
-    const handleChange = (evt: any) => {
-        // const targetSelect = evt.target.closest('select'); // Find the closest select element
-        // 
-        // if (!targetSelect) return; // Handle potential errors
-        // const newFieldRef = targetSelect.ref; // Access the ref object using targetSelect.ref
-        // newFieldRef.current.value = evt.target.value; // Update the value of the specific select
-    };
+    const handleChange = (evt: any) => { };
 
     function htmlToFormula(html: string): string {
         const parser = new DOMParser()
@@ -264,64 +244,6 @@ const Page = () => {
         }
     };
 
-
-
-    // const handleFnFX = () => {
-    //     const selection = window.getSelection();
-    //     const range = selection?.getRangeAt(0);
-    //     const editableDiv = contentEditable.current;
-
-    //     if (!editableDiv) return;
-
-    //     const newElement = document.createElement('div');
-    //     const newElement2 = document.createElement('div');
-    //     const newElement3 = document.createElement('div');
-
-
-    //     newElement.className = `${styles.dynamicbtn} ${styles["NEW_FnFx"]}`;
-    //     newElement.setAttribute('data-type', "NEW_FnFx")
-    //     newElement.contentEditable = 'false';
-    //     newElement2.contentEditable = 'false';
-    //     newElement3.contentEditable = 'false';
-    //     newElement2.textContent = "(";
-    //     newElement3.textContent = ")";
-    //     newElement2.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
-    //     newElement3.className = `${styles.dynamicbtn} ${styles["OPERATOR"]}`;
-
-    //     const newSelectElement = document.createElement('select');
-    //     const selectId = `select_${Date.now()}`
-    //     newSelectElement.id = selectId;
-
-    //     [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item: { fnValue: string, fnCaption: string }) => {
-    //         const newOptionElement = document.createElement('option');
-    //         newOptionElement.value = item.fnValue;
-    //         newOptionElement.textContent = item.fnCaption;
-    //         newSelectElement.appendChild(newOptionElement);
-    //     });
-
-    //     newSelectElement.onchange = (evt: Event) => {
-    //         const target = evt.target as HTMLSelectElement
-    //         selectAvgRef.current[selectId] = target.value
-    //     }
-
-
-    //     if (range && editableDiv.contains(range.startContainer)) {
-    //         newElement.appendChild(newSelectElement);
-    //         range.insertNode(newElement3);
-    //         range.insertNode(newElement2);
-    //         range.insertNode(newElement);
-    //         range.setStartAfter(newElement3);
-    //     } else {
-    //         //but this line will ==> append to the end
-    //         newElement.appendChild(newSelectElement);
-    //         // newSelectElement.appendChild(newOptionElement);
-    //         editableDiv.appendChild(newElement);
-    //     }
-
-    //     setHtml(editableDiv.innerHTML);
-
-    //     editableDiv.focus();
-    // };
 
 
 
