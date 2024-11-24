@@ -16,7 +16,7 @@ const CalculatorClear = ({ handleClear }: ICalculatorClear) => {
                 },
                 fontWeight: 500
             }}
-                onClick={handleClear}
+                // onClick={handleClear}
             >
 
                 <Iconify icon="ion:arrow-back-outline" sx={{ width: 25, height: 25, color: "#FA4D56" }} />
