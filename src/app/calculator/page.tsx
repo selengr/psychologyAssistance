@@ -48,9 +48,9 @@ const Page = () => {
         const selection = window.getSelection();
 
         try {
-            if (!selection.isCollapsed) {
+            if (!selection?.isCollapsed) {
                 // Remove selected content
-                selection.deleteFromDocument();
+                selection?.deleteFromDocument();
             } else {
                 // Remove the last child element
                 const lastChild = editableDiv.lastChild;
@@ -546,8 +546,8 @@ const Page = () => {
                         <Grid gridColumn={3} sx={{ width: "20%", display: "flex", flexDirection: "column", marginRight: "4px" }} >
 
                             <CalculatorOperator operator={'('} handleOperator={handleOperator} />
-                            {operators.map((op) => {
-                                return <CalculatorOperator operator={op} handleOperator={handleOperator} />
+                            {operators.map((op,key) => {
+                                return <CalculatorOperator operator={op} handleOperator={handleOperator} key={key}/>
                             })
                             }
                         </Grid>
