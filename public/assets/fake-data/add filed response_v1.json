@@ -11,7 +11,7 @@
         "REQUIRED": "true",
         "MINIMUM_LEN": "",
         "TEXT_FIELD_PATTERN": "NUMBER",
-        "UNIQUE_NAME":"q_1"
+        "UNIQUE_NAME":"q_19"
       }
     },
     {
@@ -33,7 +33,7 @@
       "elementStr": "CALCULATION",
       "extMap": {
         "FORMULA": "#avg({#q_1,#q_21,5,8})",
-        "UNIQUE_NAME":"calc_2"
+        "UNIQUE_NAME":"calc_80"
       }
     },
     {
@@ -43,7 +43,7 @@
       "elementStr": "CALCULATION",
       "extMap": {
         "FORMULA": "#q_1+#q_21+{calc_2}",
-        "UNIQUE_NAME":"calc_2"
+        "UNIQUE_NAME":"calc_90"
       }
     }
   ],

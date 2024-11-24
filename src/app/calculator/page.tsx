@@ -96,7 +96,10 @@ const Page = () => {
 
 
 
-    const handleChange = (evt: any) => { };
+    const handleChange = (evt: any) => {
+        // const newFormula = htmlToFormula(html)
+        // setFormula(newFormula)
+    };
 
     function htmlToFormula(html: string): string {
         const parser = new DOMParser()
@@ -141,7 +144,11 @@ const Page = () => {
                     const select = element.querySelector('div');
                     if (select) {
                         // formula += '#q_' + (selectValues[select.id] || '')
-                        formula += '#q_' + (selectFieldRef.current[select.id] || '')
+                        if (selectFieldRef.current[select.id]?.startsWith("calc")) {
+                            formula += '{' + (selectFieldRef.current[select.id] + '}' || '')
+                        } else {
+                            formula += '#' + (selectFieldRef.current[select.id] || '')
+                        }
                     }
                 } else if (classList.contains('advancedFormulaEditor-module__uTdVNG__NEW_FnFx')) {
                     const select = element.querySelector('div');
@@ -153,7 +160,7 @@ const Page = () => {
         }
 
 
-        console.log("formulaformula", formula)
+        console.log("html-to-formula ===>", formula)
         return formula
     }
 
@@ -186,15 +193,16 @@ const Page = () => {
             optionsContainer.className = styles.optionsContainer; // Style for options container
             optionsContainer.style.display = 'none'; // Hide options initially
 
-            JSONData.dataList.forEach((item) => {
+            JSONData.dataList.forEach((item: any) => {
                 const optionElement = document.createElement('div');
                 optionElement.className = styles.option; // Style for individual option
                 optionElement.textContent = item.caption;
                 optionElement.onclick = () => {
-                    editableDiv.focus();
                     customDropdown.textContent = item.caption; // Update displayed text
-                    selectFieldRef.current[customDropdown.id] = item.value; // Store selected value
+                    selectFieldRef.current[customDropdown.id] = item.extMap.UNIQUE_NAME //+ item.value; // Store selected value
                     optionsContainer.style.display = 'none'; // Hide options after selection
+
+                    // customDropdown.setAttribute('data-unique-name', item.extMap.UNIQUE_NAME)
                 };
                 optionsContainer.appendChild(optionElement);
             });
@@ -301,12 +309,11 @@ const Page = () => {
                 customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "down" : "up"}`);
             };
 
-            // Close optionsContainer when clicking outside
             const closeOptions = (event: any) => {
                 editableDiv.focus();
                 if (!newElement.contains(event.target)) {
-                    optionsContainer.style.display = 'none'; // Hide options
-                    customDropdown.setAttribute('data-type', "down"); // Reset dropdown type
+                    optionsContainer.style.display = 'none';
+                    customDropdown.setAttribute('data-type', "down");
                 }
             };
 
@@ -315,7 +322,6 @@ const Page = () => {
             const selectId = `select_${Date.now()}`;
             customDropdown.id = selectId;
 
-            // Insert the elements into the editable div
             if (optionsContainer.style.display = 'none') {
                 if (range && editableDiv.contains(range.startContainer)) {
                     range.insertNode(newElement3);
@@ -351,23 +357,12 @@ const Page = () => {
         }
     };
 
-    const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
-    const operators = ['+', '-', '*', '/'];
 
 
-
-    const renderValue = (selected: any) => {
-
-        return (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: "#fff" }}>
-                {/* <Image src="/assets/icons/svg/ic_fx.svg" alt="icon" style={{ width: 20, height: 20 }} /> */}
-                rrrr  {selected}
-            </Box>
-        );
-    };
 
     const renderKeypad = () => {
-
+        const operators = ['+', '-', '*', '/'];
+        const numbers = ['0', '.', '7', '8', '9', '4', '5', '6', '1', '2', '3'];
 
         return (
             <>
@@ -490,8 +485,6 @@ const Page = () => {
                                 return <CalculatorNumber number={num} handleOperator={handleOperator} key={key} />
                             })
                             }
-                            {/* <CalculatorNumber number={'.'} handleOperator={handleOperator} /> */}
-                            {/* <CalculatorNumber number={"0"} size={70} handleOperator={handleOperator} /> */}
                         </Grid>
 
 
@@ -535,19 +528,23 @@ const Page = () => {
             >
                 <Stack spacing={1}>
                     <Typography variant="subtitle2" color="#161616">نام:</Typography>
-                    <Typography variant="subtitle2" color="#161616">{formula}</Typography>
+                    <Typography variant="subtitle2" color="#161616" sx={{
+                        // display:"flex",
+                        // justifyContent : "end",
+                        // direction:"ltr"
+                    }}>{formula}</Typography>
 
                     <TextField
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                    borderColor: '#DDE1E6', // Change this to your desired border color
+                                    borderColor: '#DDE1E6',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: '#DDE1E6', // Change this to your desired hover border color
+                                    borderColor: '#DDE1E6',
                                 },
                                 '&.Mui-focused fieldset': {
-                                    borderColor: '#DDE1E6', // Change this to your desired focused border color
+                                    borderColor: '#DDE1E6',
                                 },
                             },
                             '& input': {
@@ -561,33 +558,10 @@ const Page = () => {
                 </Stack>
 
 
-
                 <Grid sx={{ width: "100%", display: "flex", flexDirection: { xs: "column", sm: "row" }, my: 3 }}>
 
                     {renderKeypad()}
-                    {/* <Stack sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={3}>
-                                <Button onClick={() => handleOperator('(', 'OPERATOR')}>{'('}</Button>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Button onClick={() => handleOperator(')', 'OPERATOR')}>{')'}</Button>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button onClick={() => setHtml('')}>Clear</Button>
-                            </Grid>
-                            {numbers.reverse().map((num) => (
-                                <Grid item xs={4} key={num}>
-                                    <Button onClick={() => handleOperator(num, 'NUMBER')}>{num}</Button>
-                                </Grid>
-                            ))}
-                            {operators.map((op) => (
-                                <Grid item xs={3} key={op}>
-                                    <Button onClick={() => handleOperator(op, 'OPERATOR')}>{op}</Button>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Stack> */}
+
 
                     <Box sx={{ width: { xs: "100%", sm: "70%" }, display: "flex", flexDirection: "column", alignItems: "start" }}>
                         <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>اسکریپت:</Typography>
@@ -595,18 +569,16 @@ const Page = () => {
 
 
                             <ContentEditable
-                                // ref={this.textInput}
-                                onKeyDown={handleKeyDown}
-                                className={styles.ContentEditable}
-                                innerRef={contentEditable}
                                 html={html}
+                                tagName="div"
                                 autoFocus={true}
                                 disabled={false}
-                                onChange={handleChange} // handle innerHTML change
-                                // tagName="article" // Use a custom HTML tag (uses a div by default)
+                                onChange={handleChange}
                                 contentEditable={"true"}
+                                onKeyDown={handleKeyDown}
+                                innerRef={contentEditable}
+                                className={styles.ContentEditable}
                             />
-                            {/* <AdvancedFormulaCalculator scriptJSON={scriptJSON} setScriptJSON={setScriptJSON} html={html} handleChange={handleChange} /> */}
                         </Stack>
 
 
@@ -618,12 +590,9 @@ const Page = () => {
                 <Box display="flex" gap={3} width="100%" marginTop={5} marginBottom={2} sx={{ display: "flex", justifyContent: "center" }}>
                     <LoadingButton
                         type="button"
-                        // disableRipple
                         onClick={() => {
                             const newFormula = htmlToFormula(html)
-                            console.log('newFormula :>> ', newFormula);
-                            // setHtml(evt.target.value)
-                            setFormula(newFormula)
+                            // setFormula(newFormula)
                         }}
                         // fullWidth
                         variant="contained"
