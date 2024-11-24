@@ -42,12 +42,12 @@ const Page = () => {
 
 
     const handleUndo = useCallback(() => {
-        const selection = window.getSelection();
+        const selection: any = window.getSelection();
         const editableDiv = contentEditable.current;
 
         if (!editableDiv) return;
 
-        const range = selection.getRangeAt(0);
+        const range = selection?.getRangeAt(0);
         const startContainer = range?.startContainer;
         if (startContainer?.childNodes?.length > 0) {
             if (range.endOffset > 0) {
@@ -95,7 +95,7 @@ const Page = () => {
 
     useEffect(() => {
         const editableDiv = contentEditable.current;
-        editableDiv.focus();
+        // editableDiv.focus();
     }, [])
 
 
@@ -182,6 +182,9 @@ const Page = () => {
 
         if (!editableDiv) return;
 
+        // editableDiv.focus();
+
+
         const newElement = document.createElement('div');
         newElement.className = `${styles.dynamicbtn} ${styles["NEW_FIELD"]}`;
         newElement.setAttribute('data-type', "NEW_FIELD");
@@ -213,7 +216,7 @@ const Page = () => {
 
         customDropdown.onclick = () => {
             optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
-            customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "up" : "down"}`);
+            customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "down" : "up"}`);
         };
 
         const selectId = `select_${Date.now()}`;
@@ -360,7 +363,7 @@ const Page = () => {
         customDropdown.onclick = (event) => {
             event.stopPropagation();
             optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none'; // Toggle options
-            customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "up" : "down"}`);
+            customDropdown.setAttribute('data-type', `${optionsContainer.style.display === 'none' ? "down" : "up"}`);
         };
 
         // Close optionsContainer when clicking outside
@@ -398,8 +401,6 @@ const Page = () => {
 
         editableDiv.focus();
     };
-
-
 
 
 
