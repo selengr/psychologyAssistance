@@ -232,8 +232,6 @@ const Page = () => {
 
         document.addEventListener('click', closeOptions);
 
-
-
         if (optionsContainer.style.display = 'none') {
             if (range && editableDiv.contains(range.startContainer)) {
                 newElement.appendChild(customDropdown);
@@ -435,7 +433,7 @@ const Page = () => {
 
         return (
             <>
-                <Box sx={{ width: "30%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
+                <Box sx={{ width: { xs: "100%", sm: "30%" }, display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "start", mt: 3 }} gap={"3px"}>
 
 
                     <Select
@@ -547,7 +545,7 @@ const Page = () => {
                             })
                             }
                         </Grid>
-                        <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
+                        <Grid gridColumn={3} sx={{}} spacing={5} gap={5} rowGap={5} columnGap={6}>
                             <CalculatorOperator operator={')'} handleOperator={handleOperator} />
                             <CalculatorClear handleClear={handleUndo} />
                             {numbers.reverse().map((num, key) => {
@@ -626,7 +624,7 @@ const Page = () => {
 
 
 
-                <Grid sx={{ width: "100%", display: "flex", flexDirection: "row", my: 3 }}>
+                <Grid sx={{ width: "100%", display: "flex", flexDirection: { xs: "column", sm: "row" }, my: 3 }}>
 
                     {renderKeypad()}
                     {/* <Stack sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
@@ -653,9 +651,9 @@ const Page = () => {
                         </Grid>
                     </Stack> */}
 
-                    <Box sx={{ width: "70%", display: "flex", flexDirection: "column", alignItems: "start" }}>
+                    <Box sx={{ width: { xs: "100%", sm: "70%" }, display: "flex", flexDirection: "column", alignItems: "start" }}>
                         <Typography variant="subtitle1" sx={{ display: "flex", justifyContent: "center", color: "#404040", fontWeight: 500 }}>اسکریپت:</Typography>
-                        <Stack spacing={4} sx={{ border: '1px solid #DDE1E6', borderRadius: 2, padding: 1, width: "100%", height: "100%", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
+                        <Stack spacing={4} sx={{ border: '1px solid #DDE1E6', borderRadius: 2, padding: 1, width: "100%", height: "100%", minHeight: 200, display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
 
 
                             <ContentEditable
