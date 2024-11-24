@@ -3,10 +3,11 @@ import { Button } from "@mui/material";
 interface ICalculatorNumber {
     number: string
     size?: number
+    key?: number
     handleOperator: (content: string, type: string) => void
 }
 
-const CalculatorNumber = ({ number, size, handleOperator }: ICalculatorNumber) => {
+const CalculatorNumber = ({ number, size, handleOperator, key }: ICalculatorNumber) => {
     return (
         <>
 
@@ -15,6 +16,7 @@ const CalculatorNumber = ({ number, size, handleOperator }: ICalculatorNumber) =
                 fontWeight: 500
             }}
                 onClick={() => handleOperator(number, "NUMBER",)}
+                key={key}
             >
                 {number as string}
             </Button>

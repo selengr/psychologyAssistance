@@ -554,8 +554,8 @@ const Page = () => {
                         <Grid gridColumn={3} sx={{ width: "80%" }} spacing={5} gap={5} rowGap={5} columnGap={6}>
                             <CalculatorOperator operator={')'} handleOperator={handleOperator} />
                             <CalculatorClear handleClear={handleUndo} />
-                            {numbers.reverse().map((num) => {
-                                return <CalculatorNumber number={num} handleOperator={handleOperator} />
+                            {numbers.reverse().map((num,key) => {
+                                return <CalculatorNumber number={num} handleOperator={handleOperator} key={key}/>
                             })
                             }
                             {/* <CalculatorNumber number={'.'} handleOperator={handleOperator} /> */}

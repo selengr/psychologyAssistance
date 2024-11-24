@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 interface ICalculatorNumber {
     operator: string
     handleOperator: (content: string, type: string) => void
-    key: number
+    key?: number
 }
 
 
