@@ -160,7 +160,7 @@ const Page = () => {
         }
 
 
-        // console.log("html-to-formula ===>", formula)
+        console.log("html-to-formula ===>", formula)
         return formula
     }
 
@@ -184,22 +184,22 @@ const Page = () => {
 
             // Create custom dropdown
             const customDropdown = document.createElement('div');
-            customDropdown.className = styles.customDropdown; 
+            customDropdown.className = styles.customDropdown;
             customDropdown.setAttribute('data-type', "down");
-            customDropdown.textContent = "انتخاب سوال"; 
+            customDropdown.textContent = "انتخاب سوال";
 
             const optionsContainer = document.createElement('div');
-            optionsContainer.className = styles.optionsContainer; 
-            optionsContainer.style.display = 'none'; 
+            optionsContainer.className = styles.optionsContainer;
+            optionsContainer.style.display = 'none';
 
             JSONData.dataList.forEach((item: any) => {
                 const optionElement = document.createElement('div');
-                optionElement.className = styles.option; 
+                optionElement.className = styles.option;
                 optionElement.textContent = item.caption;
                 optionElement.onclick = () => {
-                    customDropdown.textContent = item.caption; 
-                    selectFieldRef.current[customDropdown.id] = item.extMap.UNIQUE_NAME 
-                    optionsContainer.style.display = 'none'; 
+                    customDropdown.textContent = item.caption;
+                    selectFieldRef.current[customDropdown.id] = item.extMap.UNIQUE_NAME
+                    optionsContainer.style.display = 'none';
 
                     // customDropdown.setAttribute('data-unique-name', item.extMap.UNIQUE_NAME)
                 };
@@ -292,12 +292,12 @@ const Page = () => {
             // Define your function options
             [{ fnValue: "avg", fnCaption: "میانگین()" }].forEach((item) => {
                 const optionElement = document.createElement('div');
-                optionElement.className = styles.option; 
+                optionElement.className = styles.option;
                 optionElement.textContent = item.fnCaption;
                 optionElement.onclick = () => {
                     customDropdown.textContent = item.fnCaption;
-                    selectAvgRef.current[customDropdown.id] = item.fnValue; 
-                    optionsContainer.style.display = 'none'; 
+                    selectAvgRef.current[customDropdown.id] = item.fnValue;
+                    optionsContainer.style.display = 'none';
                 };
                 optionsContainer.appendChild(optionElement);
             });
@@ -411,7 +411,7 @@ const Page = () => {
                             },
                         }}
                         onClick={(e: any) => {
-                            if (e.target.tagName === "LI") {
+                            if (e.target.tagName === "LI" || e.target.tagName === "li") {
                                 handleFnFX()
                             } else {
                                 e.preventDefault()

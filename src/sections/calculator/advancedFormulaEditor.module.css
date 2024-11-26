@@ -28,7 +28,7 @@
 .NEW_FIELD .customDropdown::before,
 .NEW_FnFx .customDropdown::before {
   content: '';
-  right: 0;
+  right: 0 !important;
   width: 20px;
   height: 33px;
   position: absolute;
@@ -48,7 +48,7 @@
 .customDropdown[data-type='down']::after,
 .customDropdown[data-type='up']::after {
   content: '';
-  left: 6;
+  left: 6 !important;
   width: 10px;
   height: 33px;
   position: absolute;
