@@ -411,6 +411,8 @@ const Page = () => {
                             },
                         }}
                         onClick={(e: any) => {
+                            console.log('e.target.tagName :>> ', e.target.tagName);
+                            console.log('e.target.tagName === "LI" || e.target.tagName === "li" :>> ', e.target.tagName === "LI" || e.target.tagName === "li");
                             if (e.target.tagName === "LI" || e.target.tagName === "li") {
                                 handleFnFX()
                             } else {
